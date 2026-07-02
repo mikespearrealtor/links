@@ -6,9 +6,8 @@ ORG:Compass Real Estate
 TITLE:Realtor
 TEL;TYPE=CELL,VOICE:+1-713-204-7653
 EMAIL;TYPE=WORK,INTERNET:mike@mikespear.com
-URL:https://mikespear.com
-ADR;TYPE=WORK:;;;Houston;TX;;USA
-NOTE:Modern real estate, coast to coast.
+URL:https://links.mikespear.com
+ADR;TYPE=WORK:;;4200 Westheimer Suite 1000;Houston;TX;77027;USA
 PHOTO;ENCODING=b;TYPE=JPEG:/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAcFBQYFBAcGBQYI
  BwcIChELCgkJChUPEAwRGBUaGRgVGBcbHichGx0lHRcYIi4iJSgpKywrGiAvMy8qMicqKyr/2w
  BDAQcICAoJChQLCxQqHBgcKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
