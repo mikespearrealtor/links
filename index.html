@@ -1,0 +1,396 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mike Spear - Links</title>
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Mike Spear - Compass Real Estate">
+  <meta property="og:title" content="Mike Spear">
+  <meta property="og:description" content="Realtor - modern real estate, coast to coast.">
+  <meta property="og:url" content="https://links.mikespear.com/">
+  <meta property="og:image" content="https://links.mikespear.com/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Mike Spear">
+  <meta name="twitter:description" content="Realtor - modern real estate, coast to coast.">
+  <meta name="twitter:image" content="https://links.mikespear.com/og-image.png">
+
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="apple-touch-icon" href="/favicon.png">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0a0a0a;
+      color: #fff;
+      font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+    }
+
+    .wrap {
+      width: 100%;
+      max-width: 440px;
+      padding: 48px 24px 64px;
+    }
+
+    /* â”€â”€ Hero â”€â”€ */
+    .hero-wrap {
+      position: relative;
+      padding-bottom: 48px;
+      margin-bottom: 16px;
+    }
+
+    .hero {
+      position: relative;
+      border-radius: 18px;
+      overflow: hidden;
+      aspect-ratio: 1 / 1;
+      background: #141414;
+    }
+
+    .hero picture {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .hero img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 30%;
+      background: linear-gradient(to bottom, transparent, rgba(10,10,10,0.7));
+    }
+
+    .monogram-badge {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      background: #fff;
+      border: 4px solid #0a0a0a;
+      box-shadow: 0 8px 22px rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .monogram-badge img {
+      height: 54px;
+      width: auto;
+    }
+
+    /* â”€â”€ Identity â”€â”€ */
+    h1 {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      margin-bottom: 7px;
+    }
+
+    .meta {
+      font-size: 14px;
+      color: #9a9a9a;
+      margin-bottom: 28px;
+      letter-spacing: 0.01em;
+    }
+
+    .meta .dot {
+      color: #4a4a4a;
+      margin: 0 7px;
+    }
+
+    /* â”€â”€ Link groups â”€â”€ */
+    .links {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 30px;
+    }
+
+    .group-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      color: #757575;
+      margin-bottom: 10px;
+      padding-left: 2px;
+    }
+
+    /* â”€â”€ Profile badges (real brand logos, white chips) â”€â”€ */
+    a.badge {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 17px 18px;
+      border-radius: 12px;
+      background: #fff;
+      text-decoration: none;
+      transition: transform 0.12s ease, background 0.15s ease;
+    }
+
+    a.badge:hover {
+      background: #f0f0f0;
+    }
+
+    a.badge:active {
+      transform: scale(0.985);
+    }
+
+    a.badge img {
+      width: auto;
+      display: block;
+    }
+
+    .badge .compass-mark {
+      height: 17px;
+    }
+
+    .badge .har-mark {
+      height: 18px;
+    }
+
+    .badge .chev {
+      stroke: #aaa;
+    }
+
+    /* â”€â”€ Contact cards â”€â”€ */
+    a.btn {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      padding: 14px 16px;
+      border: 1px solid #262626;
+      border-radius: 12px;
+      background: #161616;
+      color: #fff;
+      text-decoration: none;
+      transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+    }
+
+    a.btn:hover {
+      background: #1d1d1d;
+      border-color: #333;
+    }
+
+    a.btn:active {
+      transform: scale(0.985);
+    }
+
+    .icon {
+      flex-shrink: 0;
+      width: 36px;
+      height: 36px;
+      border-radius: 9px;
+      background: #232323;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .icon svg {
+      width: 18px;
+      height: 18px;
+      stroke: #d4d4d4;
+    }
+
+    .btn-label {
+      flex: 1;
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.005em;
+    }
+
+    .btn-label small {
+      display: block;
+      font-size: 12px;
+      font-weight: 400;
+      color: #9e9e9e;
+      margin-top: 2px;
+    }
+
+    .chev {
+      flex-shrink: 0;
+      width: 15px;
+      height: 15px;
+      stroke: #6e6e6e;
+    }
+
+    /* Primary action: subtle pop on the icon tile only, card stays consistent */
+    a.btn-primary .icon {
+      background: #fff;
+    }
+
+    a.btn-primary .icon svg {
+      stroke: #0a0a0a;
+    }
+
+    footer {
+      font-size: 12px;
+      color: #575757;
+      letter-spacing: 0.06em;
+      text-align: center;
+      margin-top: 8px;
+    }
+
+    a.btn:focus-visible, a.badge:focus-visible {
+      outline: 2px solid #fff;
+      outline-offset: 3px;
+    }
+
+    /* â”€â”€ Desktop: photo left, links right â”€â”€ */
+    @media (min-width: 900px) {
+      .wrap {
+        max-width: 900px;
+        display: grid;
+        grid-template-columns: 320px minmax(0, 1fr);
+        column-gap: 48px;
+        align-content: start;
+        padding-top: 72px;
+      }
+
+      .hero-wrap {
+        grid-column: 1;
+        grid-row: 1 / span 6;
+        align-self: center;
+        margin-bottom: 0;
+      }
+
+      .hero {
+        aspect-ratio: 4 / 5;
+      }
+
+      h1, .meta, .group, footer {
+        grid-column: 2;
+      }
+
+      h1 {
+        font-size: 34px;
+      }
+
+      .group:nth-of-type(2) .links {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    /* â”€â”€ Entrance animation â”€â”€ */
+    @media (prefers-reduced-motion: no-preference) {
+      .hero-wrap, h1, .meta, .group { animation: rise 0.5s ease backwards; }
+      .hero-wrap { animation-delay: 0s; }
+      h1 { animation-delay: 0.08s; }
+      .meta { animation-delay: 0.12s; }
+      .group:nth-of-type(2) { animation-delay: 0.18s; }
+      .group:nth-of-type(3) { animation-delay: 0.24s; }
+      .group:nth-of-type(4) { animation-delay: 0.30s; }
+      @keyframes rise {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="wrap">
+
+    <div class="hero-wrap">
+      <div class="hero">
+        <picture>
+          <source media="(min-width: 900px)" srcset="/hero-portrait.jpg">
+          <img src="/hero.jpg" alt="Mike Spear" width="880" height="880">
+        </picture>
+      </div>
+      <span class="monogram-badge"><img src="/monogram.png" alt="MS"></span>
+    </div>
+
+    <h1>Mike Spear</h1>
+    <p class="meta">Houston, TX<span class="dot">&middot;</span>Compass Real Estate<span class="dot">&middot;</span>35+ years</p>
+
+    <div class="group">
+      <p class="group-label">Profiles</p>
+      <div class="links">
+
+        <a class="badge" href="https://www.compass.com/agents/mike-spear/" target="_blank" rel="noopener">
+          <img class="compass-mark" src="/compass-logo.png" alt="Compass">
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+        </a>
+
+        <a class="badge" href="https://www.har.com/mike-spear/agent_spear" target="_blank" rel="noopener">
+          <img class="har-mark" src="/har-logo.png" alt="HAR.com">
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+        </a>
+
+      </div>
+    </div>
+
+    <div class="group">
+      <p class="group-label">Get in touch</p>
+      <div class="links">
+
+        <a class="btn btn-primary" href="tel:+17132047653">
+          <span class="icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg>
+          </span>
+          <span class="btn-label">713-204-7653<small>Call or text</small></span>
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+        </a>
+
+        <a class="btn" href="mailto:mike@mikespear.com">
+          <span class="icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+          </span>
+          <span class="btn-label">mike@mikespear.com<small>Email</small></span>
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+        </a>
+
+        <a class="btn" href="/contact.vcf">
+          <span class="icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 10l5 5 5-5"/><path d="M5 19h14"/></svg>
+          </span>
+          <span class="btn-label">Save contact<small>Add to phone</small></span>
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+        </a>
+
+      </div>
+    </div>
+
+    <div class="group">
+      <p class="group-label">Documents</p>
+      <div class="links">
+
+        <a class="btn" href="https://files.mikespear.com/docs">
+          <span class="icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3v5h5"/><path d="M6 3h8l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M9 13h6M9 17h6"/></svg>
+          </span>
+          <span class="btn-label">Forms &amp; disclosures<small>Wire fraud notice, brokerage info</small></span>
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+        </a>
+
+      </div>
+    </div>
+
+    <footer>mikespear.com</footer>
+
+  </div>
+
+</body>
+</html>

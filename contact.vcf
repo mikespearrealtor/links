@@ -1,0 +1,12 @@
+BEGIN:VCARD
+VERSION:3.0
+N:Spear;Mike;;;
+FN:Mike Spear
+ORG:Compass Real Estate
+TITLE:Realtor
+TEL;TYPE=CELL,VOICE:+1-713-204-7653
+EMAIL;TYPE=WORK,INTERNET:mike@mikespear.com
+URL:https://mikespear.com
+ADR;TYPE=WORK:;;;Houston;TX;;USA
+NOTE:Modern real estate, coast to coast.
+END:VCARD
