@@ -12,12 +12,18 @@
   <meta name="theme-color" content="#1a1816" media="(prefers-color-scheme: dark)">
   <meta name="theme-color" content="#f6f5f3" media="(prefers-color-scheme: light)">
   <script>
+    function setThemeColor(theme) {
+      var color = theme === 'light' ? '#f6f5f3' : '#1a1816';
+      var metas = document.querySelectorAll('meta[name="theme-color"]');
+      for (var i = 0; i < metas.length; i++) metas[i].setAttribute('content', color);
+    }
     (function () {
       var t = localStorage.getItem('theme');
       if (t !== 'light' && t !== 'dark') {
         t = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
       }
       document.documentElement.setAttribute('data-theme', t);
+      setThemeColor(t);
     })();
   </script>
 
@@ -307,6 +313,7 @@
       var next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
       document.documentElement.setAttribute('data-theme', next);
       localStorage.setItem('theme', next);
+      setThemeColor(next);
     });
   </script>
 

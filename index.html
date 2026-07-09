@@ -4,32 +4,66 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Mike Spear - Links</title>
+  <meta name="description" content="Mike Spear, Realtor with Compass Real Estate in Houston, TX &mdash; 35+ years of experience. Profiles, listings, contact info, and documents.">
+  <link rel="canonical" href="https://links.mikespear.com/">
 
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Mike Spear - Compass Real Estate">
   <meta property="og:title" content="Mike Spear">
-  <meta property="og:description" content="Realtor - modern real estate, coast to coast.">
+  <meta property="og:description" content="Realtor with Compass Real Estate in Houston, TX - 35+ years of experience.">
   <meta property="og:url" content="https://links.mikespear.com/">
   <meta property="og:image" content="https://links.mikespear.com/og-image.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Mike Spear">
-  <meta name="twitter:description" content="Realtor - modern real estate, coast to coast.">
+  <meta name="twitter:description" content="Realtor with Compass Real Estate in Houston, TX - 35+ years of experience.">
   <meta name="twitter:image" content="https://links.mikespear.com/og-image.jpg">
 
   <link rel="icon" type="image/png" href="/favicon.png">
   <link rel="apple-touch-icon" href="/favicon.png">
 
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "RealEstateAgent",
+    "name": "Mike Spear",
+    "telephone": "+1-713-204-7653",
+    "email": "mike@mikespear.com",
+    "url": "https://links.mikespear.com/",
+    "image": "https://links.mikespear.com/hero.jpg",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "4200 Westheimer Suite 1000",
+      "addressLocality": "Houston",
+      "addressRegion": "TX",
+      "postalCode": "77027",
+      "addressCountry": "US"
+    },
+    "areaServed": "Houston, TX",
+    "worksFor": { "@type": "Organization", "name": "Compass" },
+    "sameAs": [
+      "https://www.compass.com/agents/mike-spear/",
+      "https://www.har.com/mike-spear/listings_spear"
+    ]
+  }
+  </script>
+
   <meta name="theme-color" content="#1a1816" media="(prefers-color-scheme: dark)">
   <meta name="theme-color" content="#f6f5f3" media="(prefers-color-scheme: light)">
   <script>
+    function setThemeColor(theme) {
+      var color = theme === 'light' ? '#f6f5f3' : '#1a1816';
+      var metas = document.querySelectorAll('meta[name="theme-color"]');
+      for (var i = 0; i < metas.length; i++) metas[i].setAttribute('content', color);
+    }
     (function () {
       var t = localStorage.getItem('theme');
       if (t !== 'light' && t !== 'dark') {
         t = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
       }
       document.documentElement.setAttribute('data-theme', t);
+      setThemeColor(t);
     })();
   </script>
 
@@ -103,7 +137,7 @@
       padding: 48px 24px 64px;
     }
 
-    /* â”€â”€ Hero â”€â”€ */
+    /* ── Hero ── */
     .hero-wrap {
       position: relative;
       padding-bottom: 48px;
@@ -160,7 +194,7 @@
       width: auto;
     }
 
-    /* â”€â”€ Identity â”€â”€ */
+    /* ── Identity ── */
     h1 {
       font-size: 32px;
       font-weight: 700;
@@ -181,7 +215,7 @@
       margin: 0 7px;
     }
 
-    /* â”€â”€ Link groups â”€â”€ */
+    /* ── Link groups ── */
     .links {
       display: flex;
       flex-direction: column;
@@ -199,7 +233,7 @@
       padding-left: 2px;
     }
 
-    /* â”€â”€ Profile badges (real brand logos, white chips) â”€â”€ */
+    /* ── Profile badges (real brand logos, white chips) ── */
     a.badge {
       display: flex;
       align-items: center;
@@ -250,7 +284,7 @@
       stroke: #aaa;
     }
 
-    /* â”€â”€ Contact cards â”€â”€ */
+    /* ── Contact cards ── */
     a.btn {
       display: flex;
       align-items: center;
@@ -491,7 +525,7 @@
       }
     }
 
-    /* â”€â”€ Desktop: photo left, links right â”€â”€ */
+    /* ── Desktop: photo left, links right ── */
     @media (min-width: 900px) {
       .wrap {
         max-width: 900px;
@@ -527,7 +561,7 @@
       }
     }
 
-    /* â”€â”€ Entrance animation â”€â”€ */
+    /* ── Entrance animation ── */
     @media (prefers-reduced-motion: no-preference) {
       .hero-wrap, h1, .meta, .group { animation: rise 0.5s ease backwards; }
       .hero-wrap { animation-delay: 0s; }
@@ -556,7 +590,7 @@
       <div class="hero">
         <picture>
           <source media="(min-width: 900px)" srcset="/hero-portrait.jpg">
-          <img src="/hero.jpg" alt="Mike Spear" width="880" height="880">
+          <img src="/hero.jpg" alt="Mike Spear" width="880" height="880" fetchpriority="high" decoding="async">
         </picture>
       </div>
       <span class="monogram-badge"><img src="/monogram.png" alt="MS"></span>
@@ -596,7 +630,15 @@
           <span class="icon">
             <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg>
           </span>
-          <span class="btn-label">713-204-7653<small>Call or text</small></span>
+          <span class="btn-label">713-204-7653<small>Call</small></span>
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+        </a>
+
+        <a class="btn" href="sms:+17132047653">
+          <span class="icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8 8 0 0 1-8.5 8 8.6 8.6 0 0 1-3.5-.7L4 20l1.2-4.1A8 8 0 1 1 21 11.5z"/></svg>
+          </span>
+          <span class="btn-label">713-204-7653<small>Text</small></span>
           <svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
         </a>
 
@@ -655,6 +697,7 @@
       var next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
       document.documentElement.setAttribute('data-theme', next);
       localStorage.setItem('theme', next);
+      setThemeColor(next);
     });
 
     (function () {
@@ -662,9 +705,15 @@
       var saveBtn = document.getElementById('saveContact');
       var closeBtn = document.getElementById('qrClose');
       var isDesktop = window.matchMedia('(hover: hover) and (pointer: fine)');
+      var background = [document.querySelector('.wrap'), document.querySelector('.theme-toggle')];
+
+      function setBackgroundInert(on) {
+        background.forEach(function (el) { el.inert = on; });
+      }
 
       function close() {
         overlay.classList.remove('open');
+        setBackgroundInert(false);
         saveBtn.focus();
       }
 
@@ -672,6 +721,7 @@
         if (!isDesktop.matches) return; // phones/tablets: native vCard flow
         e.preventDefault();
         overlay.classList.add('open');
+        setBackgroundInert(true);
         closeBtn.focus();
       });
 
@@ -679,6 +729,21 @@
 
       overlay.addEventListener('click', function (e) {
         if (e.target === overlay) close();
+      });
+
+      // Keep Tab cycling inside the dialog (fallback for browsers without inert)
+      overlay.addEventListener('keydown', function (e) {
+        if (e.key !== 'Tab') return;
+        var focusable = overlay.querySelectorAll('button, a[href]');
+        var first = focusable[0];
+        var last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
       });
 
       document.addEventListener('keydown', function (e) {
