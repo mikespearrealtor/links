@@ -9,11 +9,11 @@
   <link rel="icon" type="image/png" href="/favicon.png">
   <link rel="apple-touch-icon" href="/favicon.png">
 
-  <meta name="theme-color" content="#1a1816" media="(prefers-color-scheme: dark)">
-  <meta name="theme-color" content="#f6f5f3" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
   <script>
     function setThemeColor(theme) {
-      var color = theme === 'light' ? '#f6f5f3' : '#1a1816';
+      var color = theme === 'light' ? '#ffffff' : '#0a0a0a';
       var metas = document.querySelectorAll('meta[name="theme-color"]');
       for (var i = 0; i < metas.length; i++) metas[i].setAttribute('content', color);
     }
@@ -32,40 +32,40 @@
 
     :root {
       color-scheme: dark;
-      --bg: #1a1816;
-      --text: #f4f1ec;
-      --muted: #a49e95;
-      --faint: #8a827a;
-      --footer: #6b645c;
-      --footer-link: #a49e95;
-      --card: #262320;
-      --card-border: #383430;
-      --card-hover: #302c28;
-      --card-border-hover: #47423b;
-      --icon-bg: #332f2a;
-      --icon-stroke: #d8d2c8;
-      --small: #a49e95;
-      --chev: #7d766c;
+      --bg: #0a0a0a;
+      --text: #ffffff;
+      --muted: #999999;
+      --faint: #808080;
+      --footer: #666666;
+      --footer-link: #999999;
+      --card: #141414;
+      --card-border: #2b2b2b;
+      --card-hover: #1a1a1a;
+      --card-border-hover: #444444;
+      --icon-bg: #202020;
+      --icon-stroke: #dddddd;
+      --small: #999999;
+      --chev: #777777;
       --seal-border: rgba(0,0,0,0);
     }
 
     [data-theme="light"] {
       color-scheme: light;
-      --bg: #f6f5f3;
-      --text: #111111;
+      --bg: #ffffff;
+      --text: #0a0a0a;
       --muted: #666666;
       --faint: #8a8a8a;
-      --footer: #9a9a9a;
+      --footer: #999999;
       --footer-link: #666666;
       --card: #ffffff;
-      --card-border: #e3e1dd;
-      --card-hover: #faf9f7;
-      --card-border-hover: #d0cec9;
-      --icon-bg: #f0eeea;
+      --card-border: #dddddd;
+      --card-hover: #f7f7f7;
+      --card-border-hover: #cccccc;
+      --icon-bg: #f0f0f0;
       --icon-stroke: #444444;
       --small: #8a8a8a;
-      --chev: #b3b1ad;
-      --seal-border: #e3e1dd;
+      --chev: #b3b3b3;
+      --seal-border: #dddddd;
     }
 
     body {
