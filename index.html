@@ -343,16 +343,19 @@
       font-weight: 500;
       letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: var(--hint);
+      color: var(--accent-text);
       text-decoration: underline;
-      text-decoration-color: var(--hint);
+      text-decoration-color: var(--accent-text);
       text-underline-offset: 4px;
       padding: 12px 3px;
       margin: -12px -3px;
-      transition: color 0.2s ease;
+      transition: color 0.2s ease, text-decoration-color 0.2s ease;
     }
 
-    .row-actions a:hover { color: var(--text); }
+    .row-actions a:hover {
+      color: var(--hint);
+      text-decoration-color: var(--hint);
+    }
 
     .row-actions a:focus-visible {
       outline: 1px solid var(--accent);
