@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -22,6 +22,9 @@
 
   <link rel="icon" type="image/png" href="/favicon.png">
   <link rel="apple-touch-icon" href="/favicon.png">
+
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/fraunces-var.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/inter-var.woff2">
 
   <script type="application/ld+json">
   {
@@ -49,11 +52,11 @@
   }
   </script>
 
-  <meta name="theme-color" content="#1a1816" media="(prefers-color-scheme: dark)">
-  <meta name="theme-color" content="#f6f5f3" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#17150f" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f4f1ea" media="(prefers-color-scheme: light)">
   <script>
     function setThemeColor(theme) {
-      var color = theme === 'light' ? '#f6f5f3' : '#1a1816';
+      var color = theme === 'light' ? '#f4f1ea' : '#17150f';
       var metas = document.querySelectorAll('meta[name="theme-color"]');
       for (var i = 0; i < metas.length; i++) metas[i].setAttribute('content', color);
     }
@@ -70,341 +73,393 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    @font-face {
+      font-family: 'Fraunces';
+      font-style: normal;
+      font-weight: 300 600;
+      font-display: swap;
+      src: url('/fonts/fraunces-var.woff2') format('woff2');
+    }
+
+    @font-face {
+      font-family: 'Fraunces';
+      font-style: italic;
+      font-weight: 300 600;
+      font-display: swap;
+      src: url('/fonts/fraunces-italic-var.woff2') format('woff2');
+    }
+
+    @font-face {
+      font-family: 'InterVar';
+      font-style: normal;
+      font-weight: 400 600;
+      font-display: swap;
+      src: url('/fonts/inter-var.woff2') format('woff2');
+    }
+
     :root {
       color-scheme: dark;
-      --bg: #1a1816;
-      --text: #f4f1ec;
-      --muted: #a49e95;
-      --dot: #55504a;
-      --faint: #8a827a;
-      --footer: #6b645c;
-      --card: #262320;
-      --card-border: #383430;
-      --card-hover: #302c28;
-      --card-border-hover: #47423b;
-      --icon-bg: #332f2a;
-      --icon-stroke: #d8d2c8;
-      --small: #a49e95;
-      --chev: #7d766c;
-      --chip: #ffffff;
-      --chip-hover: #f0eeea;
-      --chip-border: rgba(0,0,0,0);
-      --hero-bg: #262320;
-      --hero-fade: rgba(26,24,22,0.7);
-      --badge-shadow: 0 8px 22px rgba(0,0,0,0.5);
-      --primary-icon-bg: #ffffff;
-      --primary-icon-stroke: #1a1816;
+      --bg: #17150f;
+      --text: #f0ece2;
+      --muted: #99917f;
+      --sub: #8d8676;
+      --rule: #332e25;
+      --accent: #a98857;
+      --accent-text: #bd9a6b;
+      --faint: #6e6754;
+      --over-photo: #f4f1ea;
+      --overlay: rgba(10, 9, 6, 0.65);
+      --card: #201d15;
+      --tile-bg: #f4f1ea;
+      --tile-border: #f4f1ea;
+      --tile-sub: #7d7668;
+      --tile-num: #7d6039;
+      --tile-arr: #9a7b4f;
     }
 
     [data-theme="light"] {
       color-scheme: light;
-      --bg: #f6f5f3;
-      --text: #111111;
-      --muted: #666666;
-      --dot: #c6c4c0;
-      --faint: #8a8a8a;
-      --footer: #9a9a9a;
-      --card: #ffffff;
-      --card-border: #e3e1dd;
-      --card-hover: #faf9f7;
-      --card-border-hover: #d0cec9;
-      --icon-bg: #f0eeea;
-      --icon-stroke: #444444;
-      --small: #8a8a8a;
-      --chev: #b3b1ad;
-      --chip: #ffffff;
-      --chip-hover: #faf9f7;
-      --chip-border: #e3e1dd;
-      --hero-bg: #e8e6e2;
-      --hero-fade: rgba(246,245,243,0.7);
-      --badge-shadow: 0 8px 22px rgba(0,0,0,0.14);
-      --primary-icon-bg: #111111;
-      --primary-icon-stroke: #ffffff;
+      --bg: #f4f1ea;
+      --text: #17150f;
+      --muted: #7d7668;
+      --sub: #8b8577;
+      --rule: #ddd6c6;
+      --accent: #9a7b4f;
+      --accent-text: #7d6039;
+      --faint: #b3ac9c;
+      --over-photo: #f4f1ea;
+      --overlay: rgba(23, 21, 15, 0.55);
+      --card: #f4f1ea;
+      --tile-bg: transparent;
+      --tile-border: #ddd6c6;
+      --tile-sub: #8b8577;
+      --tile-num: #7d6039;
+      --tile-arr: #9a7b4f;
+    }
+
+    ::selection {
+      background: var(--accent);
+      color: var(--bg);
     }
 
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-family: 'InterVar', -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       min-height: 100vh;
-      display: flex;
-      justify-content: center;
-    }
-
-    .wrap {
-      width: 100%;
-      max-width: 440px;
-      padding: 48px 24px 64px;
     }
 
     /* ── Hero ── */
-    .hero-wrap {
-      position: relative;
-      padding-bottom: 48px;
-      margin-bottom: 16px;
-    }
-
     .hero {
       position: relative;
-      border-radius: 18px;
+      height: 56vh;
+      height: 56svh;
+      min-height: 380px;
       overflow: hidden;
-      aspect-ratio: 1 / 1;
-      background: var(--hero-bg);
     }
 
-    .hero picture {
+    .hero picture, .hero img {
       display: block;
       width: 100%;
       height: 100%;
     }
 
     .hero img {
-      width: 100%;
-      height: 100%;
       object-fit: cover;
-      display: block;
+      object-position: 50% 22%;
+      filter: saturate(0.88) contrast(1.03);
     }
 
     .hero::after {
       content: '';
       position: absolute;
-      bottom: 0; left: 0; right: 0;
-      height: 30%;
-      background: linear-gradient(to bottom, transparent, var(--hero-fade));
+      inset: 0;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='140' height='140' filter='url(%23n)' opacity='0.55'/></svg>");
+      opacity: 0.07;
     }
 
-    .monogram-badge {
-      position: absolute;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 96px;
-      height: 96px;
-      border-radius: 50%;
-      background: #fff;
-      border: 4px solid var(--bg);
-      box-shadow: var(--badge-shadow);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    /* ── Masthead ── */
+    .content {
+      padding: 0 26px 44px;
+      max-width: 560px;
     }
 
-    .monogram-badge img {
-      height: 54px;
-      width: auto;
+    .name {
+      font-family: 'Fraunces', Georgia, serif;
+      font-weight: 360;
+      font-variation-settings: "opsz" 144;
+      font-size: clamp(64px, 19.5vw, 88px);
+      line-height: 0.95;
+      letter-spacing: -0.015em;
+      margin-top: -0.98em;
+      position: relative;
+      z-index: 2;
     }
 
-    /* ── Identity ── */
-    h1 {
-      font-size: 32px;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      line-height: 1.1;
-      margin-bottom: 7px;
+    .name .mask {
+      display: block;
+      overflow: hidden;
+      padding-bottom: 0.16em;
+      margin-bottom: -0.16em;
     }
 
-    .meta {
-      font-size: 14px;
-      color: var(--muted);
-      margin-bottom: 28px;
-      letter-spacing: 0.01em;
-    }
-
-    .meta .dot {
-      color: var(--dot);
-      margin: 0 7px;
-    }
-
-    /* ── Link groups ── */
-    .links {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-bottom: 30px;
-    }
-
-    .group-label {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.13em;
-      text-transform: uppercase;
-      color: var(--faint);
-      margin-bottom: 10px;
-      padding-left: 2px;
-    }
-
-    /* ── Profile badges (real brand logos, white chips) ── */
-    a.badge {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 17px 18px;
-      border-radius: 12px;
-      background: var(--chip);
-      border: 1px solid var(--chip-border);
-      text-decoration: none;
-      transition: transform 0.12s ease, background 0.15s ease;
-    }
-
-    a.badge:hover {
-      background: var(--chip-hover);
-    }
-
-    a.badge:active {
-      transform: scale(0.985);
-    }
-
-    a.badge img {
-      width: auto;
+    .name .line {
       display: block;
     }
 
-    .badge .compass-mark {
-      height: 17px;
+    .name .l1 { color: var(--over-photo); }
+    .name .l2 { color: var(--text); }
+
+    .eyebrow {
+      font-size: 10.5px;
+      font-weight: 500;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: var(--accent-text);
+      margin-top: 20px;
+      line-height: 1.9;
     }
 
-    .badge .har-mark {
-      height: 18px;
+    .eb-sep { display: none; }
+    .eb-loc { display: block; }
+
+    .tagline {
+      font-family: 'Fraunces', Georgia, serif;
+      font-style: italic;
+      font-weight: 340;
+      font-size: 16px;
+      color: var(--muted);
+      margin-top: 9px;
     }
 
-    .badge-text {
+    /* ── Link index ── */
+    .group {
+      margin-top: 34px;
+    }
+
+    .label {
+      font-size: 10.5px;
+      font-weight: 500;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--accent-text);
+      margin-bottom: 4px;
+    }
+
+    /* ── Profile tiles ── */
+    .tiles {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      padding-top: 10px;
+    }
+
+    a.tile {
+      position: relative;
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      gap: 7px;
-    }
-
-    .badge-cap {
-      font-size: 12px;
-      color: #6f6a63;
-      letter-spacing: 0.01em;
-    }
-
-    .badge .chev {
-      stroke: #aaa;
-    }
-
-    /* ── Contact cards ── */
-    a.btn {
-      display: flex;
-      align-items: center;
-      gap: 13px;
-      padding: 14px 16px;
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      background: var(--card);
-      color: var(--text);
+      padding: 16px 16px 15px;
+      background: var(--tile-bg);
+      border: 1px solid var(--tile-border);
       text-decoration: none;
-      transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+      transition: border-color 0.35s cubic-bezier(0.22, 1, 0.36, 1), transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
-    a.btn:hover {
-      background: var(--card-hover);
-      border-color: var(--card-border-hover);
+    a.tile:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
     }
 
-    a.btn:active {
-      transform: scale(0.985);
+    a.tile:focus-visible {
+      outline: 1px solid var(--accent);
+      outline-offset: 4px;
     }
 
-    .icon {
-      flex-shrink: 0;
-      width: 36px;
-      height: 36px;
-      border-radius: 9px;
-      background: var(--icon-bg);
+    .tile .num {
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      color: var(--tile-num);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .tile-logo {
+      display: block;
+      width: auto;
+      max-width: 100%;
+      object-fit: contain;
+      object-position: left center;
+      margin-top: 18px;
+    }
+
+    .tile-logo.compass-mark { height: 15px; }
+    .tile-logo.har-mark { height: 17px; }
+
+    .tile-sub {
+      font-size: 11.5px;
+      color: var(--tile-sub);
+      margin-top: 9px;
+    }
+
+    .tile .arr {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      stroke: var(--tile-arr);
+    }
+
+    a.tile:hover .arr,
+    a.tile:focus-visible .arr {
+      transform: translate(2px, -2px);
+    }
+
+    @media (max-width: 355px) {
+      .tiles { grid-template-columns: 1fr; }
+    }
+
+    a.row, div.row {
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr) auto;
+      align-items: center;
+      padding: 15px 0;
+      border-bottom: 1px solid var(--rule);
+      text-decoration: none;
+      color: var(--text);
+    }
+
+    .row-actions {
       display: flex;
       align-items: center;
-      justify-content: center;
+      gap: 12px;
     }
 
-    .icon svg {
-      width: 18px;
-      height: 18px;
-      stroke: var(--icon-stroke);
+    .row-actions a {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent-text);
+      text-decoration: underline;
+      text-decoration-color: var(--accent);
+      text-underline-offset: 4px;
+      padding: 12px 3px;
+      margin: -12px -3px;
+      transition: color 0.2s ease;
     }
 
-    .btn-label {
-      flex: 1;
-      font-size: 15px;
-      font-weight: 600;
-      letter-spacing: 0.005em;
+    .row-actions a:hover { color: var(--text); }
+
+    .row-actions a:focus-visible {
+      outline: 1px solid var(--accent);
+      outline-offset: 3px;
     }
 
-    .btn-label small {
+    .row-actions .sep {
+      color: var(--faint);
+      user-select: none;
+    }
+
+    .num {
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      color: var(--accent-text);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .row-main {
+      position: relative;
+      display: inline-block;
+      font-size: 17px;
+      letter-spacing: 0.002em;
+      line-height: 1.3;
+    }
+
+    .row-main::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -2px;
+      width: 100%;
+      height: 1px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    a.row:hover .row-main::after,
+    a.row:focus-visible .row-main::after {
+      transform: scaleX(1);
+    }
+
+    .row-text { min-width: 0; }
+
+    .row-sub {
       display: block;
-      font-size: 12px;
-      font-weight: 400;
-      color: var(--small);
-      margin-top: 2px;
+      font-size: 11.5px;
+      color: var(--sub);
+      margin-top: 3px;
     }
 
-    .chev {
-      flex-shrink: 0;
+    .arr {
       width: 15px;
       height: 15px;
-      stroke: var(--chev);
+      stroke: var(--accent);
+      justify-self: end;
+      transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
-    /* Primary action: subtle pop on the icon tile only, card stays consistent */
-    a.btn-primary .icon {
-      background: var(--primary-icon-bg);
+    a.row:hover .arr,
+    a.row:focus-visible .arr {
+      transform: translate(2px, -2px);
     }
 
-    a.btn-primary .icon svg {
-      stroke: var(--primary-icon-stroke);
+    a.row:focus-visible {
+      outline: 1px solid var(--accent);
+      outline-offset: 4px;
     }
 
     footer {
-      font-size: 12px;
-      color: var(--footer);
-      letter-spacing: 0.06em;
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--faint);
       text-align: center;
-      margin-top: 8px;
-    }
-
-    a.btn:focus-visible, a.badge:focus-visible {
-      outline: 2px solid var(--text);
-      outline-offset: 3px;
+      margin-top: 44px;
     }
 
     /* ── Theme toggle ── */
     .theme-toggle {
-      position: fixed;
-      top: 16px;
-      right: 16px;
+      position: absolute;
+      top: 18px;
+      right: 18px;
       width: 40px;
       height: 40px;
-      border-radius: 50%;
-      background: var(--card);
-      border: 1px solid var(--card-border);
+      background: none;
+      border: none;
+      cursor: pointer;
+      z-index: 20;
+      color: #f4f1ea;
+      filter: drop-shadow(0 1px 6px rgba(0, 0, 0, 0.45));
       display: flex;
       align-items: center;
       justify-content: center;
-      cursor: pointer;
-      z-index: 20;
-      padding: 0;
-      transition: background 0.15s ease, border-color 0.15s ease;
-    }
-
-    .theme-toggle:hover {
-      background: var(--card-hover);
-      border-color: var(--card-border-hover);
-    }
-
-    .theme-toggle:focus-visible {
-      outline: 2px solid var(--text);
-      outline-offset: 3px;
     }
 
     .theme-toggle svg {
-      width: 18px;
-      height: 18px;
-      stroke: var(--icon-stroke);
+      width: 19px;
+      height: 19px;
+      stroke: currentColor;
       fill: none;
-      stroke-width: 1.8;
+      stroke-width: 1.5;
       stroke-linecap: round;
       stroke-linejoin: round;
+    }
+
+    .theme-toggle:focus-visible {
+      outline: 1px solid var(--accent);
+      outline-offset: 3px;
     }
 
     .theme-toggle .moon { display: none; }
@@ -415,7 +470,7 @@
     .qr-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.55);
+      background: var(--overlay);
       display: none;
       align-items: center;
       justify-content: center;
@@ -429,10 +484,9 @@
 
     .qr-card {
       background: var(--card);
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 28px 28px 24px;
-      max-width: 320px;
+      border: 1px solid var(--rule);
+      padding: 34px 32px 28px;
+      max-width: 330px;
       width: 100%;
       text-align: center;
       position: relative;
@@ -442,9 +496,8 @@
       position: absolute;
       top: 10px;
       right: 10px;
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
+      width: 34px;
+      height: 34px;
       background: none;
       border: none;
       cursor: pointer;
@@ -454,39 +507,37 @@
       color: var(--muted);
     }
 
-    .qr-close:hover {
-      background: var(--icon-bg);
-    }
+    .qr-close:hover { color: var(--text); }
 
     .qr-close:focus-visible {
-      outline: 2px solid var(--text);
+      outline: 1px solid var(--accent);
       outline-offset: 2px;
     }
 
     .qr-close svg {
-      width: 16px;
-      height: 16px;
+      width: 15px;
+      height: 15px;
       stroke: currentColor;
-      stroke-width: 2;
+      stroke-width: 1.5;
       stroke-linecap: round;
     }
 
     .qr-title {
-      font-size: 17px;
-      font-weight: 700;
+      font-family: 'Fraunces', Georgia, serif;
+      font-weight: 380;
+      font-size: 24px;
       letter-spacing: -0.01em;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
     }
 
     .qr-sub {
-      font-size: 13px;
+      font-size: 12.5px;
       color: var(--muted);
-      margin-bottom: 18px;
+      margin-bottom: 22px;
     }
 
     .qr-tile {
       background: #ffffff;
-      border-radius: 12px;
       padding: 16px;
       display: inline-block;
       line-height: 0;
@@ -499,20 +550,63 @@
 
     .qr-fallback {
       display: block;
-      margin-top: 16px;
-      font-size: 12.5px;
-      color: var(--muted);
+      margin-top: 18px;
+      font-size: 12px;
+      letter-spacing: 0.02em;
+      color: var(--accent-text);
       text-decoration: underline;
       text-underline-offset: 3px;
     }
 
-    .qr-fallback:hover {
-      color: var(--text);
-    }
+    .qr-fallback:hover { color: var(--text); }
 
     .qr-fallback:focus-visible {
-      outline: 2px solid var(--text);
+      outline: 1px solid var(--accent);
       outline-offset: 3px;
+    }
+
+    /* ── Desktop: full-height split ── */
+    @media (min-width: 900px) {
+      .page {
+        display: grid;
+        grid-template-columns: minmax(0, 44%) minmax(0, 1fr);
+      }
+
+      .hero {
+        height: 100vh;
+        height: 100dvh;
+        min-height: 0;
+        position: sticky;
+        top: 0;
+      }
+
+      .hero img {
+        object-position: 50% 15%;
+      }
+
+      .content {
+        padding: clamp(56px, 9vh, 110px) clamp(48px, 6vw, 100px) 56px;
+        max-width: 640px;
+      }
+
+      .name {
+        font-size: clamp(88px, 9.5vw, 140px);
+        margin-top: 0;
+      }
+
+      .name .l1 { color: var(--text); }
+
+      .theme-toggle {
+        color: var(--muted);
+        filter: none;
+      }
+
+      .theme-toggle:hover { color: var(--text); }
+
+      .group { margin-top: 40px; }
+
+      .eb-sep { display: inline; }
+      .eb-loc { display: inline; }
     }
 
     @media (prefers-reduced-motion: no-preference) {
@@ -520,56 +614,44 @@
         animation: qr-pop 0.18s ease;
       }
       @keyframes qr-pop {
-        from { opacity: 0; transform: scale(0.96); }
+        from { opacity: 0; transform: scale(0.97); }
         to { opacity: 1; transform: scale(1); }
       }
-    }
 
-    /* ── Desktop: photo left, links right ── */
-    @media (min-width: 900px) {
-      .wrap {
-        max-width: 900px;
-        display: grid;
-        grid-template-columns: 320px minmax(0, 1fr);
-        column-gap: 48px;
-        align-content: start;
-        padding-top: 72px;
-      }
-
-      .hero-wrap {
-        grid-column: 1;
-        grid-row: 1 / span 6;
-        align-self: center;
-        margin-bottom: 0;
-      }
-
+      /* ── Entrance ── */
       .hero {
-        aspect-ratio: 4 / 5;
+        animation: hero-in 1s cubic-bezier(0.22, 1, 0.36, 1) backwards;
       }
-
-      h1, .meta, .group, footer {
-        grid-column: 2;
+      .hero img {
+        animation: hero-settle 1.3s cubic-bezier(0.22, 1, 0.36, 1) backwards;
       }
-
-      h1 {
-        font-size: 34px;
+      .name .line {
+        animation: line-rise 0.85s cubic-bezier(0.22, 1, 0.36, 1) backwards;
       }
-
-      .group:nth-of-type(2) .links {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
+      .name .l1 { animation-delay: 0.18s; }
+      .name .l2 { animation-delay: 0.26s; }
+      .eyebrow, .tagline, .group, footer {
+        animation: rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) backwards;
       }
-    }
+      .eyebrow { animation-delay: 0.38s; }
+      .tagline { animation-delay: 0.44s; }
+      .group:nth-of-type(1) { animation-delay: 0.52s; }
+      .group:nth-of-type(2) { animation-delay: 0.60s; }
+      .group:nth-of-type(3) { animation-delay: 0.68s; }
+      footer { animation-delay: 0.76s; }
 
-    /* ── Entrance animation ── */
-    @media (prefers-reduced-motion: no-preference) {
-      .hero-wrap, h1, .meta, .group { animation: rise 0.5s ease backwards; }
-      .hero-wrap { animation-delay: 0s; }
-      h1 { animation-delay: 0.08s; }
-      .meta { animation-delay: 0.12s; }
-      .group:nth-of-type(2) { animation-delay: 0.18s; }
-      .group:nth-of-type(3) { animation-delay: 0.24s; }
-      .group:nth-of-type(4) { animation-delay: 0.30s; }
+      @keyframes hero-in {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      @keyframes hero-settle {
+        from { transform: scale(1.045); }
+        to { transform: scale(1); }
+      }
+      @keyframes line-rise {
+        from { transform: translateY(125%); }
+        to { transform: translateY(0); }
+      }
       @keyframes rise {
         from { opacity: 0; transform: translateY(10px); }
         to { opacity: 1; transform: translateY(0); }
@@ -584,99 +666,74 @@
     <svg class="moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
   </button>
 
-  <div class="wrap">
+  <div class="page">
 
-    <div class="hero-wrap">
-      <div class="hero">
-        <picture>
-          <source media="(min-width: 900px)" srcset="/hero-portrait.jpg">
-          <img src="/hero.jpg" alt="Mike Spear" width="880" height="880" fetchpriority="high" decoding="async">
-        </picture>
-      </div>
-      <span class="monogram-badge"><img src="/monogram.png" alt="MS"></span>
+    <div class="hero">
+      <picture>
+        <source media="(min-width: 900px)" srcset="/hero-portrait.jpg">
+        <img src="/hero.jpg" alt="Mike Spear" width="1600" height="1600" fetchpriority="high" decoding="async">
+      </picture>
     </div>
 
-    <h1>Mike Spear</h1>
-    <p class="meta">Houston, TX<span class="dot">&middot;</span>Compass Real Estate<span class="dot">&middot;</span>35+ years</p>
+    <main class="content">
 
-    <div class="group">
-      <p class="group-label">Profiles</p>
-      <div class="links">
+      <h1 class="name"><span class="mask"><span class="line l1">Mike</span></span><span class="mask"><span class="line l2">Spear</span></span></h1>
+      <p class="eyebrow">Compass Real Estate<span class="eb-sep"> &middot; </span><span class="eb-loc">Houston, Texas</span></p>
+      <p class="tagline">Thirty-five years of Houston real estate</p>
 
-        <a class="badge" href="https://www.compass.com/agents/mike-spear/" target="_blank" rel="noopener">
-          <span class="badge-text">
-            <img class="compass-mark" src="/compass-logo.png" alt="Compass">
-            <small class="badge-cap">Agent profile</small>
+      <section class="group">
+        <h2 class="label">Profiles</h2>
+        <div class="tiles">
+          <a class="tile" href="https://www.compass.com/agents/mike-spear/" target="_blank" rel="noopener">
+            <span class="num">01</span>
+            <img class="tile-logo compass-mark" src="/compass-logo.png" alt="Compass">
+            <span class="tile-sub">Agent profile</span>
+            <svg class="arr" viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+          </a>
+          <a class="tile" href="https://www.har.com/mike-spear/listings_spear" target="_blank" rel="noopener">
+            <span class="num">02</span>
+            <img class="tile-logo har-mark" src="/har-logo.png" alt="HAR.com">
+            <span class="tile-sub">Listings &amp; recent sales</span>
+            <svg class="arr" viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+          </a>
+        </div>
+      </section>
+
+      <section class="group">
+        <h2 class="label">Get in touch</h2>
+        <div class="row">
+          <span class="num">03</span>
+          <span class="row-text"><span class="row-main">713-204-7653</span><span class="row-sub">Mobile</span></span>
+          <span class="row-actions">
+            <a href="tel:+17132047653">Call</a>
+            <span class="sep" aria-hidden="true">&middot;</span>
+            <a href="sms:+17132047653">Text</a>
           </span>
-          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+        </div>
+        <a class="row" href="mailto:mike@mikespear.com">
+          <span class="num">04</span>
+          <span class="row-text"><span class="row-main">mike@mikespear.com</span><span class="row-sub">Email</span></span>
+          <svg class="arr" viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
         </a>
-
-        <a class="badge" href="https://www.har.com/mike-spear/listings_spear" target="_blank" rel="noopener">
-          <span class="badge-text">
-            <img class="har-mark" src="/har-logo.png" alt="HAR.com">
-            <small class="badge-cap">Current listings &amp; recent sales</small>
-          </span>
-          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+        <a class="row" href="/contact.vcf" id="saveContact">
+          <span class="num">05</span>
+          <span class="row-text"><span class="row-main">Save contact</span><span class="row-sub">Add to phone</span></span>
+          <svg class="arr" viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
         </a>
+      </section>
 
-      </div>
-    </div>
-
-    <div class="group">
-      <p class="group-label">Get in touch</p>
-      <div class="links">
-
-        <a class="btn btn-primary" href="tel:+17132047653">
-          <span class="icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg>
-          </span>
-          <span class="btn-label">713-204-7653<small>Call</small></span>
-          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+      <section class="group">
+        <h2 class="label">Documents</h2>
+        <a class="row" href="https://files.mikespear.com/docs">
+          <span class="num">06</span>
+          <span class="row-text"><span class="row-main">Forms &amp; disclosures</span><span class="row-sub">Wire fraud notice, brokerage info</span></span>
+          <svg class="arr" viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
         </a>
+      </section>
 
-        <a class="btn" href="sms:+17132047653">
-          <span class="icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8 8 0 0 1-8.5 8 8.6 8.6 0 0 1-3.5-.7L4 20l1.2-4.1A8 8 0 1 1 21 11.5z"/></svg>
-          </span>
-          <span class="btn-label">713-204-7653<small>Text</small></span>
-          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
-        </a>
+      <footer>mikespear.com</footer>
 
-        <a class="btn" href="mailto:mike@mikespear.com">
-          <span class="icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
-          </span>
-          <span class="btn-label">mike@mikespear.com<small>Email</small></span>
-          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
-        </a>
-
-        <a class="btn" href="/contact.vcf" id="saveContact">
-          <span class="icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 10l5 5 5-5"/><path d="M5 19h14"/></svg>
-          </span>
-          <span class="btn-label">Save contact<small>Add to phone</small></span>
-          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
-        </a>
-
-      </div>
-    </div>
-
-    <div class="group">
-      <p class="group-label">Documents</p>
-      <div class="links">
-
-        <a class="btn" href="https://files.mikespear.com/docs">
-          <span class="icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3v5h5"/><path d="M6 3h8l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M9 13h6M9 17h6"/></svg>
-          </span>
-          <span class="btn-label">Forms &amp; disclosures<small>Wire fraud notice, brokerage info</small></span>
-          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
-        </a>
-
-      </div>
-    </div>
-
-    <footer>mikespear.com</footer>
+    </main>
 
   </div>
 
@@ -705,7 +762,7 @@
       var saveBtn = document.getElementById('saveContact');
       var closeBtn = document.getElementById('qrClose');
       var isDesktop = window.matchMedia('(hover: hover) and (pointer: fine)');
-      var background = [document.querySelector('.wrap'), document.querySelector('.theme-toggle')];
+      var background = [document.querySelector('.page'), document.querySelector('.theme-toggle')];
 
       function setBackgroundInert(on) {
         background.forEach(function (el) { el.inert = on; });
