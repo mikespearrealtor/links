@@ -111,11 +111,12 @@
       --over-photo: #ffffff;
       --overlay: rgba(0, 0, 0, 0.65);
       --card: #141414;
-      --tile-bg: #ffffff;
-      --tile-border: #ffffff;
-      --tile-sub: #777777;
-      --tile-num: #999999;
-      --tile-arr: #999999;
+      --tile-bg: #141414;
+      --tile-border: #2b2b2b;
+      --tile-sub: #8a8a8a;
+      --tile-num: #ffffff;
+      --tile-arr: #ffffff;
+      --logo-filter: grayscale(1) invert(1);
     }
 
     [data-theme="light"] {
@@ -137,6 +138,7 @@
       --tile-sub: #767676;
       --tile-num: #0a0a0a;
       --tile-arr: #0a0a0a;
+      --logo-filter: grayscale(1);
     }
 
     ::selection {
@@ -292,7 +294,7 @@
       object-fit: contain;
       object-position: left center;
       margin-top: 18px;
-      filter: grayscale(1);
+      filter: var(--logo-filter);
     }
 
     .tile-logo.compass-mark { height: 15px; }
