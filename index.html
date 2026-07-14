@@ -668,6 +668,14 @@
       }
     }
   </style>
+  <script>
+    // Exclude your own visits: load any page once with #skipgc (undo with #countgc).
+    // GoatCounter's count.js checks this localStorage flag natively and skips counting.
+    if (location.hash === '#skipgc') localStorage.setItem('skipgc', 't');
+    if (location.hash === '#countgc') localStorage.removeItem('skipgc');
+  </script>
+  <script data-goatcounter="https://mikespear.goatcounter.com/count"
+          async src="//gc.zgo.at/count.js"></script>
 </head>
 <body>
 
