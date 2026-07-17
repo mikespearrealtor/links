@@ -393,11 +393,20 @@
     }
 
     .row-actions {
-      /* Call/Text buttons are desktop-only — see the min-width: 900px block.
-         Mobile relies on tapping the number itself (see numLink below). */
+      display: flex;
+      align-items: center;
+    }
+
+    /* Call/Text/Copy buttons are desktop-only (see the min-width: 900px
+       block) — mobile shows a plain arrow instead, like the other rows. */
+    .row-actions-btns {
       display: none;
       align-items: center;
       gap: 12px;
+    }
+
+    .row-actions .arr {
+      display: block;
     }
 
     .row-actions a {
@@ -513,8 +522,7 @@
        Oversized padding (offset by negative margin) keeps a ~44px tap target
        without shifting the row. */
     .copy-btn {
-      /* Desktop-only, same reasoning as .row-actions above. */
-      display: none;
+      display: inline-flex;
       align-items: center;
       gap: 7px;
       background: none;
@@ -596,6 +604,22 @@
     }
 
     a.row:active .arr { stroke: var(--hint); }
+
+    /* Phone/email rows split their text and actions into siblings, so the
+       arrow (inside .row-actions) reacts to the adjacent text link instead
+       of a shared row-wide hover. */
+    @media (hover: hover) {
+      a.row-tel:hover + .row-actions .arr {
+        transform: translate(2px, -2px);
+        stroke: var(--hint);
+      }
+    }
+
+    a.row-tel:focus-visible + .row-actions .arr,
+    a.row-tel:active + .row-actions .arr {
+      transform: translate(2px, -2px);
+      stroke: var(--hint);
+    }
 
     a.row:focus-visible {
       outline: 1px solid var(--accent);
@@ -790,8 +814,8 @@
       .eb-sep { display: inline; }
       .eb-loc { display: inline; }
 
-      .row-actions { display: flex; }
-      .copy-btn { display: inline-flex; }
+      .row-actions .arr { display: none; }
+      .row-actions-btns { display: flex; }
     }
 
     @media (prefers-reduced-motion: no-preference) {
@@ -898,26 +922,32 @@
           <span class="num">03</span>
           <a class="row-text row-tel" href="sms:+17132047653" id="numLink"><span class="row-main">713-204-7653</span><span class="row-sub">Mobile</span></a>
           <span class="row-actions">
-            <a href="tel:+17132047653" id="callBtn">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.81.36 1.6.68 2.34a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.74-1.74a2 2 0 0 1 2.11-.45c.74.32 1.53.55 2.34.68A2 2 0 0 1 22 16.92z"/></svg>
-              <span class="act-label">Call</span>
-            </a>
-            <span class="sep" aria-hidden="true">&middot;</span>
-            <a href="sms:+17132047653" id="textBtn">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-              <span class="act-label">Text</span>
-            </a>
+            <svg class="arr" viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+            <span class="row-actions-btns">
+              <a href="tel:+17132047653" id="callBtn">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.81.36 1.6.68 2.34a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.74-1.74a2 2 0 0 1 2.11-.45c.74.32 1.53.55 2.34.68A2 2 0 0 1 22 16.92z"/></svg>
+                <span class="act-label">Call</span>
+              </a>
+              <span class="sep" aria-hidden="true">&middot;</span>
+              <a href="sms:+17132047653" id="textBtn">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                <span class="act-label">Text</span>
+              </a>
+            </span>
           </span>
         </div>
         <div class="row">
           <span class="num">04</span>
           <a class="row-text row-tel" href="mailto:mike@mikespear.com"><span class="row-main">mike@mikespear.com</span><span class="row-sub">Email</span></a>
           <span class="row-actions">
-            <button class="copy-btn" id="copyEmail" type="button" aria-label="Copy email address">
-              <svg class="copy-ico ico-copy" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>
-              <svg class="copy-ico ico-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
-              <span class="copy-label">Copy</span>
-            </button>
+            <svg class="arr" viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+            <span class="row-actions-btns">
+              <button class="copy-btn" id="copyEmail" type="button" aria-label="Copy email address">
+                <svg class="copy-ico ico-copy" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>
+                <svg class="copy-ico ico-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+                <span class="copy-label">Copy</span>
+              </button>
+            </span>
           </span>
         </div>
         <a class="row" href="/contact.vcf" id="saveContact">
