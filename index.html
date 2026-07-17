@@ -112,6 +112,7 @@
       --overlay: rgba(0, 0, 0, 0.65);
       --card: #141414;
       --tile-bg: #141414;
+      --tile-hover-bg: #141414;
       --tile-border: #2b2b2b;
       --tile-sub: #8a8a8a;
       --tile-num: #ffffff;
@@ -128,12 +129,13 @@
       --rule: #dddddd;
       --accent: #0a0a0a;
       --accent-text: #0a0a0a;
-      --hint: #7d6039;
+      --hint: #9c5f10;
       --faint: #bbbbbb;
       --over-photo: #ffffff;
       --overlay: rgba(0, 0, 0, 0.55);
       --card: #ffffff;
       --tile-bg: transparent;
+      --tile-hover-bg: #faf5ed;
       --tile-border: #dddddd;
       --tile-sub: #767676;
       --tile-num: #0a0a0a;
@@ -267,11 +269,12 @@
       background: var(--tile-bg);
       border: 1px solid var(--tile-border);
       text-decoration: none;
-      transition: border-color 0.35s cubic-bezier(0.22, 1, 0.36, 1), transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+      transition: border-color 0.35s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.35s cubic-bezier(0.22, 1, 0.36, 1), transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     a.tile:hover {
       border-color: var(--hint);
+      background: var(--tile-hover-bg);
       transform: translateY(-2px);
     }
 
