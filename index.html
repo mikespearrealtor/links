@@ -262,6 +262,7 @@
 
     a.tile {
       position: relative;
+      top: 0;
       display: flex;
       flex-direction: column;
       align-items: flex-start;
@@ -269,13 +270,16 @@
       background: var(--tile-bg);
       border: 1px solid var(--tile-border);
       text-decoration: none;
-      transition: border-color 0.35s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.35s cubic-bezier(0.22, 1, 0.36, 1), transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+      /* Animate top rather than transform: a transform transition puts the tile
+         on a compositor layer, which toggles text antialiasing and makes the
+         labels flicker bold on Windows. */
+      transition: border-color 0.35s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.35s cubic-bezier(0.22, 1, 0.36, 1), top 0.35s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     a.tile:hover {
       border-color: var(--hint);
       background: var(--tile-hover-bg);
-      transform: translateY(-2px);
+      top: -2px;
     }
 
     a.tile:focus-visible {
