@@ -302,6 +302,10 @@
       object-position: left center;
       margin-top: 18px;
       filter: var(--logo-filter);
+      /* Give the logo its own compositor layer so it's rasterized once and
+         repositioned by the GPU during the tile's top animation, rather than
+         resampled each frame (which squishes the downscaled PNG). */
+      transform: translateZ(0);
     }
 
     .tile-logo.compass-mark { height: 15px; }
