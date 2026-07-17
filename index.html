@@ -262,7 +262,6 @@
 
     a.tile {
       position: relative;
-      top: 0;
       display: flex;
       flex-direction: column;
       align-items: flex-start;
@@ -270,16 +269,19 @@
       background: var(--tile-bg);
       border: 1px solid var(--tile-border);
       text-decoration: none;
-      /* Animate top rather than transform: a transform transition puts the tile
-         on a compositor layer, which toggles text antialiasing and makes the
-         labels flicker bold on Windows. */
-      transition: border-color 0.35s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.35s cubic-bezier(0.22, 1, 0.36, 1), top 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+      /* Keep the tile permanently on its own compositor layer. The hover lift
+         uses transform, and a layer that is created/destroyed on hover is what
+         toggled text antialiasing and flickered the labels bold on Windows. A
+         persistent layer avoids that, and moving the whole tile (text + logo)
+         as one bitmap keeps everything in lockstep and free of resample squish. */
+      will-change: transform;
+      transition: border-color 0.35s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.35s cubic-bezier(0.22, 1, 0.36, 1), transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     a.tile:hover {
       border-color: var(--hint);
       background: var(--tile-hover-bg);
-      top: -2px;
+      transform: translateY(-2px);
     }
 
     a.tile:focus-visible {
@@ -302,10 +304,6 @@
       object-position: left center;
       margin-top: 18px;
       filter: var(--logo-filter);
-      /* Give the logo its own compositor layer so it's rasterized once and
-         repositioned by the GPU during the tile's top animation, rather than
-         resampled each frame (which squishes the downscaled PNG). */
-      transform: translateZ(0);
     }
 
     .tile-logo.compass-mark { height: 15px; }
