@@ -1097,6 +1097,18 @@
         }
       }
 
+      // Deep link for #text (used by the email signature phone number):
+      // desktop opens the QR modal straight away, mobile goes straight to
+      // the native text flow.
+      if (location.hash === '#text') {
+        history.replaceState(null, '', location.pathname + location.search);
+        if (isDesktop.matches) {
+          open('text', null);
+        } else {
+          window.location.href = 'sms:+17132047653';
+        }
+      }
+
       // Mobile default is sms: (set in the HTML) so tapping the number texts
       // without needing JS. Desktop has separate Call/Text buttons, so point
       // the number itself back to tel: — bindTrigger above still intercepts
