@@ -1086,6 +1086,17 @@
       bindTrigger('textBtn', 'text');
       bindTrigger('numLink', 'call');
 
+      // Deep link for #contact (used by the email signature): desktop opens
+      // the QR modal straight away, mobile goes straight to the vCard.
+      if (location.hash === '#contact') {
+        history.replaceState(null, '', location.pathname + location.search);
+        if (isDesktop.matches) {
+          open('contact', null);
+        } else {
+          window.location.href = '/contact.vcf';
+        }
+      }
+
       // Mobile default is sms: (set in the HTML) so tapping the number texts
       // without needing JS. Desktop has separate Call/Text buttons, so point
       // the number itself back to tel: — bindTrigger above still intercepts
