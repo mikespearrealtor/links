@@ -38,7 +38,7 @@ jobs:
         run: |
           # --porcelain also reports a file as untracked, which a plain
           # `git diff` would miss on the very first run.
-          if [ -z "$(git status --porcelain -- listings.json index.html)" ]; then
+          if [ -z "$(git status --porcelain -- listings.json index.html listing-photos)" ]; then
             echo "No listing changes today."
             echo "changed=no" >> "$GITHUB_ENV"
             exit 0
@@ -46,7 +46,7 @@ jobs:
           echo "changed=yes" >> "$GITHUB_ENV"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add listings.json index.html
+          git add listings.json index.html listing-photos
           git commit -m "Update listings from Compass profile"
           git push
 
