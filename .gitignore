@@ -1,8 +1,9 @@
 .claude/
 
-# tools/ is local-only, except the listings scraper which CI needs to run.
+# tools/ is local-only, except the listings scripts which CI needs to run.
 tools/*
 !tools/scrape-listings.py
+!tools/render-listings.py
 
 listings.json.bak
 listings.json.tmp
