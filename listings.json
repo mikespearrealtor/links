@@ -1,0 +1,69 @@
+[
+  {
+    "address": "2030 Southgate Boulevard",
+    "area": "University Place",
+    "beds": 3,
+    "baths": 4,
+    "sqft": 3440,
+    "price": 1250000,
+    "status": "Active",
+    "url": "https://www.compass.com/homedetails/2030-Southgate-Blvd-Houston-TX-77030/AVEOK_pid/",
+    "photo": "https://www.compass.com/m/853071f204c33dc46c59b88ef69862643dc63eaa46d27545c68416c4db137844/1024x768.jpg"
+  },
+  {
+    "address": "3615 Ascot Lane",
+    "area": "Timbergrove-Lazybrook",
+    "beds": 3,
+    "baths": 2,
+    "sqft": 2623,
+    "price": 999000,
+    "status": "Active",
+    "url": "https://www.compass.com/homedetails/3615-Ascot-Ln-Houston-TX-77018/AZYQN_pid/",
+    "photo": "https://www.compass.com/m/612d81f4920bff985ae2a3491001bbcfb654c67f3df46636a5650e98a0d14595/1024x768.jpg"
+  },
+  {
+    "address": "1208 Welch Street",
+    "area": "Montrose",
+    "beds": 3,
+    "baths": 4,
+    "sqft": 3590,
+    "price": 839000,
+    "status": "Active",
+    "url": "https://www.compass.com/homedetails/1208-Welch-St-Houston-TX-77006/AR8UD_pid/",
+    "photo": "https://www.compass.com/m/03ab0588d8d6917037347c08cbf2d03f6a5f97c5db310a1256988af1c826c51e/1024x768.jpg"
+  },
+  {
+    "address": "5016 Blooming Hibiscus Lane",
+    "area": "Pomona",
+    "beds": 4,
+    "baths": 4,
+    "sqft": 2867,
+    "price": 689000,
+    "status": "Pending",
+    "url": "https://www.compass.com/homedetails/5016-Blooming-Hibiscus-Ln-Manvel-TX-77578/BID03_pid/",
+    "photo": "https://www.compass.com/m/f3084d3532b754ef95436e60f86c6f2381b1d53f80a007afd4f502e81453ddae/1024x768.jpg"
+  },
+  {
+    "address": "126 North Sidney Street",
+    "area": "Second Ward",
+    "beds": 3,
+    "baths": 3.5,
+    "sqft": 2248,
+    "price": 519900,
+    "status": "Active",
+    "url": "https://www.compass.com/homedetails/126-N-Sidney-St-Houston-TX-77003/BVI0D_pid/",
+    "photo": "https://www.compass.com/m/b2d544763e9892557d06e2ff572e2b1a11f812dcdf2b996605e2bda4dc4d6d60/1024x768.jpg",
+    "openHouse": "2026-08-02T14:00/16:00"
+  },
+  {
+    "address": "4040 San Felipe Street, Unit 119",
+    "area": "River Oaks Townhomes",
+    "beds": 2,
+    "baths": 2.5,
+    "sqft": 1380,
+    "price": 229900,
+    "status": "Active",
+    "url": "https://www.compass.com/homedetails/4040-San-Felipe-St-Unit-119-Houston-TX-77027/AFVKX_pid/",
+    "photo": "https://www.compass.com/m/cd60ef1ed443103a5259c0e0a5868f014decf4483b7b844e5f266ec6f2ca40fa/1024x768.jpg"
+  }
+]

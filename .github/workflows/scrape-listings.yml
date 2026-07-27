@@ -1,0 +1,46 @@
+name: Scrape Compass listings
+
+# Refreshes listings.json from the Compass agent profile once per day.
+# Committing to main republishes the Pages site automatically.
+
+on:
+  schedule:
+    # 11:17 UTC daily = ~6:17am Houston (CDT) / 5:17am (CST).
+    # GitHub runs cron in UTC and does not adjust for daylight saving.
+    - cron: "17 11 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: scrape-listings
+  cancel-in-progress: false
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # No dependencies to install - the scraper is stdlib only.
+      - name: Scrape listings
+        run: python tools/scrape-listings.py --no-backup
+
+      - name: Commit if changed
+        run: |
+          # --porcelain also reports the file as untracked, which a plain
+          # `git diff` would miss on the very first run.
+          if [ -z "$(git status --porcelain -- listings.json)" ]; then
+            echo "No listing changes today."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add listings.json
+          git commit -m "Update listings from Compass profile"
+          git push
