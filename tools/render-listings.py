@@ -3,7 +3,7 @@
 Rewrites everything between the `listings:start` / `listings:end` markers in
 index.html. The rest of the file is untouched, so this is safe to re-run.
 
-Layout is the "tiered" variant: the highest-priority listing gets a photo and
+Layout is the "tiered" variant: the highest-priced listing gets a photo and
 becomes the first row of the list; the rest are plain rows in the same idiom
 as the Profiles / Get in touch / Documents sections. Row numbers continue
 from the last number already used on the page.
@@ -121,9 +121,12 @@ def price_cell(listing: dict) -> str:
 
 
 def rank(listing: dict) -> tuple:
-    """Sort key: upcoming open houses first, then by price, high to low."""
-    parsed = parse_open_house(listing.get("openHouse", ""))
-    return (0, parsed[0]) if parsed else (1, datetime.datetime.max)
+    """Sort key: highest price first, so the flagship listing leads.
+
+    Rentals fall to the bottom naturally, their monthly rent being far
+    below any sale price.
+    """
+    return (-(listing.get("price") or 0), listing.get("address") or "")
 
 
 def render_featured(listing: dict, number: int) -> list[str]:
