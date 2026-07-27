@@ -31,8 +31,20 @@ jobs:
       - name: Scrape listings
         run: python tools/scrape-listings.py --no-backup | tee scrape.log
 
+      # Exit 3 is "a section was hidden because its data was unusable". That
+      # is a successful render - the fix has to be committed below before the
+      # run is allowed to fail, or the broken section stays on the live site.
       - name: Render into index.html
-        run: python tools/render-listings.py
+        run: |
+          set +e
+          python tools/render-listings.py | tee render.log
+          code=${PIPESTATUS[0]}
+          set -e
+          if [ "$code" = "3" ]; then
+            echo "hidden=yes" >> "$GITHUB_ENV"
+          elif [ "$code" != "0" ]; then
+            exit "$code"
+          fi
 
       - name: Commit if changed
         run: |
@@ -58,7 +70,13 @@ jobs:
           {
             echo "### Compass listings scrape"
             echo
-            if [ "${{ job.status }}" = "success" ]; then
+            if [ "${hidden:-no}" = "yes" ]; then
+              echo "**Result:** DATA REJECTED - a section was hidden from the site"
+              echo
+              echo "The scrape produced something that did not look like real"
+              echo "listings, so the affected section was removed rather than"
+              echo "published. The site is safe; the scraper needs a look."
+            elif [ "${{ job.status }}" = "success" ]; then
               COUNT=$(python -c "import json;print(len(json.load(open('listings.json'))))" 2>/dev/null || echo "?")
               SOLD=$(python -c "import json;print(len(json.load(open('sold.json'))))" 2>/dev/null || echo "?")
               echo "**Result:** OK - $COUNT listing(s), $SOLD closed sale(s) on the profile"
@@ -75,5 +93,14 @@ jobs:
             echo
             echo '```'
             cat scrape.log 2>/dev/null || echo "(scraper produced no output)"
+            cat render.log 2>/dev/null
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
+
+      # Last, so the hidden state is already committed and live. Turning the
+      # run red is the only thing that actually reaches an inbox.
+      - name: Fail if a section was hidden
+        if: env.hidden == 'yes'
+        run: |
+          echo "::error::A section was hidden from the site - the scraped data did not pass validation. See the run summary."
+          exit 1

@@ -77,6 +77,14 @@ USER_AGENT = "Mozilla/5.0 (compatible; mikespear.com listings sync)"
 # belongs to a listing that has since sold or been re-photographed.
 KEEP: set[str] = set()
 
+# What a record has to look like before it goes on the page. These are not
+# style preferences - they are the line between "publish it" and "hide the
+# section", so they stay loose enough that real data never trips them and
+# tight enough that a change in Compass's shape does.
+LISTING_URL_RE = re.compile(r"^https://www\.compass\.com/[\w./-]+$")
+MIN_PRICE, MAX_PRICE = 100, 500_000_000
+MAX_ROWS = 100
+
 
 def esc(value) -> str:
     return html.escape(str(value), quote=True)
@@ -84,6 +92,79 @@ def esc(value) -> str:
 
 def money(amount: int) -> str:
     return f"${amount:,}"
+
+
+def faults(record: dict, *, sold: bool) -> list[str]:
+    """Everything wrong with one record. Empty means it is safe to publish."""
+    bad = []
+    if not isinstance(record, dict):
+        return ["not an object"]
+
+    address = record.get("address")
+    if not isinstance(address, str) or not address.strip() or len(address) > 200:
+        bad.append("address")
+
+    url = record.get("url")
+    if not isinstance(url, str) or not LISTING_URL_RE.match(url):
+        bad.append("url")
+
+    price = record.get("listPrice" if sold else "price")
+    if price is not None and not (
+        isinstance(price, int) and not isinstance(price, bool)
+        and MIN_PRICE <= price <= MAX_PRICE
+    ):
+        bad.append("price")
+
+    for key, ceiling in (("beds", 50), ("baths", 50), ("sqft", 100_000)):
+        value = record.get(key)
+        if value is not None and not (
+            isinstance(value, (int, float)) and not isinstance(value, bool)
+            and 0 <= value <= ceiling
+        ):
+            bad.append(key)
+    return bad
+
+
+def screen(records: list, label: str, *, sold: bool) -> list[dict]:
+    """Drop records we would be embarrassed to publish, loudly."""
+    good = []
+    for record in records:
+        problems = faults(record, sold=sold)
+        if problems:
+            name = (record or {}).get("address") if isinstance(record, dict) else record
+            print(f"WARNING: dropping {label} entry [{', '.join(problems)}]: "
+                  f"{str(name)[:60]!r}")
+            continue
+        # A malformed photo costs the picture, not the whole listing.
+        photo = record.get("photo")
+        if photo is not None and not (
+            isinstance(photo, str) and photo.startswith("https://")
+        ):
+            print(f"WARNING: ignoring bad photo URL on {record['address']!r}")
+            record = {k: v for k, v in record.items() if k != "photo"}
+        good.append(record)
+
+    if len(good) > MAX_ROWS:
+        print(f"WARNING: {len(good)} {label} entries exceeds the sane maximum "
+              f"of {MAX_ROWS}; treating as corrupt.")
+        return []
+    return good
+
+
+def load(path: pathlib.Path, label: str) -> list:
+    """Read a JSON array, treating anything unreadable as no data at all."""
+    if not path.exists():
+        print(f"WARNING: {path.name} is missing.")
+        return []
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError, UnicodeDecodeError) as exc:
+        print(f"WARNING: {path.name} is unreadable ({exc}).")
+        return []
+    if not isinstance(data, list):
+        print(f"WARNING: {path.name} is {type(data).__name__}, expected a list.")
+        return []
+    return data
 
 
 def feature_photo(url: str, photo_dir: pathlib.Path, download: bool = True) -> str:
@@ -344,9 +425,15 @@ def strip_region(page: str, start_marker: str, end_marker: str) -> str:
 
 
 def splice(page: str, start_marker: str, end_marker: str, body: str) -> str:
-    """Replace a region's contents, keeping both marker lines in place."""
+    """Replace a region's contents, keeping both marker lines in place.
+
+    An empty body collapses the region to just its two markers, which removes
+    the section from the page while leaving the machinery to refill it later.
+    """
     start, end = find_region(page, start_marker, end_marker)
     head_end = page.index("\n", start) + 1
+    if not body:
+        return f"{page[:head_end]}{INDENT}{page[end:]}"
     return f"{page[:head_end]}{body}\n{INDENT}{page[end:]}"
 
 
@@ -364,25 +451,19 @@ def main() -> None:
                         help="do not mirror photos; reference Compass URLs directly")
     args = parser.parse_args()
 
-    listings_path = pathlib.Path(args.listings)
-    sold_path = pathlib.Path(args.sold)
     page_path = pathlib.Path(args.page)
-    if not listings_path.exists():
-        sys.exit(f"{listings_path} not found - run tools/scrape-listings.py first.")
-
-    listings = json.loads(listings_path.read_text(encoding="utf-8"))
-    if not listings:
-        sys.exit("listings.json is empty - leaving index.html alone.")
-
     page = page_path.read_text(encoding="utf-8")
     if not find_region(page, START, END):
         sys.exit(f"Could not find the listings markers in {page_path.name}.")
 
-    # The sold section is additive: if its data or markers are missing, the
-    # listings still render rather than the whole run failing.
-    sales: list[dict] = []
-    if sold_path.exists():
-        sales = json.loads(sold_path.read_text(encoding="utf-8"))[:args.sold_limit]
+    # Anything that fails to load or fails screening leaves an empty list, and
+    # an empty list hides its section. A half-broken page is worse than no
+    # section at all - a stale listing is something a client acts on.
+    listings = screen(load(pathlib.Path(args.listings), "listings.json"),
+                      "listing", sold=False)
+    sales = screen(load(pathlib.Path(args.sold), "sold.json"),
+                   "sold", sold=True)[:args.sold_limit]
+
     if sales and not find_region(page, SOLD_START, SOLD_END):
         print(f"WARNING: no sold markers in {page_path.name}; skipping that section.")
         sales = []
@@ -395,32 +476,43 @@ def main() -> None:
     static = strip_region(strip_region(page, START, END), SOLD_START, SOLD_END)
     first = max((int(n) for n in NUM_RE.findall(static)), default=0) + 1
 
-    section = render(listings, first, photo_dir, download)
-    sold_section = render_sold(sales, first + len(listings)) if sales else None
+    section = render(listings, first, photo_dir, download) if listings else ""
+    sold_section = render_sold(sales, first + len(listings)) if sales else ""
+
+    hidden = [name for name, rows in (("Current listings", listings),
+                                      ("Recently sold", sales)) if not rows]
+    for name in hidden:
+        print(f"HIDING the {name!r} section - no usable data.")
 
     if args.dry_run:
-        print(section)
-        if sold_section:
-            print(sold_section)
+        print(section or "(listings hidden)")
+        print(sold_section or "(sold hidden)")
         return
 
-    if not args.no_download:
+    # Pruning against an empty KEEP would delete every mirrored photo, so only
+    # prune when we actually rendered listings to compare against.
+    if not args.no_download and listings:
         prune(photo_dir)
 
     updated = splice(page, START, END, section)
-    if sold_section:
+    if find_region(updated, SOLD_START, SOLD_END):
         updated = splice(updated, SOLD_START, SOLD_END, sold_section)
 
-    if updated == page:
+    if updated != page:
+        temp = page_path.with_suffix(".tmp")
+        temp.write_text(updated, encoding="utf-8", newline="\n")
+        os.replace(temp, page_path)
+        print(f"Rendered {len(listings)} listing(s) and {len(sales)} closed "
+              f"sale(s) into {page_path.name}")
+    else:
         print(f"No change - {len(listings)} listing(s), {len(sales)} sale(s) "
               "already rendered.")
-        return
 
-    temp = page_path.with_suffix(".tmp")
-    temp.write_text(updated, encoding="utf-8", newline="\n")
-    os.replace(temp, page_path)
-    print(f"Rendered {len(listings)} listing(s) and {len(sales)} closed sale(s) "
-          f"into {page_path.name}")
+    # Exit 3 means "the page is safe, but something upstream is broken" - the
+    # workflow publishes the hidden state first, then fails the run to raise
+    # the alarm. Anything else would either hide silently or skip the fix.
+    if hidden:
+        sys.exit(3)
 
 
 if __name__ == "__main__":
