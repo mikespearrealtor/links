@@ -1,3 +1,7 @@
 # vCard spec (RFC 2426) requires CRLF line endings; Android's parser breaks
 # without them. Keep this file byte-for-byte as committed.
 contact.vcf -text
+
+# Outlook reads a plain-text signature with the platform's line endings; LF-only
+# can collapse it into one line. Serve it exactly as committed, with CRLF.
+signature-outlook.txt -text
