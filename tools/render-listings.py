@@ -1,7 +1,8 @@
-"""Render listings.json into the listings section of index.html.
+"""Render listings.json and sold.json into index.html.
 
-Rewrites everything between the `listings:start` / `listings:end` markers in
-index.html. The rest of the file is untouched, so this is safe to re-run.
+Rewrites everything between the `listings:start` / `listings:end` and
+`sold:start` / `sold:end` markers in index.html. The rest of the file is
+untouched, so this is safe to re-run.
 
 Layout is the "tiered" variant: the highest-priced listing gets a photo and
 becomes the first row of the list; the rest are plain rows in the same idiom
@@ -13,12 +14,18 @@ domain rather than hotlinked from Compass. Files are named after the Compass
 content hash, so a replaced photo becomes a new file and stale ones are
 pruned automatically.
 
+The "Recently sold" section is plain rows only - no photos - showing the ten
+most recent closed sales in the order Compass itself returns them. Its prices
+are last list prices, not sale prices (Texas does not disclose those), and the
+note under the section says so.
+
 Stdlib only. Runs after tools/scrape-listings.py in the daily workflow.
 
 Usage:
     python tools/render-listings.py
     python tools/render-listings.py --dry-run
     python tools/render-listings.py --no-download
+    python tools/render-listings.py --sold-limit 5
 """
 
 import argparse
@@ -35,13 +42,27 @@ import urllib.request
 REPO_ROOT = pathlib.Path(__file__).resolve().parent.parent
 START = "<!-- listings:start"
 END = "<!-- listings:end -->"
+SOLD_START = "<!-- sold:start"
+SOLD_END = "<!-- sold:end -->"
 INDENT = " " * 6
+
+# Ten is enough to show momentum without doubling the length of the page.
+SOLD_LIMIT = 10
 
 # Attribution shown under the listings. Data comes from the Compass profile,
 # so this credits Compass rather than the MLS/HAR feed.
 ATTRIBUTION = (
     "Listing information from Compass. All information should be "
     "independently verified. Mike Spear, Compass RE Texas, LLC."
+)
+
+# Texas is a non-disclosure state: closed sale prices are not public, and
+# Compass publishes only the last list price. Saying so keeps the figures
+# from reading as sale prices.
+SOLD_ATTRIBUTION = (
+    "Recent closed sales from Compass. Texas is a non-disclosure state; "
+    "amounts shown are the last list price, not the sale price. "
+    "Mike Spear, Compass RE Texas, LLC."
 )
 
 PHOTO_RE = re.compile(r"^(https://www\.compass\.com/m/[0-9a-f]+/)[^/]+$")
@@ -152,22 +173,38 @@ def open_house_line(value: str) -> str | None:
     return f"Open {day} &middot; {clock(start, not same_half)}&ndash;{clock(end)}"
 
 
+def spec_parts(record: dict) -> list[str]:
+    """Area / beds / baths / sqft - the pieces every row shares."""
+    parts = []
+    if record.get("area"):
+        parts.append(esc(record["area"]))
+    if record.get("beds"):
+        parts.append(f"{record['beds']} bd")
+    if record.get("baths"):
+        baths = record["baths"]
+        parts.append(f"{baths:g} ba")
+    if record.get("sqft"):
+        parts.append(f"{record['sqft']:,} sqft")
+    return parts
+
+
 def meta_line(listing: dict) -> str:
     """"Montrose - 3 bd - 2 ba - 2,105 sqft - Pending"."""
-    parts = []
-    if listing.get("area"):
-        parts.append(esc(listing["area"]))
-    if listing.get("beds"):
-        parts.append(f"{listing['beds']} bd")
-    if listing.get("baths"):
-        baths = listing["baths"]
-        parts.append(f"{baths:g} ba")
-    if listing.get("sqft"):
-        parts.append(f"{listing['sqft']:,} sqft")
+    parts = spec_parts(listing)
     # Active is the default state and adds nothing; call out anything else.
     if listing.get("status") and listing["status"].lower() != "active":
         parts.append(esc(listing["status"]))
     return " &middot; ".join(parts)
+
+
+def sold_meta_line(sale: dict) -> str:
+    """"Rosemont Heights - 4 bd - 4.5 ba".
+
+    Deliberately dateless. The public Compass payload has no close date, only
+    a record-modified timestamp, so any date shown here would be wrong as soon
+    as a listing gets edited after closing.
+    """
+    return " &middot; ".join(spec_parts(sale))
 
 
 def price_cell(listing: dict) -> str:
@@ -242,6 +279,33 @@ def render_row(listing: dict, number: int) -> list[str]:
     ]
 
 
+def render_sold_row(sale: dict, number: int) -> list[str]:
+    """A closed sale as a plain row: no photo, price labelled by the note."""
+    text = [f'<span class="row-main">{esc(sale["address"])}</span>',
+            f'<span class="row-sub">{sold_meta_line(sale)}</span>']
+    price = sale.get("listPrice")
+    cell = (f'<span class="row-price">{money(price)}</span>' if price
+            else '<span class="row-price">&mdash;</span>')
+    return [
+        f'{INDENT}<a class="row" href="{esc(sale["url"])}" target="_blank" rel="noopener">',
+        f'{INDENT}  <span class="num">{number:02d}</span>',
+        f'{INDENT}  <span class="row-text">{"".join(text)}</span>',
+        f"{INDENT}  {cell}",
+        f"{INDENT}</a>",
+    ]
+
+
+def render_sold(sales: list[dict], start_number: int) -> str:
+    lines = [f'{INDENT}<section class="group">',
+             f'{INDENT}  <h2 class="label">Recently sold</h2>']
+    for offset, sale in enumerate(sales):
+        lines.extend("  " + line for line in
+                     render_sold_row(sale, start_number + offset))
+    lines.append(f'{INDENT}  <p class="mls-note">{esc(SOLD_ATTRIBUTION)}</p>')
+    lines.append(f"{INDENT}</section>")
+    return "\n".join(lines)
+
+
 def render(listings: list[dict], start_number: int, photo_dir: pathlib.Path,
            download: bool) -> str:
     lines = [f'{INDENT}<section class="group">',
@@ -261,18 +325,47 @@ def render(listings: list[dict], start_number: int, photo_dir: pathlib.Path,
     return "\n".join(lines)
 
 
+def find_region(page: str, start_marker: str, end_marker: str):
+    """(start, end) offsets of a generated region, or None if absent."""
+    start = page.find(start_marker)
+    end = page.find(end_marker)
+    if start == -1 or end == -1 or end < start:
+        return None
+    return start, end
+
+
+def strip_region(page: str, start_marker: str, end_marker: str) -> str:
+    """Page with one generated region removed, for counting row numbers."""
+    span = find_region(page, start_marker, end_marker)
+    if not span:
+        return page
+    start, end = span
+    return page[:start] + page[end + len(end_marker):]
+
+
+def splice(page: str, start_marker: str, end_marker: str, body: str) -> str:
+    """Replace a region's contents, keeping both marker lines in place."""
+    start, end = find_region(page, start_marker, end_marker)
+    head_end = page.index("\n", start) + 1
+    return f"{page[:head_end]}{body}\n{INDENT}{page[end:]}"
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--listings", default=str(REPO_ROOT / "listings.json"))
+    parser.add_argument("--sold", default=str(REPO_ROOT / "sold.json"))
     parser.add_argument("--page", default=str(REPO_ROOT / "index.html"))
     parser.add_argument("--photo-dir", default=str(REPO_ROOT / PHOTO_DIR_NAME))
+    parser.add_argument("--sold-limit", type=int, default=SOLD_LIMIT,
+                        help=f"how many closed sales to show (default {SOLD_LIMIT})")
     parser.add_argument("--dry-run", action="store_true",
-                        help="print the generated section instead of writing it")
+                        help="print the generated sections instead of writing them")
     parser.add_argument("--no-download", action="store_true",
                         help="do not mirror photos; reference Compass URLs directly")
     args = parser.parse_args()
 
     listings_path = pathlib.Path(args.listings)
+    sold_path = pathlib.Path(args.sold)
     page_path = pathlib.Path(args.page)
     if not listings_path.exists():
         sys.exit(f"{listings_path} not found - run tools/scrape-listings.py first.")
@@ -282,36 +375,52 @@ def main() -> None:
         sys.exit("listings.json is empty - leaving index.html alone.")
 
     page = page_path.read_text(encoding="utf-8")
-    start = page.find(START)
-    end = page.find(END)
-    if start == -1 or end == -1 or end < start:
+    if not find_region(page, START, END):
         sys.exit(f"Could not find the listings markers in {page_path.name}.")
+
+    # The sold section is additive: if its data or markers are missing, the
+    # listings still render rather than the whole run failing.
+    sales: list[dict] = []
+    if sold_path.exists():
+        sales = json.loads(sold_path.read_text(encoding="utf-8"))[:args.sold_limit]
+    if sales and not find_region(page, SOLD_START, SOLD_END):
+        print(f"WARNING: no sold markers in {page_path.name}; skipping that section.")
+        sales = []
 
     # A dry run must not touch the filesystem, so it neither fetches nor prunes.
     photo_dir = pathlib.Path(args.photo_dir)
     download = not args.dry_run and not args.no_download
 
-    # Numbers already on the page, ignoring any inside the generated block.
-    used = [int(n) for n in NUM_RE.findall(page[:start] + page[end:])]
-    section = render(listings, max(used, default=0) + 1, photo_dir, download)
+    # Numbers already on the page, ignoring any inside either generated block.
+    static = strip_region(strip_region(page, START, END), SOLD_START, SOLD_END)
+    first = max((int(n) for n in NUM_RE.findall(static)), default=0) + 1
+
+    section = render(listings, first, photo_dir, download)
+    sold_section = render_sold(sales, first + len(listings)) if sales else None
 
     if args.dry_run:
         print(section)
+        if sold_section:
+            print(sold_section)
         return
 
     if not args.no_download:
         prune(photo_dir)
 
-    head = page[:page.index("\n", start) + 1]
-    updated = f"{head}{section}\n{INDENT}{page[end:]}"
+    updated = splice(page, START, END, section)
+    if sold_section:
+        updated = splice(updated, SOLD_START, SOLD_END, sold_section)
+
     if updated == page:
-        print(f"No change - {len(listings)} listing(s) already rendered.")
+        print(f"No change - {len(listings)} listing(s), {len(sales)} sale(s) "
+              "already rendered.")
         return
 
     temp = page_path.with_suffix(".tmp")
     temp.write_text(updated, encoding="utf-8", newline="\n")
     os.replace(temp, page_path)
-    print(f"Rendered {len(listings)} listing(s) into {page_path.name}")
+    print(f"Rendered {len(listings)} listing(s) and {len(sales)} closed sale(s) "
+          f"into {page_path.name}")
 
 
 if __name__ == "__main__":

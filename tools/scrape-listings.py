@@ -1,9 +1,19 @@
-"""Scrape Mike Spear's active listings from his Compass agent profile.
+"""Scrape Mike Spear's listings and closed sales from his Compass profile.
 
 Reads the `window.__AGENT_PROFILE__` JSON that Compass embeds in the profile
-page and writes the "Listings" section to listings.json. Only the listings
-section is read (`activeListingsProps`); the "Transactions" section
-(`closedDealsProps`) is deliberately ignored, as are all other pages.
+page and writes two files:
+
+  listings.json - the "Listings" section (`activeListingsProps`)
+  sold.json     - closed *sales* from "Transactions" (`closedDealsProps`)
+
+Closed rentals are deliberately skipped, as are all other pages. Sold entries
+carry no photo: only the active listings are shown with imagery.
+
+A note on sold prices: Texas is a non-disclosure state, so Compass does not
+publish what a home actually closed for - every closed deal in the payload is
+flagged `hideHistoricalSoldPrice` and exposes only `price.lastKnown`, the last
+list price. That is what lands in sold.json, and the renderer labels it as
+such rather than implying a sale price.
 
 Stdlib only - no pip installs needed. Runs once per day on GitHub Actions
 via .github/workflows/scrape-listings.yml, which commits any change back to
@@ -123,24 +133,30 @@ def open_house(listing: dict) -> str | None:
     return f"{start:%Y-%m-%dT%H:%M}/{end:%H:%M}"
 
 
+def area_of(location: dict) -> str | None:
+    """Neighbourhood name for the meta line, with sensible fallbacks."""
+    area = location.get("neighborhood")
+    if not area:
+        for key in ("mlsNeighborhoods", "subdivisionNames", "subNeighborhoods"):
+            values = location.get(key) or []
+            if values:
+                area = values[0]
+                break
+    return area or location.get("city")
+
+
 def convert(listing: dict, *, rental: bool, size: str) -> dict:
     """Map one Compass listing onto the listings.json schema."""
     location = listing.get("location") or {}
     dimensions = listing.get("size") or {}
     price = listing.get("price") or {}
 
-    area = location.get("neighborhood")
-    if not area:
-        for key in ("mlsNeighborhoods", "subdivisionNames"):
-            values = location.get(key) or []
-            if values:
-                area = values[0]
-                break
+    area = area_of(location)
     link = listing.get("canonicalPageLink") or listing.get("pageLink")
 
     record = {
         "address": location.get("prettyAddress"),
-        "area": area or location.get("city"),
+        "area": area,
         "beds": dimensions.get("bedrooms"),
         "baths": dimensions.get("bathrooms"),
         "sqft": dimensions.get("squareFeet"),
@@ -191,10 +207,101 @@ def collect(profile: dict, size: str) -> list[dict]:
     return listings
 
 
+def sold_date(listing: dict) -> str | None:
+    """When the record was last modified, as YYYY-MM-DD. NOT the close date.
+
+    `date.updated` is the only timestamp the public payload exposes on a closed
+    deal - Compass redacts close dates along with sale prices, Texas being a
+    non-disclosure state. It usually equals the close date, but it moves
+    whenever the record is edited: 1215 West Pierce reads 2026-07-22 here while
+    the agent-authenticated view places it two sales earlier. Kept for
+    debugging and left off the page; never render it as a sale date.
+    """
+    stamp = (listing.get("date") or {}).get("updated")
+    if not stamp:
+        return None
+    tz_name = (listing.get("location") or {}).get("timezone") or "America/Chicago"
+    try:
+        tz = zoneinfo.ZoneInfo(tz_name)
+    except zoneinfo.ZoneInfoNotFoundError:
+        tz = datetime.timezone.utc
+    return datetime.datetime.fromtimestamp(stamp / 1000, tz).strftime("%Y-%m-%d")
+
+
+def convert_sold(item: dict) -> dict:
+    """Map one closed deal onto the sold.json schema (no photo)."""
+    # Closed deals nest the listing one level deeper than active ones do.
+    listing = item.get("listing") or {}
+    location = listing.get("location") or {}
+    dimensions = listing.get("size") or {}
+    price = listing.get("price") or {}
+    link = listing.get("canonicalPageLink") or listing.get("pageLink")
+
+    record = {
+        "address": location.get("prettyAddress"),
+        "area": area_of(location),
+        "beds": dimensions.get("bedrooms"),
+        "baths": dimensions.get("bathrooms"),
+        "sqft": dimensions.get("squareFeet"),
+        # The last list price, NOT the sale price - see the module docstring.
+        "listPrice": price.get("lastKnown"),
+        # Named for what it is. Not a close date - see sold_date().
+        "updated": sold_date(listing),
+        "url": f"{SITE}{link}" if link else None,
+    }
+    return {k: v for k, v in record.items() if v is not None}
+
+
+def collect_sold(profile: dict) -> list[dict]:
+    """Closed sales from the Transactions section. Rentals are skipped."""
+    try:
+        section = profile["data"]["agentProfileProps"]["closedDealsProps"]
+    except (KeyError, TypeError):
+        log("WARNING: closedDealsProps missing from the profile payload. "
+            "Leaving sold.json untouched.")
+        return []
+
+    items = section.get("initialSales") or []
+    total = section.get("initialSalesCount")
+    if isinstance(total, int) and total > len(items):
+        log(f"NOTE: Compass reports {total} closed sales but embeds only "
+            f"{len(items)} on the page. Using the {len(items)} most recent.")
+
+    # Compass's own order is kept verbatim (closedDealsSortOrder says how it
+    # sorted). Re-sorting here would override whatever is configured on the
+    # profile, and the only date we could sort on is unreliable anyway.
+    order = section.get("closedDealsSortOrder")
+    if order and order != "DATE_DESCENDING":
+        log(f"NOTE: Compass is sorting closed deals by {order}, not by date.")
+    return [convert_sold(item) for item in items]
+
+
 def write_atomic(path: pathlib.Path, payload: str) -> None:
     temp = path.with_suffix(path.suffix + ".tmp")
     temp.write_text(payload, encoding="utf-8", newline="\n")
     os.replace(temp, path)
+
+
+def save(records: list[dict], out: pathlib.Path, noun: str, args) -> None:
+    """Write records as JSON, honouring --dry-run and the one-time backup."""
+    payload = json.dumps(records, indent=2, ensure_ascii=False) + "\n"
+    if args.dry_run:
+        print(payload, end="")
+        log(f"Dry run - parsed {len(records)} {noun}(s), nothing written.")
+        return
+
+    out = out.resolve()
+    if out.exists() and out.read_text(encoding="utf-8") == payload:
+        log(f"No change - {len(records)} {noun}(s) already current in {out.name}")
+        return
+
+    backup = out.with_suffix(out.suffix + ".bak")
+    if not args.no_backup and out.exists() and not backup.exists():
+        backup.write_bytes(out.read_bytes())
+        log(f"Saved previous contents to {backup.name}")
+
+    write_atomic(out, payload)
+    log(f"Wrote {len(records)} {noun}(s) to {out}")
 
 
 def main() -> None:
@@ -202,6 +309,10 @@ def main() -> None:
     parser.add_argument("--url", default=PROFILE_URL, help="agent profile URL")
     parser.add_argument("-o", "--out", default=str(REPO_ROOT / "listings.json"),
                         help="output JSON path")
+    parser.add_argument("--sold-out", default=str(REPO_ROOT / "sold.json"),
+                        help="output JSON path for closed sales")
+    parser.add_argument("--no-sold", action="store_true",
+                        help="skip the Transactions section entirely")
     parser.add_argument("--photo-size", default="1024x768",
                         help="WxH for listing photos (Compass resizes on demand)")
     parser.add_argument("--timeout", type=int, default=45, help="HTTP timeout in seconds")
@@ -217,31 +328,24 @@ def main() -> None:
     except (urllib.error.URLError, TimeoutError, OSError) as exc:
         sys.exit(f"Fetch failed: {exc}. Nothing was written.")
 
-    listings = collect(extract_profile(html), args.photo_size)
+    profile = extract_profile(html)
+
+    listings = collect(profile, args.photo_size)
     if not listings:
         sys.exit(
             "Parsed the page but found zero listings. Refusing to overwrite "
             "the existing file - check the profile manually."
         )
+    save(listings, pathlib.Path(args.out), "listing", args)
 
-    payload = json.dumps(listings, indent=2, ensure_ascii=False) + "\n"
-    if args.dry_run:
-        print(payload, end="")
-        log(f"Dry run - parsed {len(listings)} listing(s), nothing written.")
-        return
-
-    out = pathlib.Path(args.out).resolve()
-    if out.exists() and out.read_text(encoding="utf-8") == payload:
-        log(f"No change - {len(listings)} listing(s) already current in {out.name}")
-        return
-
-    backup = out.with_suffix(out.suffix + ".bak")
-    if not args.no_backup and out.exists() and not backup.exists():
-        backup.write_bytes(out.read_bytes())
-        log(f"Saved previous contents to {backup.name}")
-
-    write_atomic(out, payload)
-    log(f"Wrote {len(listings)} listing(s) to {out}")
+    # Additive: a change to the Transactions section must never cost us the
+    # listings write above, so an empty result is a warning, not an exit.
+    if not args.no_sold:
+        sold = collect_sold(profile)
+        if sold:
+            save(sold, pathlib.Path(args.sold_out), "closed sale", args)
+        else:
+            log("WARNING: no closed sales parsed. sold.json left as-is.")
 
 
 if __name__ == "__main__":
