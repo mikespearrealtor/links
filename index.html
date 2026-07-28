@@ -359,16 +359,31 @@
 
     /* ── Link index ── */
     .group {
-      margin-top: 34px;
+      margin-top: 46px;
     }
 
+    /* Set deliberately apart from .eyebrow, which shares the caps-and-tracking
+       voice: heavier, slightly larger, and carrying the gold tick. Without the
+       distinction the section titles read as another line of header meta rather
+       than as the structure of the page. */
     .label {
-      font-size: 10.5px;
-      font-weight: 500;
-      letter-spacing: 0.24em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 11.5px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
       text-transform: uppercase;
       color: var(--accent-text);
-      margin-bottom: 4px;
+      margin-bottom: 12px;
+    }
+
+    .label::before {
+      content: "";
+      flex: none;
+      width: 20px;
+      height: 2px;
+      background: var(--hint);
     }
 
     /* ── Profile tiles ── */

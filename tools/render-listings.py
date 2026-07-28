@@ -330,7 +330,7 @@ def render_sold_row(sale: dict, number: int) -> list[str]:
 
 def render_sold(sales: list[dict], start_number: int, chart: str = "") -> str:
     lines = [f'{INDENT}<section class="group">',
-             f'{INDENT}  <h2 class="label">Recently sold</h2>']
+             f'{INDENT}  <h2 class="label">Recently sold in Houston</h2>']
     if chart:
         lines.append(chart)
     for offset, sale in enumerate(sales):
@@ -343,7 +343,7 @@ def render_sold(sales: list[dict], start_number: int, chart: str = "") -> str:
 
 def render(listings: list[dict], start_number: int, chart: str = "") -> str:
     lines = [f'{INDENT}<section class="group">',
-             f'{INDENT}  <h2 class="label">Current listings</h2>']
+             f'{INDENT}  <h2 class="label">Current listings in Houston</h2>']
     if chart:
         lines.append(chart)
 
