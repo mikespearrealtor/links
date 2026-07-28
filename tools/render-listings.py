@@ -19,7 +19,16 @@ most recent closed sales in the order Compass itself returns them. Its prices
 are last list prices, not sale prices (Texas does not disclose those), and the
 note under the section says so.
 
-Stdlib only. Runs after tools/scrape-listings.py in the daily workflow.
+The "On the map" section plots both lists as an inline SVG, using coordinates
+cached in geo.json by tools/geocode.py, over the freeway and water geometry
+in basemap.json. It is drawn rather than embedded: no tile provider, no API
+key, no third-party script, no extra requests, and it themes off the same
+CSS variables as everything else on the page. The inside of the 610 loop is
+washed with a tint and the count of addresses falling inside it is stated,
+because that concentration is the thing the map exists to show.
+
+Stdlib only. Runs after tools/geocode.py in the daily workflow.
+The basemap it draws on is built separately by tools/basemap.py.
 
 Usage:
     python tools/render-listings.py
@@ -44,6 +53,8 @@ START = "<!-- listings:start"
 END = "<!-- listings:end -->"
 SOLD_START = "<!-- sold:start"
 SOLD_END = "<!-- sold:end -->"
+MAP_START = "<!-- map:start"
+MAP_END = "<!-- map:end -->"
 INDENT = " " * 6
 
 # Ten is enough to show momentum without doubling the length of the page.
@@ -84,6 +95,39 @@ KEEP: set[str] = set()
 LISTING_URL_RE = re.compile(r"^https://www\.compass\.com/[\w./-]+$")
 MIN_PRICE, MAX_PRICE = 100, 500_000_000
 MAX_ROWS = 100
+
+# ── Map geometry ───────────────────────────────────────────────────────────
+# The frame, the viewBox and every path come out of basemap.json, which
+# tools/basemap.py builds from Census TIGER/Line data. Nothing about the map's
+# extent is defined here: if the dots used one frame and the roads another,
+# every listing would sit at the wrong end of the wrong freeway.
+
+# One dot per sale, no clustering and no numerals. An earlier version rolled
+# neighbours up into a single dot with the count beside it; "7" turns out to
+# be a much weaker signal than seven overlapping dots, which pile up into a
+# visibly darker patch exactly where the work is concentrated. The dots are
+# translucent and unstroked so that stacking is what makes them darker.
+SOLD_DOT = 4.4
+LIVE_DOT = 4.6     # active listings, drawn over the sales in the accent colour
+LIVE_RING = 8.4    # halo around a live listing, so it reads through a pile
+
+# Under the dots, homes that have neighbours also contribute a wide, faint,
+# blurred disc, which stack into a warm patch over Montrose, River Oaks and
+# the Heights. That patch is the argument the section exists to make, and it
+# makes it before a reader has read a word of the legend.
+#
+# Only homes with at least HEAT_MIN neighbours within HEAT_NEAR get one. An
+# earlier version gave every home a disc, which put an identical halo around
+# each isolated outlier - so the drawing gained a set of coffee-ring stains
+# and lost the one thing the layer was for, which is showing where the work
+# is *not* spread evenly.
+HEAT_R = 16.0
+HEAT_NEAR = 20.0
+HEAT_MIN = 2
+
+# The drawing carries no text at all. The shape of the Loop, the spokes coming
+# off it and the bayous are what orient a reader; anything written on top was
+# labelling what the geometry already said.
 
 
 def esc(value) -> str:
@@ -164,6 +208,27 @@ def load(path: pathlib.Path, label: str) -> list:
     if not isinstance(data, list):
         print(f"WARNING: {path.name} is {type(data).__name__}, expected a list.")
         return []
+    return data
+
+
+def load_object(path: pathlib.Path, note: str) -> dict:
+    """A JSON object from disk, treating anything unreadable as empty.
+
+    Used for geo.json (written by tools/geocode.py) and basemap.json (written
+    by tools/basemap.py). Either one coming back empty hides the map and
+    nothing else - the lists do not depend on either.
+    """
+    if not path.exists():
+        print(f"WARNING: {path.name} is missing; {note}.")
+        return {}
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError, UnicodeDecodeError) as exc:
+        print(f"WARNING: {path.name} is unreadable ({exc}).")
+        return {}
+    if not isinstance(data, dict):
+        print(f"WARNING: {path.name} is {type(data).__name__}, expected an object.")
+        return {}
     return data
 
 
@@ -406,6 +471,262 @@ def render(listings: list[dict], start_number: int, photo_dir: pathlib.Path,
     return "\n".join(lines)
 
 
+class Frame:
+    """The map's window on the world, as recorded in basemap.json.
+
+    Built from the same numbers the freeway paths were projected with, so a
+    dot and the road it sits beside cannot disagree about where they are.
+    """
+
+    def __init__(self, basemap: dict):
+        bounds = basemap["frame"]
+        self.west, self.east = float(bounds["west"]), float(bounds["east"])
+        self.south, self.north = float(bounds["south"]), float(bounds["north"])
+        self.width, self.height = (float(v) for v in basemap["viewBox"])
+        if not (self.east > self.west and self.north > self.south
+                and self.width > 0 and self.height > 0):
+            raise ValueError("frame bounds are inside out")
+
+    def project(self, lon: float, lat: float) -> tuple[float, float]:
+        """Longitude/latitude to SVG user units, north up."""
+        x = (lon - self.west) / (self.east - self.west) * self.width
+        y = (self.north - lat) / (self.north - self.south) * self.height
+        return x, y
+
+    def holds(self, x: float, y: float, radius: float) -> bool:
+        """Whether a dot of this size lands fully inside the drawing."""
+        return (radius <= x <= self.width - radius
+                and radius <= y <= self.height - radius)
+
+
+def plot(records: list[dict], geo: dict, radius: float,
+         frame: "Frame") -> tuple[list, int]:
+    """Project every record we have a coordinate for; count the ones that miss.
+
+    A record with no cached coordinate is not the same as one that falls
+    outside the frame. The first is a gap we would want to fix, the second is
+    the frame working as designed, so only the second is reported to readers.
+    """
+    points, off_frame = [], 0
+    for record in records:
+        point = geo.get(geo_key(record.get("url", "")) or "")
+        if not (isinstance(point, list) and len(point) == 2):
+            continue
+        try:
+            x, y = frame.project(float(point[0]), float(point[1]))
+        except (TypeError, ValueError):
+            continue
+        if frame.holds(x, y, radius):
+            points.append((x, y))
+        else:
+            off_frame += 1
+    return points, off_frame
+
+
+def geo_key(url: str) -> str | None:
+    """The geo.json key for a listing URL: its Compass address slug."""
+    match = re.search(r"/homedetails/([^/]+)/", url or "")
+    return match.group(1) if match else None
+
+
+def dense(points: list) -> list:
+    """The points with enough close neighbours to be worth glowing."""
+    return [(x, y) for x, y in points
+            if sum(1 for ox, oy in points
+                   if (ox - x) ** 2 + (oy - y) ** 2 <= HEAT_NEAR ** 2) - 1
+            >= HEAT_MIN]
+
+
+def inside_ring(x: float, y: float, ring: list) -> bool:
+    """Whether a point falls within the 610 ring, by ray casting."""
+    hit = False
+    count = len(ring)
+    for index in range(count):
+        x1, y1 = ring[index]
+        x2, y2 = ring[(index + 1) % count]
+        if (y1 > y) != (y2 > y) and x < (x2 - x1) * (y - y1) / (y2 - y1) + x1:
+            hit = not hit
+    return hit
+
+
+def loop_ring(basemap: dict) -> list:
+    """basemap.json's 610 ring as coordinate pairs, or [] if it is unusable."""
+    ring = basemap.get("loopRing")
+    if not isinstance(ring, list) or len(ring) < 3:
+        return []
+    points = []
+    for pair in ring:
+        if not (isinstance(pair, list) and len(pair) == 2):
+            return []
+        try:
+            points.append((float(pair[0]), float(pair[1])))
+        except (TypeError, ValueError):
+            return []
+    return points
+
+
+def layer(basemap: dict, key: str, css: str, closed: bool = False) -> list[str]:
+    """One <path> for a basemap layer, or nothing if that layer came back empty.
+
+    Water is the layer that can legitimately be missing - tools/basemap.py
+    keeps going when the Hydro service is down - so an absent key draws
+    nothing rather than an empty path or a crash.
+    """
+    data = basemap.get(key)
+    if not isinstance(data, str) or not data:
+        return []
+    rule = ' fill-rule="evenodd"' if closed else ""
+    return [f'  <path class="{css}" d="{esc(data)}"{rule}/>']
+
+
+def render_map(listings: list[dict], sales: list[dict], geo: dict,
+               basemap: dict) -> str:
+    """The whole map section, or "" if there is nothing worth drawing.
+
+    Sales are plotted from the full list rather than the ten rows shown above,
+    because the point of the map is the shape of the whole territory. The
+    caption says how many sales it stands for so the two do not read as a
+    contradiction.
+    """
+    try:
+        frame = Frame(basemap)
+    except (KeyError, TypeError, ValueError) as exc:
+        print(f"WARNING: basemap.json is not usable ({exc}).")
+        return ""
+    if not basemap.get("freeways"):
+        print("WARNING: basemap.json has no road geometry.")
+        return ""
+
+    live_points, live_off = plot(listings, geo, LIVE_DOT, frame)
+    sold_points, sold_off = plot(sales, geo, SOLD_DOT, frame)
+    if not live_points and not sold_points:
+        return ""
+
+    # A screen reader gets the summary a sighted reader takes from the
+    # picture, since the picture itself says nothing out loud.
+    parts = [f"{count} {one if count == 1 else many}" for count, one, many in (
+        (len(live_points), "listing for sale", "listings for sale"),
+        (len(sold_points), "recent sale", "recent sales")) if count]
+    described = " and ".join(parts)
+
+    width, height = frame.width, frame.height
+
+    # The whole basemap is masked by a blurred inset rectangle, so the roads
+    # fade out at the edges instead of being guillotined by a border. A hard
+    # box around a drawing is what makes it read as a chart rather than a map;
+    # dissolving the edge also stops a freeway that leaves the frame from
+    # looking like it simply stops. The ids are prefixed because this SVG is
+    # inlined into a page that has its own.
+    svg = [
+        f'<svg class="map" viewBox="0 0 {width:g} {height:g}" role="img" '
+        f'aria-label="Map of Houston centred on the 610 loop, showing '
+        f'{described}." focusable="false">',
+        '  <defs>',
+        '    <filter id="msSoften"><feGaussianBlur stdDeviation="5"/></filter>',
+        '    <filter id="msHeat" x="-25%" y="-25%" width="150%" height="150%">'
+        '<feGaussianBlur stdDeviation="9"/></filter>',
+        '    <mask id="msFade">',
+        f'      <rect x="4" y="4" width="{width - 8:g}" height="{height - 8:g}" '
+        'fill="#fff" filter="url(#msSoften)"/>',
+        '    </mask>',
+        '  </defs>',
+        '  <g mask="url(#msFade)">',
+    ]
+    # Order is depth: the wash that marks the inside of the Loop is the ground
+    # everything else sits on, then water, then roads lightest to heaviest.
+    crowded = dense(sold_points + live_points)
+    heat = (['    <g class="map-heat" filter="url(#msHeat)">']
+            + [f'      <circle cx="{x:.1f}" cy="{y:.1f}" r="{HEAT_R}"/>'
+               for x, y in crowded]
+            + ['    </g>']) if crowded else []
+
+    svg += ["  " + line for line in
+            layer(basemap, "loopFill", "map-loop-fill", closed=True)
+            + layer(basemap, "waterArea", "map-water-area", closed=True)
+            + layer(basemap, "water", "map-water")]
+    # Over the water, under the roads, and blended rather than stacked. Buffalo
+    # Bayou runs straight through the middle of the glow, and with the glow
+    # underneath it the bayou cut a cold line across a warm patch. Blending
+    # lets the two mix, so the water warms where it crosses the concentration
+    # instead of interrupting it; the roads still draw crisply over both.
+    svg += heat
+    svg += ["  " + line for line in
+            layer(basemap, "arterials", "map-minor")
+            + layer(basemap, "tollways", "map-toll")
+            + layer(basemap, "freeways", "map-fwy")
+            + layer(basemap, "loop", "map-loop")]
+    svg += ['  </g>']
+
+    # Two passes, because these overlap and the order decides what survives.
+    # Sales sit at the bottom, stacking into a darker patch wherever several
+    # fall on the same few blocks; live listings go over them, since a house
+    # for sale in the middle of a block already sold is the thing worth
+    # seeing. Each live dot gets a halo first so it still separates from a
+    # pile of sales underneath it.
+    for x, y in sold_points:
+        svg.append(f'  <circle class="map-sold" cx="{x:.1f}" cy="{y:.1f}" '
+                   f'r="{SOLD_DOT}"/>')
+    for x, y in live_points:
+        svg.append(f'  <circle class="map-halo" cx="{x:.1f}" cy="{y:.1f}" '
+                   f'r="{LIVE_RING}"/>')
+    for x, y in live_points:
+        svg.append(f'  <circle class="map-live" cx="{x:.1f}" cy="{y:.1f}" '
+                   f'r="{LIVE_DOT}"/>')
+    svg.append("</svg>")
+
+    keys = []
+    if live_points:
+        keys.append('<span class="map-key"><i class="map-dot is-live"></i>'
+                    "For sale</span>")
+    if sold_points:
+        noun = "sale" if len(sold_points) == 1 else "sales"
+        keys.append('<span class="map-key"><i class="map-dot is-sold"></i>'
+                    f"{len(sold_points)} recent {noun}</span>")
+    missing = live_off + sold_off
+    if missing:
+        keys.append(f'<span class="map-off">{missing} outside this view</span>')
+
+    lines = [f'{INDENT}<section class="group">',
+             f'{INDENT}  <h2 class="label">On the map</h2>']
+    claim = loop_claim(listings, sales, geo, basemap, frame)
+    if claim:
+        lines.append(f'{INDENT}  <p class="map-claim">{claim}</p>')
+    lines.append(f'{INDENT}  <div class="map-frame">')
+    lines.extend(f"{INDENT}    {line}" for line in svg)
+    lines.append(f"{INDENT}  </div>")
+    lines.append(f'{INDENT}  <p class="map-legend">{"".join(keys)}</p>')
+    lines.append(f"{INDENT}</section>")
+    return "\n".join(lines)
+
+
+def loop_claim(listings: list[dict], sales: list[dict], geo: dict,
+               basemap: dict, frame: "Frame") -> str:
+    """"15 of 24 inside the 610 Loop", or "" if it cannot be worked out.
+
+    Counted over every address we have a coordinate for, including the ones
+    that fall outside the frame - Katy and Manvel are emphatically not inside
+    the Loop, and quietly dropping them would inflate the fraction.
+    """
+    ring = loop_ring(basemap)
+    if not ring:
+        return ""
+    inside = total = 0
+    for record in list(listings) + list(sales):
+        point = geo.get(geo_key(record.get("url", "")) or "")
+        if not (isinstance(point, list) and len(point) == 2):
+            continue
+        try:
+            x, y = frame.project(float(point[0]), float(point[1]))
+        except (TypeError, ValueError):
+            continue
+        total += 1
+        inside += inside_ring(x, y, ring)
+    if not total or not inside:
+        return ""
+    noun = "home" if total == 1 else "homes"
+    return (f'<strong>{inside} of {total}</strong> {noun} inside the 610 Loop')
+
+
 def find_region(page: str, start_marker: str, end_marker: str):
     """(start, end) offsets of a generated region, or None if absent."""
     start = page.find(start_marker)
@@ -442,6 +763,8 @@ def main() -> None:
     parser.add_argument("--listings", default=str(REPO_ROOT / "listings.json"))
     parser.add_argument("--sold", default=str(REPO_ROOT / "sold.json"))
     parser.add_argument("--page", default=str(REPO_ROOT / "index.html"))
+    parser.add_argument("--geo", default=str(REPO_ROOT / "geo.json"))
+    parser.add_argument("--basemap", default=str(REPO_ROOT / "basemap.json"))
     parser.add_argument("--photo-dir", default=str(REPO_ROOT / PHOTO_DIR_NAME))
     parser.add_argument("--sold-limit", type=int, default=SOLD_LIMIT,
                         help=f"how many closed sales to show (default {SOLD_LIMIT})")
@@ -461,12 +784,21 @@ def main() -> None:
     # section at all - a stale listing is something a client acts on.
     listings = screen(load(pathlib.Path(args.listings), "listings.json"),
                       "listing", sold=False)
-    sales = screen(load(pathlib.Path(args.sold), "sold.json"),
-                   "sold", sold=True)[:args.sold_limit]
+    all_sales = screen(load(pathlib.Path(args.sold), "sold.json"),
+                       "sold", sold=True)
+    sales = all_sales[:args.sold_limit]
 
     if sales and not find_region(page, SOLD_START, SOLD_END):
         print(f"WARNING: no sold markers in {page_path.name}; skipping that section.")
         sales = []
+
+    # Either map input failing to load costs the map, not the lists.
+    geo = load_object(pathlib.Path(args.geo), "the map has nothing to plot")
+    basemap = load_object(pathlib.Path(args.basemap),
+                          "the map has nothing to draw on")
+    has_map = bool(find_region(page, MAP_START, MAP_END))
+    if geo and basemap and not has_map:
+        print(f"WARNING: no map markers in {page_path.name}; skipping that section.")
 
     # A dry run must not touch the filesystem, so it neither fetches nor prunes.
     photo_dir = pathlib.Path(args.photo_dir)
@@ -478,15 +810,19 @@ def main() -> None:
 
     section = render(listings, first, photo_dir, download) if listings else ""
     sold_section = render_sold(sales, first + len(listings)) if sales else ""
+    map_section = (render_map(listings, all_sales, geo, basemap)
+                   if has_map else "")
 
     hidden = [name for name, rows in (("Current listings", listings),
-                                      ("Recently sold", sales)) if not rows]
+                                      ("Recently sold", sales),
+                                      ("On the map", map_section)) if not rows]
     for name in hidden:
         print(f"HIDING the {name!r} section - no usable data.")
 
     if args.dry_run:
         print(section or "(listings hidden)")
         print(sold_section or "(sold hidden)")
+        print(map_section or "(map hidden)")
         return
 
     # Pruning against an empty KEEP would delete every mirrored photo, so only
@@ -497,6 +833,8 @@ def main() -> None:
     updated = splice(page, START, END, section)
     if find_region(updated, SOLD_START, SOLD_END):
         updated = splice(updated, SOLD_START, SOLD_END, sold_section)
+    if find_region(updated, MAP_START, MAP_END):
+        updated = splice(updated, MAP_START, MAP_END, map_section)
 
     if updated != page:
         temp = page_path.with_suffix(".tmp")

@@ -3,6 +3,8 @@
 # tools/ is local-only, except the listings scripts which CI needs to run.
 tools/*
 !tools/scrape-listings.py
+!tools/geocode.py
+!tools/basemap.py
 !tools/render-listings.py
 
 listings.json.bak
