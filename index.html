@@ -301,6 +301,12 @@
       overflow: hidden;
       height: 0;
       transition: height 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+      /* The tilt swings the photo's top-left corner ~10px past the wrap, where
+         the overflow the height animation needs would clip it. The padding
+         gives that corner room and the equal negative margin cancels it, so
+         the photo and caption stay aligned with the text above. */
+      padding-left: 14px;
+      margin-left: -14px;
     }
 
     .polaroid {
