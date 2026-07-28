@@ -487,8 +487,17 @@ def render_map(listings: list[dict], sales: list[dict], geo: dict,
         '  <defs>',
         f'    <filter id="msSoften{tag}"><feGaussianBlur stdDeviation="5"/>'
         '</filter>',
-        f'    <filter id="msHeat{tag}" x="-25%" y="-25%" width="150%" '
-        'height="150%"><feGaussianBlur stdDeviation="9"/></filter>',
+        # The heat filter's region is the whole map, not a margin around the
+        # discs. A percentage region is measured off the bounding box of
+        # whichever discs the data happens to produce, and a blur this wide
+        # needs about three standard deviations of room on every side - more
+        # than a tight cluster's own box can offer. Falling short doesn't
+        # soften the glow, it guillotines it, so the patch picks up straight
+        # vertical sides. The map is the only edge that should ever cut it,
+        # and the fade mask is already there to dissolve that one.
+        f'    <filter id="msHeat{tag}" filterUnits="userSpaceOnUse" x="0" '
+        f'y="0" width="{width:g}" height="{height:g}">'
+        '<feGaussianBlur stdDeviation="9"/></filter>',
         f'    <mask id="msFade{tag}">',
         f'      <rect x="4" y="4" width="{width - 8:g}" height="{height - 8:g}" '
         f'fill="#fff" filter="url(#msSoften{tag})"/>',
