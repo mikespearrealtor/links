@@ -301,12 +301,13 @@
       overflow: hidden;
       height: 0;
       transition: height 0.55s cubic-bezier(0.22, 1, 0.36, 1);
-      /* The tilt swings the photo's top-left corner ~10px past the wrap, where
-         the overflow the height animation needs would clip it. The padding
-         gives that corner room and the equal negative margin cancels it, so
-         the photo and caption stay aligned with the text above. */
-      padding-left: 14px;
-      margin-left: -14px;
+      /* The tilt swings the photo's top-left corner ~10px past the wrap, and
+         its shadow reaches ~13px further still, into the overflow the height
+         animation needs. The padding gives both room and the equal negative
+         margin cancels it, so the photo and caption stay aligned with the text
+         above. Kept under the 26px page gutter so nothing lands off-screen. */
+      padding-left: 24px;
+      margin-left: -24px;
     }
 
     .polaroid {
@@ -332,11 +333,13 @@
       aspect-ratio: 787 / 960;
       border-radius: 2px;
       /* The scan is a real Polaroid - white border and handwriting included -
-         so the only styling it needs is the shadow that lifts it off the page. */
-      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.45), 0 2px 6px rgba(0, 0, 0, 0.3);
+         so the only styling it needs is the shadow that lifts it off the page.
+         The blur stays at 20 so the shadow's upward reach clears the wrap's top
+         edge; wider blurs get cut off square there. */
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.45), 0 2px 6px rgba(0, 0, 0, 0.3);
     }
     [data-theme="light"] .polaroid img {
-      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.16), 0 2px 6px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.16), 0 2px 6px rgba(0, 0, 0, 0.1);
     }
     /* The photo is tilted; the caption stays level so the tilt reads as
        deliberate rather than as a crooked block of text. */
