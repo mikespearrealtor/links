@@ -267,6 +267,87 @@
       margin-top: 9px;
     }
 
+    /* ── Easter egg: the tagline opens a Polaroid from the Acker-Blum days ──
+       Unmarked at rest by design - the hover underline is the only tell, and
+       touch devices get none. It stays a real <button> so keyboard and screen
+       reader users can still find it. */
+    .tagline-toggle {
+      font: inherit;
+      color: inherit;
+      background: none;
+      border: 0;
+      padding: 0;
+      margin: 0;
+      text-align: left;
+      cursor: pointer;
+      border-bottom: 1px dotted transparent;
+      transition: color 0.3s ease, border-bottom-color 0.3s ease;
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .tagline-toggle:hover {
+        color: var(--text);
+        border-bottom-color: var(--faint);
+      }
+    }
+    .tagline-toggle:focus-visible {
+      outline: 1px solid var(--accent);
+      outline-offset: 4px;
+    }
+
+    /* Height is set in px by the toggle script and released to auto once open,
+       so the reveal eases over the real content height and still reflows on
+       resize. */
+    .polaroid-wrap {
+      overflow: hidden;
+      height: 0;
+      transition: height 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .polaroid {
+      width: 176px;
+      margin: 16px 0 2px;
+      transform: translateY(-8px);
+      opacity: 0;
+      transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease;
+    }
+    .polaroid-wrap.open .polaroid {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    .polaroid img {
+      display: block;
+      width: 100%;
+      height: auto;
+      /* Tilt the photo only - the caption below stays level. */
+      transform: rotate(-2.6deg);
+      transform-origin: 40% 100%;
+      /* Reserved explicitly: the src is attached on demand, and without a
+         known ratio the row would open against a zero-height box. */
+      aspect-ratio: 787 / 960;
+      border-radius: 2px;
+      /* The scan is a real Polaroid - white border and handwriting included -
+         so the only styling it needs is the shadow that lifts it off the page. */
+      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.45), 0 2px 6px rgba(0, 0, 0, 0.3);
+    }
+    [data-theme="light"] .polaroid img {
+      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.16), 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+    /* The photo is tilted; the caption stays level so the tilt reads as
+       deliberate rather than as a crooked block of text. */
+    .polaroid figcaption {
+      font-size: 11.5px;
+      line-height: 1.6;
+      letter-spacing: 0.03em;
+      color: var(--sub);
+      margin-top: 14px;
+      max-width: 260px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .polaroid-wrap,
+      .polaroid { transition: none; }
+    }
+
     /* ── Link index ── */
     .group {
       margin-top: 34px;
@@ -1106,7 +1187,17 @@
 
       <h1 class="name"><span class="mask"><span class="line l1">Mike</span></span><span class="mask"><span class="line l2">Spear</span></span></h1>
       <p class="eyebrow">Compass Real Estate<span class="eb-sep"> &middot; </span><span class="eb-loc">Houston, Texas</span></p>
-      <p class="tagline">Thirty-five years of Houston real estate</p>
+      <p class="tagline">
+        <button class="tagline-toggle" id="taglineToggle" type="button"
+                aria-expanded="false" aria-controls="polaroid">Thirty-five years of Houston real estate</button>
+      </p>
+      <div class="polaroid-wrap" id="polaroid">
+        <figure class="polaroid">
+          <img data-src="/acker-blum.jpg" alt="Mike Spear at his desk during his Acker-Blum years, in a yellow shirt and tie beside a wall of paper files"
+               width="787" height="960" decoding="async">
+          <figcaption>Acker&#8209;Blum days &mdash; back when the files were paper.</figcaption>
+        </figure>
+      </div>
 
       <section class="group">
         <h2 class="label">Profiles</h2>
@@ -1370,6 +1461,45 @@
       localStorage.setItem('theme', next);
       setThemeColor(next);
     });
+
+    (function () {
+      var toggle = document.getElementById('taglineToggle');
+      var wrap = document.getElementById('polaroid');
+      var img = wrap.querySelector('img');
+
+      // The photo sits in a zero-height container, so lazy loading never fires
+      // on its own. Warm it on hover/focus and the reveal has nothing to wait on.
+      function preload() {
+        if (img.dataset.src) {
+          img.src = img.dataset.src;
+          delete img.dataset.src;
+        }
+      }
+      toggle.addEventListener('mouseenter', preload);
+      toggle.addEventListener('focus', preload);
+
+      toggle.addEventListener('click', function () {
+        preload();
+        var open = !wrap.classList.contains('open');
+        wrap.classList.toggle('open', open);
+        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        // Animate from the current height either way, so a click mid-transition
+        // reverses smoothly instead of jumping.
+        wrap.style.height = wrap.getBoundingClientRect().height + 'px';
+        void wrap.offsetHeight;
+        wrap.style.height = open ? wrap.scrollHeight + 'px' : '0px';
+        // Reduced motion means no transitionend to wait for.
+        if (!parseFloat(getComputedStyle(wrap).transitionDuration)) settle();
+      });
+
+      // Released to auto once open so the photo still reflows on resize.
+      function settle() {
+        if (wrap.classList.contains('open')) wrap.style.height = 'auto';
+      }
+      wrap.addEventListener('transitionend', function (e) {
+        if (e.propertyName === 'height') settle();
+      });
+    })();
 
     (function () {
       var overlay = document.getElementById('qrOverlay');
