@@ -55,8 +55,14 @@ REPO_ROOT = pathlib.Path(__file__).resolve().parent.parent
 # Katy, Manvel and Clear Lake are each a good half-hour past the edge, and
 # widening the box to hold them would squeeze the inner loop into a smudge.
 # render-listings.py reads these back out of basemap.json.
+# The north/south bounds are cropped tighter than the east/west ones so the
+# frame comes out about 1.4:1. Two of these now sit on the page where one
+# photo used to, and at the natural 1.25:1 they ate more of the scroll than
+# the rows they belong to. This costs no listings at all - the nearest one to
+# an edge is still comfortably inside - and 610 keeps a couple of miles of
+# margin top and bottom.
 MAP_WEST, MAP_EAST = -95.545, -95.215
-MAP_SOUTH, MAP_NORTH = 29.638, 29.868
+MAP_SOUTH, MAP_NORTH = 29.652, 29.856
 MAP_W = 340
 
 TIGERWEB = "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb"
