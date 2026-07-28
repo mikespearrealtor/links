@@ -14,9 +14,8 @@ interstates and US highways next, then the tollways, then the state highways
 that break up the ground in between.
 
 The Loop is also emitted as a closed ring, not just a line. That is what lets
-the page wash the inside of it with a tint - the map's whole point is that the
-work is concentrated in there - and it doubles as the test for whether an
-individual address is inside the Loop or not.
+the page wash the inside of it with a tint - the map's whole point is that
+the work is concentrated in there.
 
 Run by hand, not in CI. Freeways do not move, so the output is committed and
 the daily workflow just reads it.
@@ -439,9 +438,6 @@ def main() -> None:
         # underneath, where a unit or two of give never shows.
         "loop": to_path(loops),
         "loopFill": to_path([ring], close=True),
-        # The same ring as coordinates, so render-listings.py can ask whether
-        # a given house is inside the Loop without parsing the path string.
-        "loopRing": [[round(x, 1), round(y, 1)] for x, y in ring],
         "freeways": to_path(freeways),
         "tollways": to_path(tollways),
         "arterials": to_path(arterials),

@@ -421,34 +421,6 @@ def dense(points: list) -> list:
             >= HEAT_MIN]
 
 
-def inside_ring(x: float, y: float, ring: list) -> bool:
-    """Whether a point falls within the 610 ring, by ray casting."""
-    hit = False
-    count = len(ring)
-    for index in range(count):
-        x1, y1 = ring[index]
-        x2, y2 = ring[(index + 1) % count]
-        if (y1 > y) != (y2 > y) and x < (x2 - x1) * (y - y1) / (y2 - y1) + x1:
-            hit = not hit
-    return hit
-
-
-def loop_ring(basemap: dict) -> list:
-    """basemap.json's 610 ring as coordinate pairs, or [] if it is unusable."""
-    ring = basemap.get("loopRing")
-    if not isinstance(ring, list) or len(ring) < 3:
-        return []
-    points = []
-    for pair in ring:
-        if not (isinstance(pair, list) and len(pair) == 2):
-            return []
-        try:
-            points.append((float(pair[0]), float(pair[1])))
-        except (TypeError, ValueError):
-            return []
-    return points
-
-
 def layer(basemap: dict, key: str, css: str, closed: bool = False) -> list[str]:
     """One <path> for a basemap layer, or nothing if that layer came back empty.
 
@@ -592,44 +564,12 @@ def render_map(listings: list[dict], sales: list[dict], geo: dict,
         keys.append(f'<span class="map-off">{missing} outside this view</span>')
 
     inner = INDENT + "  "
-    lines = []
-    claim = loop_claim(listings, sales, geo, basemap, frame)
-    if claim:
-        lines.append(f'{inner}<p class="map-claim">{claim}</p>')
-    lines.append(f'{inner}<div class="map-frame">')
+    lines = [f'{inner}<div class="map-frame">']
     lines.extend(f"{inner}  {line}" for line in svg)
     lines.append(f"{inner}</div>")
     if keys:
         lines.append(f'{inner}<p class="map-legend">{"".join(keys)}</p>')
     return "\n".join(lines)
-
-
-def loop_claim(listings: list[dict], sales: list[dict], geo: dict,
-               basemap: dict, frame: "Frame") -> str:
-    """"15 of 24 inside the 610 Loop", or "" if it cannot be worked out.
-
-    Counted over every address we have a coordinate for, including the ones
-    that fall outside the frame - Katy and Manvel are emphatically not inside
-    the Loop, and quietly dropping them would inflate the fraction.
-    """
-    ring = loop_ring(basemap)
-    if not ring:
-        return ""
-    inside = total = 0
-    for record in list(listings) + list(sales):
-        point = geo.get(geo_key(record.get("url", "")) or "")
-        if not (isinstance(point, list) and len(point) == 2):
-            continue
-        try:
-            x, y = frame.project(float(point[0]), float(point[1]))
-        except (TypeError, ValueError):
-            continue
-        total += 1
-        inside += inside_ring(x, y, ring)
-    if not total or not inside:
-        return ""
-    noun = "home" if total == 1 else "homes"
-    return (f'<strong>{inside} of {total}</strong> {noun} inside the 610 Loop')
 
 
 def find_region(page: str, start_marker: str, end_marker: str):
