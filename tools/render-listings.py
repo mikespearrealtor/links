@@ -260,11 +260,12 @@ def spec_parts(record: dict) -> list[str]:
 
 
 def meta_line(listing: dict) -> str:
-    """"Montrose - 3 bd - 2 ba - 2,105 sqft - Pending"."""
+    """"Montrose - 3 bd - 2 ba - 2,105 sqft - Pending", status colored."""
     parts = spec_parts(listing)
-    # Active is the default state and adds nothing; call out anything else.
+    # Active is the default state and adds nothing; call out anything else,
+    # flagged with its own color so it doesn't read as just another spec.
     if listing.get("status") and listing["status"].lower() != "active":
-        parts.append(esc(listing["status"]))
+        parts.append(f'<span class="row-status">{esc(listing["status"])}</span>')
     return " &middot; ".join(parts)
 
 
