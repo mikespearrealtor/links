@@ -304,7 +304,7 @@ def render_row(listing: dict, number: int) -> list[str]:
     if showing:
         text.append(f'<span class="oh-when">{showing}</span>')
     return [
-        f'{INDENT}<a class="row" href="{esc(listing["url"])}" target="_blank" rel="noopener">',
+        f'{INDENT}<a class="row"{home_attr(listing)} href="{esc(listing["url"])}" target="_blank" rel="noopener">',
         f'{INDENT}  <span class="num">{number:02d}</span>',
         f'{INDENT}  <span class="row-text">{"".join(text)}</span>',
         f"{INDENT}  {price_cell(listing)}",
@@ -320,7 +320,7 @@ def render_sold_row(sale: dict, number: int) -> list[str]:
     cell = (f'<span class="row-price">{money(price)}</span>' if price
             else '<span class="row-price">&mdash;</span>')
     return [
-        f'{INDENT}<a class="row" href="{esc(sale["url"])}" target="_blank" rel="noopener">',
+        f'{INDENT}<a class="row"{home_attr(sale)} href="{esc(sale["url"])}" target="_blank" rel="noopener">',
         f'{INDENT}  <span class="num">{number:02d}</span>',
         f'{INDENT}  <span class="row-text">{"".join(text)}</span>',
         f"{INDENT}  {cell}",
@@ -391,10 +391,16 @@ def plot(records: list[dict], geo: dict, radius: float,
     A record with no cached coordinate is not the same as one that falls
     outside the frame. The first is a gap we would want to fix, the second is
     the frame working as designed, so only the second is reported to readers.
+
+    Each point keeps the address slug it was plotted from, so the dot and the
+    row for the same home can find each other on the page. Position alone is
+    not enough to pair them: the list is capped and the map is not, so the two
+    are different lengths and an index would line the wrong ones up.
     """
     points, off_frame = [], 0
     for record in records:
-        point = geo.get(geo_key(record.get("url", "")) or "")
+        key = geo_key(record.get("url", ""))
+        point = geo.get(key or "")
         if not (isinstance(point, list) and len(point) == 2):
             continue
         try:
@@ -402,7 +408,7 @@ def plot(records: list[dict], geo: dict, radius: float,
         except (TypeError, ValueError):
             continue
         if frame.holds(x, y, radius):
-            points.append((x, y))
+            points.append((x, y, key))
         else:
             off_frame += 1
     return points, off_frame
@@ -414,10 +420,20 @@ def geo_key(url: str) -> str | None:
     return match.group(1) if match else None
 
 
+def home_attr(record: dict) -> str:
+    """The attribute pairing a row with its dot, or nothing if there is none.
+
+    A record whose URL yields no slug has no dot to pair with, and emitting
+    an empty attribute would make every such row match every other one.
+    """
+    key = geo_key(record.get("url", ""))
+    return f' data-home="{esc(key)}"' if key else ""
+
+
 def dense(points: list) -> list:
     """The points with enough close neighbours to be worth glowing."""
-    return [(x, y) for x, y in points
-            if sum(1 for ox, oy in points
+    return [(x, y) for x, y, _ in points
+            if sum(1 for ox, oy, _ in points
                    if (ox - x) ** 2 + (oy - y) ** 2 <= HEAT_NEAR ** 2) - 1
             >= HEAT_MIN]
 
@@ -536,14 +552,14 @@ def render_map(listings: list[dict], sales: list[dict], geo: dict,
     # for sale in the middle of a block already sold is the thing worth
     # seeing. Each live dot gets a halo first so it still separates from a
     # pile of sales underneath it.
-    for x, y in sold_points:
-        svg.append(f'  <circle class="map-sold" cx="{x:.1f}" cy="{y:.1f}" '
-                   f'r="{SOLD_DOT}"/>')
+    for x, y, key in sold_points:
+        svg.append(f'  <circle class="map-sold" data-home="{esc(key)}" '
+                   f'cx="{x:.1f}" cy="{y:.1f}" r="{SOLD_DOT}"/>')
     # The halo exists to punch a live dot out of a pile of sales underneath
     # it. On the listings map there is nothing underneath, where it stops
     # reading as separation and starts reading as a drop shadow.
     if sold_points:
-        for x, y in live_points:
+        for x, y, _ in live_points:
             svg.append(f'  <circle class="map-halo" cx="{x:.1f}" cy="{y:.1f}" '
                        f'r="{LIVE_RING}"/>')
 
@@ -552,13 +568,13 @@ def render_map(listings: list[dict], sales: list[dict], geo: dict,
     # through the cycle on the first frame rather than all firing together -
     # in unison it reads as a machine, offset it reads as activity. The CSS
     # stops the animation outright under prefers-reduced-motion.
-    for index, (x, y) in enumerate(live_points):
+    for index, (x, y, _) in enumerate(live_points):
         svg.append(f'  <circle class="map-pulse" cx="{x:.1f}" cy="{y:.1f}" '
                    f'r="{LIVE_DOT}" style="animation-delay:'
                    f'-{index * PULSE_STAGGER:.1f}s"/>')
-    for x, y in live_points:
-        svg.append(f'  <circle class="map-live" cx="{x:.1f}" cy="{y:.1f}" '
-                   f'r="{LIVE_DOT}"/>')
+    for x, y, key in live_points:
+        svg.append(f'  <circle class="map-live" data-home="{esc(key)}" '
+                   f'cx="{x:.1f}" cy="{y:.1f}" r="{LIVE_DOT}"/>')
     svg.append("</svg>")
 
     keys = []
