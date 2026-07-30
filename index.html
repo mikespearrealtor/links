@@ -1050,6 +1050,28 @@
        underneath"; over empty ground each leaves the glow exactly as it was. */
     .map-heat {
       mix-blend-mode: var(--map-heat-blend);
+      animation: mapHeatBreathe 24s ease-in-out infinite;
+    }
+    /* A slow swell in the patch's strength, so the sold map is not dead
+       beside the one with pulses on it. Deliberately unlike the pulse: no
+       ring, no expansion, no start and no end a reader can point to, because
+       motion on this page means "for sale, right now" and closed sales must
+       not borrow that. At 24 seconds a full cycle the patch shifts by about
+       a level of 255 per second at its steepest - too slow to read as
+       animation, fast enough that the map is not frozen.
+
+       The opacity is on the group, not on fill-opacity of the circles: the
+       group's blurred result can be composited at a new alpha each frame,
+       whereas animating the fill would re-run a stdDeviation=9 Gaussian on
+       every one of them. */
+    @keyframes mapHeatBreathe {
+      0%, 100% { opacity: 1; }
+      50%      { opacity: 0.78; }
+    }
+    /* The glow carries meaning - it is the argument the section makes - so
+       unlike the pulse it stays at full strength rather than disappearing. */
+    @media (prefers-reduced-motion: reduce) {
+      .map-heat { animation: none; }
     }
     .map-heat circle {
       fill: var(--hint);
