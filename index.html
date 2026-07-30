@@ -1255,7 +1255,19 @@
       background: var(--muted);
       opacity: 0.42;
     }
-    .map-off { color: var(--faint); }
+    .map-off {
+      color: var(--faint);
+      transition: color 0.22s ease;
+    }
+    /* Hovering a row whose home the frame left out lights this note instead
+       of a dot. The map has no answer for that row, and the honest answer is
+       already written here - it just has to be pointed at. Faint to accent is
+       a long way on a page this quiet, which is what the note needs to be
+       worth reading at the moment it becomes relevant. */
+    .map-off.is-lit { color: var(--hint); }
+    @media (prefers-reduced-motion: reduce) {
+      .map-off { transition: none; }
+    }
 
     /* Source attribution - keep visible. */
     .mls-note {
@@ -1424,7 +1436,7 @@
           <span class="row-text"><span class="row-main">1208 Welch Street</span><span class="row-sub">Montrose &middot; 3 bd &middot; 4 ba &middot; 3,590 sqft</span><span class="oh-when">Open Sunday, August 2 &middot; 2:00&ndash;4:00 PM</span></span>
           <span class="row-price">$839,000</span>
         </a>
-        <a class="row" data-home="5016-Blooming-Hibiscus-Ln-Manvel-TX-77578" href="https://www.compass.com/homedetails/5016-Blooming-Hibiscus-Ln-Manvel-TX-77578/BID03_pid/" target="_blank" rel="noopener">
+        <a class="row" data-home="5016-Blooming-Hibiscus-Ln-Manvel-TX-77578" data-offmap href="https://www.compass.com/homedetails/5016-Blooming-Hibiscus-Ln-Manvel-TX-77578/BID03_pid/" target="_blank" rel="noopener">
           <span class="num">07</span>
           <span class="row-text"><span class="row-main">5016 Blooming Hibiscus Lane</span><span class="row-sub">Pomona &middot; 4 bd &middot; 4 ba &middot; 2,867 sqft &middot; <span class="row-status">Pending</span></span></span>
           <span class="row-price">$689,000</span>
@@ -1495,12 +1507,12 @@
           <span class="row-text"><span class="row-main">1215 West Pierce Street</span><span class="row-sub">Rosemont Heights &middot; 4 bd &middot; 4.5 ba</span></span>
           <span class="row-price">$1,560,000</span>
         </a>
-        <a class="row" data-home="2826-Acacia-Grv-Dr-Katy-TX-77494" href="https://www.compass.com/homedetails/2826-Acacia-Grv-Dr-Katy-TX-77494/BS4VB_pid/" target="_blank" rel="noopener">
+        <a class="row" data-home="2826-Acacia-Grv-Dr-Katy-TX-77494" data-offmap href="https://www.compass.com/homedetails/2826-Acacia-Grv-Dr-Katy-TX-77494/BS4VB_pid/" target="_blank" rel="noopener">
           <span class="num">11</span>
           <span class="row-text"><span class="row-main">2826 Acacia Grv Drive</span><span class="row-sub">Fort Bend County &middot; 4 bd &middot; 3 ba</span></span>
           <span class="row-price">$489,900</span>
         </a>
-        <a class="row" data-home="7522-Deep-Forest-Dr-Houston-TX-77088" href="https://www.compass.com/homedetails/7522-Deep-Forest-Dr-Houston-TX-77088/A49WM_pid/" target="_blank" rel="noopener">
+        <a class="row" data-home="7522-Deep-Forest-Dr-Houston-TX-77088" data-offmap href="https://www.compass.com/homedetails/7522-Deep-Forest-Dr-Houston-TX-77088/A49WM_pid/" target="_blank" rel="noopener">
           <span class="num">12</span>
           <span class="row-text"><span class="row-main">7522 Deep Forest Drive</span><span class="row-sub">Greater Inwood &middot; 4 bd &middot; 3 ba</span></span>
           <span class="row-price">$289,900</span>
@@ -1525,12 +1537,12 @@
           <span class="row-text"><span class="row-main">10810 Burdine Street</span><span class="row-sub">Westbury &middot; 3 bd &middot; 2 ba</span></span>
           <span class="row-price">$429,000</span>
         </a>
-        <a class="row" data-home="12406-Whittington-Dr-Houston-TX-77077" href="https://www.compass.com/homedetails/12406-Whittington-Dr-Houston-TX-77077/BW9GK_pid/" target="_blank" rel="noopener">
+        <a class="row" data-home="12406-Whittington-Dr-Houston-TX-77077" data-offmap href="https://www.compass.com/homedetails/12406-Whittington-Dr-Houston-TX-77077/BW9GK_pid/" target="_blank" rel="noopener">
           <span class="num">17</span>
           <span class="row-text"><span class="row-main">12406 Whittington Drive</span><span class="row-sub">Ashford South &middot; 3 bd &middot; 2 ba</span></span>
           <span class="row-price">$436,900</span>
         </a>
-        <a class="row" data-home="13818-Mill-Garden-Ct-Houston-TX-77059" href="https://www.compass.com/homedetails/13818-Mill-Garden-Ct-Houston-TX-77059/A11CK_pid/" target="_blank" rel="noopener">
+        <a class="row" data-home="13818-Mill-Garden-Ct-Houston-TX-77059" data-offmap href="https://www.compass.com/homedetails/13818-Mill-Garden-Ct-Houston-TX-77059/A11CK_pid/" target="_blank" rel="noopener">
           <span class="num">18</span>
           <span class="row-text"><span class="row-main">13818 Mill Garden Court</span><span class="row-sub">Northfork &middot; 4 bd &middot; 2.5 ba</span></span>
           <span class="row-price">$405,000</span>
@@ -1795,14 +1807,17 @@
     // lights the other. Both ends are wired per section, because the two maps
     // must never light each other's rows.
     //
-    // Only homes that have both a dot and a row are wired at all. A row whose
-    // sale sits outside the frame has nothing to light, and lighting nothing
-    // while dimming the whole map would read as a bug rather than an answer.
+    // A row whose home the frame excluded lights the "outside this view" note
+    // instead, which is where that home is actually accounted for. Rows with
+    // neither a dot nor a place in that count are left unwired: those are
+    // homes missing from geo.json, and pointing at the note would blame the
+    // frame for a gap in our own data.
     (function () {
       Array.prototype.forEach.call(
         document.querySelectorAll('section.group'), function (section) {
           var map = section.querySelector('svg.map');
           if (!map) return;
+          var offNote = section.querySelector('.map-off');
 
           var pairs = {};
           function bucket(key) {
@@ -1818,17 +1833,32 @@
               bucket(row.getAttribute('data-home')).rows.push(row);
             });
 
-          function light(pair, on) {
+          function light(targets, on) {
             map.classList.toggle('is-linking', on);
-            pair.dots.forEach(function (el) { el.classList.toggle('is-lit', on); });
-            pair.rows.forEach(function (el) { el.classList.toggle('is-lit', on); });
+            targets.forEach(function (el) { el.classList.toggle('is-lit', on); });
           }
 
           Object.keys(pairs).forEach(function (key) {
             var pair = pairs[key];
-            if (!pair.dots.length || !pair.rows.length) return;
-            function on() { light(pair, true); }
-            function off() { light(pair, false); }
+            if (!pair.rows.length) return;
+
+            // A home the frame left out has no dot to light, so its row
+            // lights the note that already accounts for it. The map still
+            // goes quiet: every dot dimming with the answer written beside
+            // it says "not on here" more plainly than leaving it untouched.
+            var targets;
+            if (pair.dots.length) {
+              targets = pair.dots.concat(pair.rows);
+            } else if (offNote && pair.rows.some(function (row) {
+              return row.hasAttribute('data-offmap');
+            })) {
+              targets = pair.rows.concat([offNote]);
+            } else {
+              return;
+            }
+
+            function on() { light(targets, true); }
+            function off() { light(targets, false); }
             // Focus is wired on the rows only. The rows are already links and
             // already in the tab order; putting thirteen dots in it as well
             // would cost a keyboard reader more than the highlight is worth.

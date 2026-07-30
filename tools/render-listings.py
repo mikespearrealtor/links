@@ -297,14 +297,14 @@ def rank(listing: dict) -> tuple:
     return (-(listing.get("price") or 0), listing.get("address") or "")
 
 
-def render_row(listing: dict, number: int) -> list[str]:
+def render_row(listing: dict, number: int, off_map: set = frozenset()) -> list[str]:
     text = [f'<span class="row-main">{esc(listing["address"])}</span>',
             f'<span class="row-sub">{meta_line(listing)}</span>']
     showing = open_house_line(listing.get("openHouse", ""))
     if showing:
         text.append(f'<span class="oh-when">{showing}</span>')
     return [
-        f'{INDENT}<a class="row"{home_attr(listing)} href="{esc(listing["url"])}" target="_blank" rel="noopener">',
+        f'{INDENT}<a class="row"{home_attr(listing, off_map)} href="{esc(listing["url"])}" target="_blank" rel="noopener">',
         f'{INDENT}  <span class="num">{number:02d}</span>',
         f'{INDENT}  <span class="row-text">{"".join(text)}</span>',
         f"{INDENT}  {price_cell(listing)}",
@@ -312,7 +312,7 @@ def render_row(listing: dict, number: int) -> list[str]:
     ]
 
 
-def render_sold_row(sale: dict, number: int) -> list[str]:
+def render_sold_row(sale: dict, number: int, off_map: set = frozenset()) -> list[str]:
     """A closed sale as a plain row: no photo, price labelled by the note."""
     text = [f'<span class="row-main">{esc(sale["address"])}</span>',
             f'<span class="row-sub">{sold_meta_line(sale)}</span>']
@@ -320,7 +320,7 @@ def render_sold_row(sale: dict, number: int) -> list[str]:
     cell = (f'<span class="row-price">{money(price)}</span>' if price
             else '<span class="row-price">&mdash;</span>')
     return [
-        f'{INDENT}<a class="row"{home_attr(sale)} href="{esc(sale["url"])}" target="_blank" rel="noopener">',
+        f'{INDENT}<a class="row"{home_attr(sale, off_map)} href="{esc(sale["url"])}" target="_blank" rel="noopener">',
         f'{INDENT}  <span class="num">{number:02d}</span>',
         f'{INDENT}  <span class="row-text">{"".join(text)}</span>',
         f"{INDENT}  {cell}",
@@ -328,20 +328,22 @@ def render_sold_row(sale: dict, number: int) -> list[str]:
     ]
 
 
-def render_sold(sales: list[dict], start_number: int, chart: str = "") -> str:
+def render_sold(sales: list[dict], start_number: int, chart: str = "",
+                off_map: set = frozenset()) -> str:
     lines = [f'{INDENT}<section class="group">',
              f'{INDENT}  <h2 class="label">Recently sold in Houston</h2>']
     if chart:
         lines.append(chart)
     for offset, sale in enumerate(sales):
         lines.extend("  " + line for line in
-                     render_sold_row(sale, start_number + offset))
+                     render_sold_row(sale, start_number + offset, off_map))
     lines.append(f'{INDENT}  <p class="mls-note">{esc(SOLD_ATTRIBUTION)}</p>')
     lines.append(f"{INDENT}</section>")
     return "\n".join(lines)
 
 
-def render(listings: list[dict], start_number: int, chart: str = "") -> str:
+def render(listings: list[dict], start_number: int, chart: str = "",
+           off_map: set = frozenset()) -> str:
     lines = [f'{INDENT}<section class="group">',
              f'{INDENT}  <h2 class="label">Current listings in Houston</h2>']
     if chart:
@@ -349,7 +351,7 @@ def render(listings: list[dict], start_number: int, chart: str = "") -> str:
 
     for offset, listing in enumerate(sorted(listings, key=rank)):
         lines.extend("  " + line for line in  # nest inside <section>
-                     render_row(listing, start_number + offset))
+                     render_row(listing, start_number + offset, off_map))
 
     lines.append(f'{INDENT}  <p class="mls-note">{esc(ATTRIBUTION)}</p>')
     lines.append(f"{INDENT}</section>")
@@ -385,19 +387,25 @@ class Frame:
 
 
 def plot(records: list[dict], geo: dict, radius: float,
-         frame: "Frame") -> tuple[list, int]:
-    """Project every record we have a coordinate for; count the ones that miss.
+         frame: "Frame") -> tuple[list, list]:
+    """Project every record we have a coordinate for; name the ones that miss.
 
     A record with no cached coordinate is not the same as one that falls
     outside the frame. The first is a gap we would want to fix, the second is
     the frame working as designed, so only the second is reported to readers.
+
+    The misses come back as slugs rather than a tally, because the page needs
+    to know which homes they are and not merely how many: hovering one of
+    those rows lights the "outside this view" note instead of a dot, and a
+    row that is missing a coordinate must not make that claim - it is not in
+    that count.
 
     Each point keeps the address slug it was plotted from, so the dot and the
     row for the same home can find each other on the page. Position alone is
     not enough to pair them: the list is capped and the map is not, so the two
     are different lengths and an index would line the wrong ones up.
     """
-    points, off_frame = [], 0
+    points, off_frame = [], []
     for record in records:
         key = geo_key(record.get("url", ""))
         point = geo.get(key or "")
@@ -410,7 +418,7 @@ def plot(records: list[dict], geo: dict, radius: float,
         if frame.holds(x, y, radius):
             points.append((x, y, key))
         else:
-            off_frame += 1
+            off_frame.append(key)
     return points, off_frame
 
 
@@ -420,14 +428,22 @@ def geo_key(url: str) -> str | None:
     return match.group(1) if match else None
 
 
-def home_attr(record: dict) -> str:
-    """The attribute pairing a row with its dot, or nothing if there is none.
+def home_attr(record: dict, off_map: set = frozenset()) -> str:
+    """The attributes pairing a row with its dot, or with the legend instead.
 
     A record whose URL yields no slug has no dot to pair with, and emitting
     an empty attribute would make every such row match every other one.
+
+    `data-offmap` marks the rows the map deliberately does not show, so that
+    hovering one lights the "outside this view" note. Only homes the frame
+    actually excluded get it. A home missing from geo.json is also dotless,
+    but it is not in that count, and saying it is would be a lie told to
+    cover a gap in our own data.
     """
     key = geo_key(record.get("url", ""))
-    return f' data-home="{esc(key)}"' if key else ""
+    if not key:
+        return ""
+    return f' data-home="{esc(key)}"' + (" data-offmap" if key in off_map else "")
 
 
 def dense(points: list) -> list:
@@ -453,7 +469,7 @@ def layer(basemap: dict, key: str, css: str, closed: bool = False) -> list[str]:
 
 
 def render_map(listings: list[dict], sales: list[dict], geo: dict,
-               basemap: dict, tag: str) -> str:
+               basemap: dict, tag: str) -> tuple[str, set]:
     """A map block to sit at the top of a section, or "" if there is nothing
     worth drawing.
 
@@ -471,15 +487,15 @@ def render_map(listings: list[dict], sales: list[dict], geo: dict,
         frame = Frame(basemap)
     except (KeyError, TypeError, ValueError) as exc:
         print(f"WARNING: basemap.json is not usable ({exc}).")
-        return ""
+        return "", set()
     if not basemap.get("freeways"):
         print("WARNING: basemap.json has no road geometry.")
-        return ""
+        return "", set()
 
     live_points, live_off = plot(listings, geo, LIVE_DOT, frame)
     sold_points, sold_off = plot(sales, geo, SOLD_DOT, frame)
     if not live_points and not sold_points:
-        return ""
+        return "", set()
 
     # A screen reader gets the summary a sighted reader takes from the
     # picture, since the picture itself says nothing out loud.
@@ -587,7 +603,8 @@ def render_map(listings: list[dict], sales: list[dict], geo: dict,
                     f"{len(sold_points)} recent {noun}</span>")
     missing = live_off + sold_off
     if missing:
-        keys.append(f'<span class="map-off">{missing} outside this view</span>')
+        keys.append(f'<span class="map-off">{len(missing)} '
+                    "outside this view</span>")
 
     inner = INDENT + "  "
     lines = [f'{inner}<div class="map-frame">']
@@ -595,7 +612,10 @@ def render_map(listings: list[dict], sales: list[dict], geo: dict,
     lines.append(f"{inner}</div>")
     if keys:
         lines.append(f'{inner}<p class="map-legend">{"".join(keys)}</p>')
-    return "\n".join(lines)
+    # The slugs travel back with the drawing so the rows can be marked. With
+    # no legend there is nothing for such a row to light, so the set is empty.
+    off_map = {key for key in missing if key} if keys else set()
+    return "\n".join(lines), off_map
 
 
 def find_region(page: str, start_marker: str, end_marker: str):
@@ -671,12 +691,15 @@ def main() -> None:
 
     # Each section gets a map of its own list and nothing else. The suffixes
     # keep the two SVGs' ids apart.
-    live_map = render_map(listings, [], geo, basemap, "a") if listings else ""
-    sold_map = render_map([], all_sales, geo, basemap, "b") if all_sales else ""
+    live_map, live_off_map = (render_map(listings, [], geo, basemap, "a")
+                              if listings else ("", set()))
+    sold_map, sold_off_map = (render_map([], all_sales, geo, basemap, "b")
+                              if all_sales else ("", set()))
 
-    section = render(listings, first, live_map) if listings else ""
-    sold_section = (render_sold(sales, first + len(listings), sold_map)
-                    if sales else "")
+    section = (render(listings, first, live_map, live_off_map)
+               if listings else "")
+    sold_section = (render_sold(sales, first + len(listings), sold_map,
+                                sold_off_map) if sales else "")
 
     hidden = [name for name, rows in (("Current listings", listings),
                                       ("Recently sold", sales)) if not rows]
