@@ -1050,23 +1050,30 @@
        underneath"; over empty ground each leaves the glow exactly as it was. */
     .map-heat {
       mix-blend-mode: var(--map-heat-blend);
-      animation: mapHeatBreathe 24s ease-in-out infinite;
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: mapHeatBreathe 12s ease-in-out infinite;
     }
     /* A slow swell in the patch's strength, so the sold map is not dead
        beside the one with pulses on it. Deliberately unlike the pulse: no
        ring, no expansion, no start and no end a reader can point to, because
        motion on this page means "for sale, right now" and closed sales must
-       not borrow that. At 24 seconds a full cycle the patch shifts by about
-       a level of 255 per second at its steepest - too slow to read as
-       animation, fast enough that the map is not frozen.
+       not borrow that.
 
-       The opacity is on the group, not on fill-opacity of the circles: the
-       group's blurred result can be composited at a new alpha each frame,
-       whereas animating the fill would re-run a stdDeviation=9 Gaussian on
-       every one of them. */
+       A first pass ran 24s from 1 to 0.78 opacity and was invisible: twelve
+       levels of 255 spread over twelve seconds is about two levels across a
+       glance, well under what the eye reads as change, and a blurred patch
+       has no edge to track. The swell is both quicker and deeper now, and it
+       carries a little scale, because a patch that grows moves against the
+       roads and dots while a patch that only dims does not.
+
+       Both properties are on the group rather than the circles: opacity and
+       transform recomposite the group's cached result, whereas animating
+       fill-opacity or r would re-run a stdDeviation=9 Gaussian over all
+       eight discs every frame. */
     @keyframes mapHeatBreathe {
-      0%, 100% { opacity: 1; }
-      50%      { opacity: 0.78; }
+      0%, 100% { opacity: 1;    transform: scale(1); }
+      50%      { opacity: 0.55; transform: scale(1.05); }
     }
     /* The glow carries meaning - it is the argument the section makes - so
        unlike the pulse it stays at full strength rather than disappearing. */
