@@ -6,7 +6,8 @@ untouched, so this is safe to re-run.
 
 Both sections open with a map of their own contents and continue as plain
 rows, in the same idiom as the Profiles / Get in touch / Documents sections.
-Row numbers continue from the last number already used on the page.
+Row numbers restart at 01 in each section, as the static sections do - they
+number a list, they are not a running count of everything on the page.
 
 The maps replaced a photo of the highest-priced listing. One house says one
 thing about one house; the same space spent on a map says where the work is,
@@ -70,8 +71,6 @@ SOLD_ATTRIBUTION = (
     "amounts shown are the last list price, not the sale price. "
     "Mike Spear, Compass RE Texas, LLC."
 )
-
-NUM_RE = re.compile(r'<span class="num">(\d+)</span>')
 
 # What a record has to look like before it goes on the page. These are not
 # style preferences - they are the line between "publish it" and "hide the
@@ -328,30 +327,30 @@ def render_sold_row(sale: dict, number: int, off_map: set = frozenset()) -> list
     ]
 
 
-def render_sold(sales: list[dict], start_number: int, chart: str = "",
+def render_sold(sales: list[dict], chart: str = "",
                 off_map: set = frozenset()) -> str:
     lines = [f'{INDENT}<section class="group">',
              f'{INDENT}  <h2 class="label">Recently sold in Houston</h2>']
     if chart:
         lines.append(chart)
-    for offset, sale in enumerate(sales):
+    for number, sale in enumerate(sales, start=1):
         lines.extend("  " + line for line in
-                     render_sold_row(sale, start_number + offset, off_map))
+                     render_sold_row(sale, number, off_map))
     lines.append(f'{INDENT}  <p class="mls-note">{esc(SOLD_ATTRIBUTION)}</p>')
     lines.append(f"{INDENT}</section>")
     return "\n".join(lines)
 
 
-def render(listings: list[dict], start_number: int, chart: str = "",
+def render(listings: list[dict], chart: str = "",
            off_map: set = frozenset()) -> str:
     lines = [f'{INDENT}<section class="group">',
              f'{INDENT}  <h2 class="label">Current listings in Houston</h2>']
     if chart:
         lines.append(chart)
 
-    for offset, listing in enumerate(sorted(listings, key=rank)):
+    for number, listing in enumerate(sorted(listings, key=rank), start=1):
         lines.extend("  " + line for line in  # nest inside <section>
-                     render_row(listing, start_number + offset, off_map))
+                     render_row(listing, number, off_map))
 
     lines.append(f'{INDENT}  <p class="mls-note">{esc(ATTRIBUTION)}</p>')
     lines.append(f"{INDENT}</section>")
@@ -627,15 +626,6 @@ def find_region(page: str, start_marker: str, end_marker: str):
     return start, end
 
 
-def strip_region(page: str, start_marker: str, end_marker: str) -> str:
-    """Page with one generated region removed, for counting row numbers."""
-    span = find_region(page, start_marker, end_marker)
-    if not span:
-        return page
-    start, end = span
-    return page[:start] + page[end + len(end_marker):]
-
-
 def splice(page: str, start_marker: str, end_marker: str, body: str) -> str:
     """Replace a region's contents, keeping both marker lines in place.
 
@@ -685,10 +675,6 @@ def main() -> None:
     basemap = load_object(pathlib.Path(args.basemap),
                           "the maps have nothing to draw on")
 
-    # Numbers already on the page, ignoring any inside either generated block.
-    static = strip_region(strip_region(page, START, END), SOLD_START, SOLD_END)
-    first = max((int(n) for n in NUM_RE.findall(static)), default=0) + 1
-
     # Each section gets a map of its own list and nothing else. The suffixes
     # keep the two SVGs' ids apart.
     live_map, live_off_map = (render_map(listings, [], geo, basemap, "a")
@@ -696,10 +682,10 @@ def main() -> None:
     sold_map, sold_off_map = (render_map([], all_sales, geo, basemap, "b")
                               if all_sales else ("", set()))
 
-    section = (render(listings, first, live_map, live_off_map)
+    section = (render(listings, live_map, live_off_map)
                if listings else "")
-    sold_section = (render_sold(sales, first + len(listings), sold_map,
-                                sold_off_map) if sales else "")
+    sold_section = (render_sold(sales, sold_map, sold_off_map)
+                    if sales else "")
 
     hidden = [name for name, rows in (("Current listings", listings),
                                       ("Recently sold", sales)) if not rows]
