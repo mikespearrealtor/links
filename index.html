@@ -1274,12 +1274,40 @@
     }
     /* Hovering a row whose home the frame left out lights this note instead
        of a dot. The map has no answer for that row, and the honest answer is
-       already written here - it just has to be pointed at. Faint to accent is
-       a long way on a page this quiet, which is what the note needs to be
-       worth reading at the moment it becomes relevant. */
-    .map-off.is-lit { color: var(--hint); }
+       already written here - it just has to be pointed at.
+
+       Colour alone was too quiet. The note sits up beside the map while the
+       pointer is down in the list, so a reader watching the row they are
+       hovering can miss a change that only happens once. It beats instead,
+       and the cycle starts at its brightest so the first beat lands the
+       instant the class does rather than a moment later. The halo is
+       currentColor, which is already the accent by the time it paints, so it
+       needs no colour of its own.
+
+       This is the only motion on the page that answers a gesture instead of
+       running on its own, which is why it may move at the moment everything
+       ambient is required to stop. */
+    @keyframes mapOffPulse {
+      0%, 100% {
+        text-shadow: 0 0 12px currentColor;
+        transform: scale(1.06);
+      }
+      50% {
+        text-shadow: 0 0 0 transparent;
+        transform: scale(1);
+      }
+    }
+    .map-off.is-lit {
+      color: var(--hint);
+      animation: mapOffPulse 1.4s ease-in-out infinite;
+    }
+    /* Emphatic without the beat: the halo stays lit, it just stops moving. */
     @media (prefers-reduced-motion: reduce) {
       .map-off { transition: none; }
+      .map-off.is-lit {
+        animation: none;
+        text-shadow: 0 0 12px currentColor;
+      }
     }
 
     /* Source attribution - keep visible. */
