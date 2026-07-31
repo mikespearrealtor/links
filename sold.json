@@ -1,5 +1,14 @@
 [
   {
+    "address": "5016 Blooming Hibiscus Lane",
+    "area": "Brazoria County",
+    "beds": 4,
+    "baths": 4,
+    "listPrice": 719000,
+    "updated": "2026-07-30",
+    "url": "https://www.compass.com/homedetails/5016-Blooming-Hibiscus-Ln-Manvel-TX-77578/BID03_pid/"
+  },
+  {
     "address": "1215 West Pierce Street",
     "area": "Rosemont Heights",
     "beds": 4,
@@ -150,14 +159,5 @@
     "listPrice": 1625000,
     "updated": "2025-11-14",
     "url": "https://www.compass.com/homedetails/1213-W-Pierce-St-Houston-TX-77019/21CO1G_pid/"
-  },
-  {
-    "address": "77 Chelsea Boulevard",
-    "area": "South End Villa",
-    "beds": 3,
-    "baths": 2.5,
-    "listPrice": 409900,
-    "updated": "2025-10-18",
-    "url": "https://www.compass.com/homedetails/77-Chelsea-Blvd-Houston-TX-77004/A0M8M_pid/"
   }
 ]

@@ -27,22 +27,11 @@
     "beds": 3,
     "baths": 4,
     "sqft": 3590,
-    "price": 839000,
+    "price": 825000,
     "status": "Active",
     "url": "https://www.compass.com/homedetails/1208-Welch-St-Houston-TX-77006/AR8UD_pid/",
     "photo": "https://www.compass.com/m/03ab0588d8d6917037347c08cbf2d03f6a5f97c5db310a1256988af1c826c51e/1024x768.jpg",
     "openHouse": "2026-08-02T14:00/16:00"
-  },
-  {
-    "address": "5016 Blooming Hibiscus Lane",
-    "area": "Pomona",
-    "beds": 4,
-    "baths": 4,
-    "sqft": 2867,
-    "price": 689000,
-    "status": "Pending",
-    "url": "https://www.compass.com/homedetails/5016-Blooming-Hibiscus-Ln-Manvel-TX-77578/BID03_pid/",
-    "photo": "https://www.compass.com/m/f3084d3532b754ef95436e60f86c6f2381b1d53f80a007afd4f502e81453ddae/1024x768.jpg"
   },
   {
     "address": "126 North Sidney Street",
