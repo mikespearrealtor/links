@@ -30,7 +30,8 @@
     "price": 825000,
     "status": "Active",
     "url": "https://www.compass.com/homedetails/1208-Welch-St-Houston-TX-77006/AR8UD_pid/",
-    "photo": "https://www.compass.com/m/03ab0588d8d6917037347c08cbf2d03f6a5f97c5db310a1256988af1c826c51e/1024x768.jpg"
+    "photo": "https://www.compass.com/m/03ab0588d8d6917037347c08cbf2d03f6a5f97c5db310a1256988af1c826c51e/1024x768.jpg",
+    "openHouse": "2026-08-09T14:00/16:00"
   },
   {
     "address": "126 North Sidney Street",
@@ -41,7 +42,8 @@
     "price": 519900,
     "status": "Active",
     "url": "https://www.compass.com/homedetails/126-N-Sidney-St-Houston-TX-77003/BVI0D_pid/",
-    "photo": "https://www.compass.com/m/b2d544763e9892557d06e2ff572e2b1a11f812dcdf2b996605e2bda4dc4d6d60/1024x768.jpg"
+    "photo": "https://www.compass.com/m/b2d544763e9892557d06e2ff572e2b1a11f812dcdf2b996605e2bda4dc4d6d60/1024x768.jpg",
+    "openHouse": "2026-08-09T14:00/16:00"
   },
   {
     "address": "4040 San Felipe Street, Unit 119",
