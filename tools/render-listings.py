@@ -121,6 +121,18 @@ HEAT_MIN = 2
 # several separate listings rather than one throb.
 PULSE_STAGGER = 0.9
 
+# How far the map may pull back to reveal an off-frame home before we give up
+# and point at the note instead. A home a mile past the edge swims into view
+# against roads it is genuinely near; one out in Katy would shrink the city to
+# a smudge and surface in empty space, since the basemap is only drawn this far
+# out. 1.6x (the view growing by three fifths) clears the near suburbs and
+# stops short of the far ones - there is a clean gap in the real data between
+# the two. REVEAL_PAD is the breathing room left around the revealed dot, and
+# must match the same constant in the zoom script in index.html so the cutoff
+# drawn here and the zoom performed there agree.
+MAX_REVEAL_ZOOM = 1.6
+REVEAL_PAD = 24.0
+
 # The drawing carries no text at all. The shape of the Loop, the spokes coming
 # off it and the bayous are what orient a reader; anything written on top was
 # labelling what the geometry already said.
@@ -450,6 +462,24 @@ def plot(records: list[dict], geo: dict, radius: float,
     return points, off_frame
 
 
+def reveal_scale(x: float, y: float, width: float, height: float) -> float:
+    """How far out the view has to zoom to hold both the frame and one dot.
+
+    1.0 is the frame itself; 2.0 is the view grown to twice its width. This is
+    the Python side of boxFor() in index.html - the same box, reduced to the
+    one number the renderer needs to decide whether a home is close enough to
+    be worth revealing. Kept in step with that function so a home drawn as
+    revealable here is one the script can actually bring into view.
+    """
+    ratio = width / height
+    x0, x1 = min(0.0, x) - REVEAL_PAD, max(width, x) + REVEAL_PAD
+    y0, y1 = min(0.0, y) - REVEAL_PAD, max(height, y) + REVEAL_PAD
+    w, h = x1 - x0, y1 - y0
+    if w / h <= ratio:      # taller than the frame's shape; width follows height
+        w = h * ratio
+    return w / width
+
+
 def geo_key(url: str) -> str | None:
     """The geo.json key for a listing URL: its Compass address slug."""
     match = re.search(r"/homedetails/([^/]+)/", url or "")
@@ -524,6 +554,16 @@ def render_map(listings: list[dict], sales: list[dict], geo: dict,
     sold_points, sold_off = plot(sales, geo, SOLD_DOT, frame)
     if not live_points and not sold_points:
         return "", set()
+
+    # An off-frame home is only drawn as a dot if the map can pull back to it
+    # without shrinking the city past what is worth showing; the rest are left
+    # dotless and fall back to the note. Every off-frame home is still counted
+    # as outside the view - the split is only about how its row behaves.
+    def near(point: tuple) -> bool:
+        return (reveal_scale(point[0], point[1], frame.width, frame.height)
+                <= MAX_REVEAL_ZOOM)
+    live_reveal = [point for point in live_off if near(point)]
+    sold_reveal = [point for point in sold_off if near(point)]
 
     # A screen reader gets the summary a sighted reader takes from the
     # picture, since the picture itself says nothing out loud.
@@ -620,16 +660,19 @@ def render_map(listings: list[dict], sales: list[dict], geo: dict,
         svg.append(f'  <circle class="map-live" data-home="{esc(key)}" '
                    f'cx="{x:.1f}" cy="{y:.1f}" r="{LIVE_DOT}"/>')
 
-    # The homes the frame left out are drawn too, at their true position beyond
-    # the viewBox - clipped away and invisible until a hovered row pulls the
-    # map back far enough to bring one into view (the zoom wiring lives in
-    # index.html). data-offmap is the flag that tells that script a dot sits
-    # outside the default view, so pointing at its row should zoom rather than
-    # simply light a dot already on screen. Sales under listings, as above.
-    for x, y, key in sold_off:
+    # The homes the frame left out but could still reach are drawn too, at their
+    # true position beyond the viewBox - clipped away and invisible until a
+    # hovered row pulls the map back far enough to bring one into view (the zoom
+    # wiring lives in index.html). data-offmap is the flag that tells that
+    # script a dot sits outside the default view, so pointing at its row should
+    # zoom rather than light a dot already on screen. Homes past MAX_REVEAL_ZOOM
+    # get no dot at all: their rows fall back to lighting the note, which is the
+    # older behaviour and the honest one when the map has nothing near to show.
+    # Sales under listings, as above.
+    for x, y, key in sold_reveal:
         svg.append(f'  <circle class="map-sold is-off" data-home="{esc(key)}" '
                    f'data-offmap cx="{x:.1f}" cy="{y:.1f}" r="{SOLD_DOT}"/>')
-    for x, y, key in live_off:
+    for x, y, key in live_reveal:
         svg.append(f'  <circle class="map-live is-off" data-home="{esc(key)}" '
                    f'data-offmap cx="{x:.1f}" cy="{y:.1f}" r="{LIVE_DOT}"/>')
     svg.append("</svg>")

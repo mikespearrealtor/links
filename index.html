@@ -1288,11 +1288,42 @@
       background: var(--muted);
       opacity: 0.42;
     }
-    /* The count of homes the frame leaves out. Pointing at one of their rows
-       no longer lights this note - it eases the map back until that home's
-       own dot swims into view (the zoom wiring lives in the script below). */
+    /* The count of homes the frame leaves out. Pointing at a row for one that
+       is near enough eases the map back until its own dot swims into view (the
+       zoom wiring is in the script below). One too far out to reveal without
+       shrinking the city to a smudge has no dot to show, so its row lights
+       this note instead - the honest answer when the map has nothing near it.
+
+       Colour alone was too quiet: the note sits up beside the map while the
+       pointer is down in the list, so a reader watching the row they hover can
+       miss a change that only happens once. It beats instead, brightest first
+       so the first beat lands the instant the class does. The halo is
+       currentColor, already the accent by the time it paints. */
     .map-off {
       color: var(--faint);
+      transition: color 0.22s ease;
+    }
+    @keyframes mapOffPulse {
+      0%, 100% {
+        text-shadow: 0 0 12px currentColor;
+        transform: scale(1.06);
+      }
+      50% {
+        text-shadow: 0 0 0 transparent;
+        transform: scale(1);
+      }
+    }
+    .map-off.is-lit {
+      color: var(--hint);
+      animation: mapOffPulse 1.4s ease-in-out infinite;
+    }
+    /* Emphatic without the beat: the halo stays lit, it just stops moving. */
+    @media (prefers-reduced-motion: reduce) {
+      .map-off { transition: none; }
+      .map-off.is-lit {
+        animation: none;
+        text-shadow: 0 0 12px currentColor;
+      }
     }
 
     /* Source attribution - keep visible. */
@@ -1519,8 +1550,6 @@
             <circle class="map-sold" data-home="1204-Willard-St-Houston-TX-77006" cx="155.8" cy="124.4" r="4.4"/>
             <circle class="map-sold" data-home="1512-W-Alabama-St-Houston-TX-77006" cx="151.7" cy="139.1" r="4.4"/>
             <circle class="map-sold" data-home="1213-W-Pierce-St-Houston-TX-77019" cx="155.0" cy="121.0" r="4.4"/>
-            <circle class="map-sold is-off" data-home="5016-Blooming-Hibiscus-Ln-Manvel-TX-77578" data-offmap cx="151.7" cy="396.3" r="4.4"/>
-            <circle class="map-sold is-off" data-home="2826-Acacia-Grv-Dr-Katy-TX-77494" data-offmap cx="-341.7" cy="125.8" r="4.4"/>
             <circle class="map-sold is-off" data-home="7522-Deep-Forest-Dr-Houston-TX-77088" data-offmap cx="71.6" cy="-19.4" r="4.4"/>
             <circle class="map-sold is-off" data-home="12406-Whittington-Dr-Houston-TX-77077" data-offmap cx="-58.2" cy="129.7" r="4.4"/>
             <circle class="map-sold is-off" data-home="13818-Mill-Garden-Ct-Houston-TX-77059" data-offmap cx="418.4" cy="304.9" r="4.4"/>
@@ -1833,13 +1862,13 @@
     // lights the other. Both ends are wired per section, because the two maps
     // must never light each other's rows.
     //
-    // A home the frame excluded is drawn too, just outside the viewBox where
-    // nothing can see it. Pointing at its row eases the map back until that
-    // dot swims into view - the nearer the home, the less the map gives up;
-    // one clear out past the suburbs pulls the city back into a corner, which
-    // is the honest picture of how far out it sits. A row with no dot at all
-    // is a home missing from geo.json, not one the frame chose to leave out,
-    // so it stays unwired: there is nothing to pull into view.
+    // A home the frame excluded but could still reach is drawn too, just
+    // outside the viewBox where nothing can see it. Pointing at its row eases
+    // the map back until that dot swims into view - the nearer the home, the
+    // less the map gives up. A home too far out for that (the renderer draws
+    // no dot for it) falls back to lighting the "outside this view" note, the
+    // same as before the zoom existed. A row with neither a dot nor a place in
+    // that count is a home missing from geo.json, and stays unwired.
     (function () {
       var reduce = window.matchMedia &&
         window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -1848,6 +1877,7 @@
         document.querySelectorAll('section.group'), function (section) {
           var map = section.querySelector('svg.map');
           if (!map) return;
+          var offNote = section.querySelector('.map-off');
 
           // The default framing, and an eased zoom that only ever scales it.
           // The SVG takes its height from the viewBox's aspect ratio, so
@@ -1915,15 +1945,27 @@
 
           Object.keys(pairs).forEach(function (key) {
             var pair = pairs[key];
-            // No dot means the home is missing from geo.json, not off-frame;
-            // there is nothing to light and nothing to zoom to.
-            if (!pair.rows.length || !pair.dots.length) return;
+            if (!pair.rows.length) return;
 
             var offDot = null;
             pair.dots.forEach(function (dot) {
               if (dot.hasAttribute('data-offmap')) offDot = dot;
             });
-            var targets = pair.dots.concat(pair.rows);
+
+            // A home with a dot lights it (and, if that dot is off-frame,
+            // zooms to it). A dotless home that is still marked off-frame is
+            // one too far to reveal, so its row lights the note instead. A
+            // dotless, unmarked home is missing from geo.json - leave it be.
+            var targets;
+            if (pair.dots.length) {
+              targets = pair.dots.concat(pair.rows);
+            } else if (offNote && pair.rows.some(function (row) {
+              return row.hasAttribute('data-offmap');
+            })) {
+              targets = pair.rows.concat([offNote]);
+            } else {
+              return;
+            }
 
             function on() {
               light(targets, true);
