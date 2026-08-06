@@ -1288,46 +1288,11 @@
       background: var(--muted);
       opacity: 0.42;
     }
+    /* The count of homes the frame leaves out. Pointing at one of their rows
+       no longer lights this note - it eases the map back until that home's
+       own dot swims into view (the zoom wiring lives in the script below). */
     .map-off {
       color: var(--faint);
-      transition: color 0.22s ease;
-    }
-    /* Hovering a row whose home the frame left out lights this note instead
-       of a dot. The map has no answer for that row, and the honest answer is
-       already written here - it just has to be pointed at.
-
-       Colour alone was too quiet. The note sits up beside the map while the
-       pointer is down in the list, so a reader watching the row they are
-       hovering can miss a change that only happens once. It beats instead,
-       and the cycle starts at its brightest so the first beat lands the
-       instant the class does rather than a moment later. The halo is
-       currentColor, which is already the accent by the time it paints, so it
-       needs no colour of its own.
-
-       This is the only motion on the page that answers a gesture instead of
-       running on its own, which is why it may move at the moment everything
-       ambient is required to stop. */
-    @keyframes mapOffPulse {
-      0%, 100% {
-        text-shadow: 0 0 12px currentColor;
-        transform: scale(1.06);
-      }
-      50% {
-        text-shadow: 0 0 0 transparent;
-        transform: scale(1);
-      }
-    }
-    .map-off.is-lit {
-      color: var(--hint);
-      animation: mapOffPulse 1.4s ease-in-out infinite;
-    }
-    /* Emphatic without the beat: the halo stays lit, it just stops moving. */
-    @media (prefers-reduced-motion: reduce) {
-      .map-off { transition: none; }
-      .map-off.is-lit {
-        animation: none;
-        text-shadow: 0 0 12px currentColor;
-      }
     }
 
     /* Source attribution - keep visible. */
@@ -1554,6 +1519,12 @@
             <circle class="map-sold" data-home="1204-Willard-St-Houston-TX-77006" cx="155.8" cy="124.4" r="4.4"/>
             <circle class="map-sold" data-home="1512-W-Alabama-St-Houston-TX-77006" cx="151.7" cy="139.1" r="4.4"/>
             <circle class="map-sold" data-home="1213-W-Pierce-St-Houston-TX-77019" cx="155.0" cy="121.0" r="4.4"/>
+            <circle class="map-sold is-off" data-home="5016-Blooming-Hibiscus-Ln-Manvel-TX-77578" data-offmap cx="151.7" cy="396.3" r="4.4"/>
+            <circle class="map-sold is-off" data-home="2826-Acacia-Grv-Dr-Katy-TX-77494" data-offmap cx="-341.7" cy="125.8" r="4.4"/>
+            <circle class="map-sold is-off" data-home="7522-Deep-Forest-Dr-Houston-TX-77088" data-offmap cx="71.6" cy="-19.4" r="4.4"/>
+            <circle class="map-sold is-off" data-home="12406-Whittington-Dr-Houston-TX-77077" data-offmap cx="-58.2" cy="129.7" r="4.4"/>
+            <circle class="map-sold is-off" data-home="13818-Mill-Garden-Ct-Houston-TX-77059" data-offmap cx="418.4" cy="304.9" r="4.4"/>
+            <circle class="map-sold is-off" data-home="5702-Capello-Dr-Houston-TX-77035" data-offmap cx="59.8" cy="241.7" r="4.4"/>
           </svg>
         </div>
         <p class="map-legend"><span class="map-key"><i class="map-dot is-sold"></i>12 recent sales</span><span class="map-off">6 outside this view</span></p>
@@ -1862,17 +1833,66 @@
     // lights the other. Both ends are wired per section, because the two maps
     // must never light each other's rows.
     //
-    // A row whose home the frame excluded lights the "outside this view" note
-    // instead, which is where that home is actually accounted for. Rows with
-    // neither a dot nor a place in that count are left unwired: those are
-    // homes missing from geo.json, and pointing at the note would blame the
-    // frame for a gap in our own data.
+    // A home the frame excluded is drawn too, just outside the viewBox where
+    // nothing can see it. Pointing at its row eases the map back until that
+    // dot swims into view - the nearer the home, the less the map gives up;
+    // one clear out past the suburbs pulls the city back into a corner, which
+    // is the honest picture of how far out it sits. A row with no dot at all
+    // is a home missing from geo.json, not one the frame chose to leave out,
+    // so it stays unwired: there is nothing to pull into view.
     (function () {
+      var reduce = window.matchMedia &&
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
       Array.prototype.forEach.call(
         document.querySelectorAll('section.group'), function (section) {
           var map = section.querySelector('svg.map');
           if (!map) return;
-          var offNote = section.querySelector('.map-off');
+
+          // The default framing, and an eased zoom that only ever scales it.
+          // The SVG takes its height from the viewBox's aspect ratio, so
+          // changing that ratio would resize the element and reflow the page
+          // under the pointer. Every target box keeps the ratio; only the
+          // scale and centre move, so the map zooms while its slot holds still.
+          var base = map.getAttribute('viewBox').split(/\s+/).map(Number);
+          var ratio = base[2] / base[3];
+          var cur = base.slice();
+          var raf = null, from = null, to = null, t0 = 0;
+          var DUR = 460;
+
+          function setBox(b) {
+            map.setAttribute('viewBox', b[0].toFixed(1) + ' ' + b[1].toFixed(1) +
+              ' ' + b[2].toFixed(1) + ' ' + b[3].toFixed(1));
+          }
+          function step(now) {
+            var k = Math.min(1, (now - t0) / DUR);
+            var e = k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+            for (var i = 0; i < 4; i++) cur[i] = from[i] + (to[i] - from[i]) * e;
+            setBox(cur);
+            raf = k < 1 ? requestAnimationFrame(step) : null;
+          }
+          // Redirecting mid-flight is free: a running step reads these same
+          // vars, so resetting from/to/t0 just bends the animation toward the
+          // new target from wherever it currently is.
+          function zoom(target) {
+            if (reduce) { cur = target.slice(); setBox(cur); return; }
+            from = cur.slice(); to = target.slice(); t0 = performance.now();
+            if (!raf) raf = requestAnimationFrame(step);
+          }
+          // The smallest box, at the map's own aspect ratio, that holds the
+          // whole default frame and one off-map dot with a little room around
+          // it. Growing only the short side keeps the ratio exact.
+          function boxFor(cx, cy) {
+            var pad = 24;
+            var x0 = Math.min(base[0], cx) - pad;
+            var y0 = Math.min(base[1], cy) - pad;
+            var x1 = Math.max(base[0] + base[2], cx) + pad;
+            var y1 = Math.max(base[1] + base[3], cy) + pad;
+            var w = x1 - x0, h = y1 - y0;
+            if (w / h > ratio) { var nh = w / ratio; y0 -= (nh - h) / 2; h = nh; }
+            else { var nw = h * ratio; x0 -= (nw - w) / 2; w = nw; }
+            return [x0, y0, w, h];
+          }
 
           var pairs = {};
           function bucket(key) {
@@ -1895,28 +1915,28 @@
 
           Object.keys(pairs).forEach(function (key) {
             var pair = pairs[key];
-            if (!pair.rows.length) return;
+            // No dot means the home is missing from geo.json, not off-frame;
+            // there is nothing to light and nothing to zoom to.
+            if (!pair.rows.length || !pair.dots.length) return;
 
-            // A home the frame left out has no dot to light, so its row
-            // lights the note that already accounts for it. The map still
-            // goes quiet: every dot dimming with the answer written beside
-            // it says "not on here" more plainly than leaving it untouched.
-            var targets;
-            if (pair.dots.length) {
-              targets = pair.dots.concat(pair.rows);
-            } else if (offNote && pair.rows.some(function (row) {
-              return row.hasAttribute('data-offmap');
-            })) {
-              targets = pair.rows.concat([offNote]);
-            } else {
-              return;
+            var offDot = null;
+            pair.dots.forEach(function (dot) {
+              if (dot.hasAttribute('data-offmap')) offDot = dot;
+            });
+            var targets = pair.dots.concat(pair.rows);
+
+            function on() {
+              light(targets, true);
+              if (offDot) zoom(boxFor(+offDot.getAttribute('cx'),
+                                      +offDot.getAttribute('cy')));
             }
-
-            function on() { light(targets, true); }
-            function off() { light(targets, false); }
+            function off() {
+              light(targets, false);
+              if (offDot) zoom(base);
+            }
             // Focus is wired on the rows only. The rows are already links and
-            // already in the tab order; putting thirteen dots in it as well
-            // would cost a keyboard reader more than the highlight is worth.
+            // already in the tab order; putting the dots in it as well would
+            // cost a keyboard reader more than the highlight is worth.
             pair.rows.forEach(function (row) {
               row.addEventListener('mouseenter', on);
               row.addEventListener('mouseleave', off);

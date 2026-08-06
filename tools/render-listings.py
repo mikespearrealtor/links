@@ -424,11 +424,12 @@ def plot(records: list[dict], geo: dict, radius: float,
     outside the frame. The first is a gap we would want to fix, the second is
     the frame working as designed, so only the second is reported to readers.
 
-    The misses come back as slugs rather than a tally, because the page needs
-    to know which homes they are and not merely how many: hovering one of
-    those rows lights the "outside this view" note instead of a dot, and a
-    row that is missing a coordinate must not make that claim - it is not in
-    that count.
+    Off-frame homes come back the same shape as the ones inside - (x, y, key) -
+    not as a bare tally, because the page needs to know which homes they are and
+    where. Hovering such a row pulls the map back until that home's dot swims
+    into view, and both the highlight and the zoom need its coordinates. A row
+    missing from geo.json has no coordinate and so appears in neither list - it
+    is a gap in our own data, not a home the frame chose to exclude.
 
     Each point keeps the address slug it was plotted from, so the dot and the
     row for the same home can find each other on the page. Position alone is
@@ -445,10 +446,7 @@ def plot(records: list[dict], geo: dict, radius: float,
             x, y = frame.project(float(point[0]), float(point[1]))
         except (TypeError, ValueError):
             continue
-        if frame.holds(x, y, radius):
-            points.append((x, y, key))
-        else:
-            off_frame.append(key)
+        (points if frame.holds(x, y, radius) else off_frame).append((x, y, key))
     return points, off_frame
 
 
@@ -621,6 +619,19 @@ def render_map(listings: list[dict], sales: list[dict], geo: dict,
     for x, y, key in live_points:
         svg.append(f'  <circle class="map-live" data-home="{esc(key)}" '
                    f'cx="{x:.1f}" cy="{y:.1f}" r="{LIVE_DOT}"/>')
+
+    # The homes the frame left out are drawn too, at their true position beyond
+    # the viewBox - clipped away and invisible until a hovered row pulls the
+    # map back far enough to bring one into view (the zoom wiring lives in
+    # index.html). data-offmap is the flag that tells that script a dot sits
+    # outside the default view, so pointing at its row should zoom rather than
+    # simply light a dot already on screen. Sales under listings, as above.
+    for x, y, key in sold_off:
+        svg.append(f'  <circle class="map-sold is-off" data-home="{esc(key)}" '
+                   f'data-offmap cx="{x:.1f}" cy="{y:.1f}" r="{SOLD_DOT}"/>')
+    for x, y, key in live_off:
+        svg.append(f'  <circle class="map-live is-off" data-home="{esc(key)}" '
+                   f'data-offmap cx="{x:.1f}" cy="{y:.1f}" r="{LIVE_DOT}"/>')
     svg.append("</svg>")
 
     keys = []
@@ -643,8 +654,9 @@ def render_map(listings: list[dict], sales: list[dict], geo: dict,
     if keys:
         lines.append(f'{inner}<p class="map-legend">{"".join(keys)}</p>')
     # The slugs travel back with the drawing so the rows can be marked. With
-    # no legend there is nothing for such a row to light, so the set is empty.
-    off_map = {key for key in missing if key} if keys else set()
+    # no legend there is nothing for such a row to reach for, so the set is
+    # empty. The off lists are (x, y, key) triples now, so pull the key out.
+    off_map = {key for _, _, key in missing if key} if keys else set()
     return "\n".join(lines), off_map
 
 
