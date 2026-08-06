@@ -7,6 +7,7 @@
     "sqft": 3440,
     "price": 1250000,
     "status": "Active",
+    "listedDate": "2026-07-17",
     "url": "https://www.compass.com/homedetails/2030-Southgate-Blvd-Houston-TX-77030/AVEOK_pid/",
     "photo": "https://www.compass.com/m/853071f204c33dc46c59b88ef69862643dc63eaa46d27545c68416c4db137844/1024x768.jpg"
   },
@@ -18,6 +19,7 @@
     "sqft": 2623,
     "price": 999000,
     "status": "Active",
+    "listedDate": "2026-05-29",
     "url": "https://www.compass.com/homedetails/3615-Ascot-Ln-Houston-TX-77018/AZYQN_pid/",
     "photo": "https://www.compass.com/m/612d81f4920bff985ae2a3491001bbcfb654c67f3df46636a5650e98a0d14595/1024x768.jpg"
   },
@@ -29,6 +31,7 @@
     "sqft": 3590,
     "price": 825000,
     "status": "Active",
+    "listedDate": "2026-07-01",
     "url": "https://www.compass.com/homedetails/1208-Welch-St-Houston-TX-77006/AR8UD_pid/",
     "photo": "https://www.compass.com/m/03ab0588d8d6917037347c08cbf2d03f6a5f97c5db310a1256988af1c826c51e/1024x768.jpg",
     "openHouse": "2026-08-09T14:00/16:00"
@@ -41,6 +44,7 @@
     "sqft": 2248,
     "price": 519900,
     "status": "Active",
+    "listedDate": "2026-05-20",
     "url": "https://www.compass.com/homedetails/126-N-Sidney-St-Houston-TX-77003/BVI0D_pid/",
     "photo": "https://www.compass.com/m/b2d544763e9892557d06e2ff572e2b1a11f812dcdf2b996605e2bda4dc4d6d60/1024x768.jpg",
     "openHouse": "2026-08-09T14:00/16:00"
@@ -53,6 +57,7 @@
     "sqft": 1380,
     "price": 229900,
     "status": "Active",
+    "listedDate": "2026-04-03",
     "url": "https://www.compass.com/homedetails/4040-San-Felipe-St-Unit-119-Houston-TX-77027/AFVKX_pid/",
     "photo": "https://www.compass.com/m/cd60ef1ed443103a5259c0e0a5868f014decf4483b7b844e5f266ec6f2ca40fa/1024x768.jpg"
   }

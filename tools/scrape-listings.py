@@ -164,6 +164,12 @@ def convert(listing: dict, *, rental: bool, size: str) -> dict:
         # original price, which differs once there has been a price cut.
         "price": price.get("lastKnown") or price.get("listed"),
         "status": listing.get("localizedStatus"),
+        # The day the home went on the market. The renderer flags a home
+        # listed within the last couple of weeks as "New"; it works out that
+        # window itself, against the date the page is built, so this stays a
+        # fixed calendar date rather than a countdown that would go stale
+        # between scrapes.
+        "listedDate": local_date(listing, "listed"),
         "url": f"{SITE}{link}" if link else None,
     }
     if rental:
@@ -207,6 +213,25 @@ def collect(profile: dict, size: str) -> list[dict]:
     return listings
 
 
+def local_date(listing: dict, key: str) -> str | None:
+    """A `date.<key>` millisecond timestamp as YYYY-MM-DD in the home's local
+    timezone, or None if it is absent or unusable.
+
+    Date-only, and in the listing's own timezone rather than UTC, because the
+    page reasons about these as calendar days a Houston reader would recognise
+    (how long a home has been listed), not instants.
+    """
+    stamp = (listing.get("date") or {}).get(key)
+    if not stamp:
+        return None
+    tz_name = (listing.get("location") or {}).get("timezone") or "America/Chicago"
+    try:
+        tz = zoneinfo.ZoneInfo(tz_name)
+    except zoneinfo.ZoneInfoNotFoundError:
+        tz = datetime.timezone.utc
+    return datetime.datetime.fromtimestamp(stamp / 1000, tz).strftime("%Y-%m-%d")
+
+
 def sold_date(listing: dict) -> str | None:
     """When the record was last modified, as YYYY-MM-DD. NOT the close date.
 
@@ -217,15 +242,7 @@ def sold_date(listing: dict) -> str | None:
     the agent-authenticated view places it two sales earlier. Kept for
     debugging and left off the page; never render it as a sale date.
     """
-    stamp = (listing.get("date") or {}).get("updated")
-    if not stamp:
-        return None
-    tz_name = (listing.get("location") or {}).get("timezone") or "America/Chicago"
-    try:
-        tz = zoneinfo.ZoneInfo(tz_name)
-    except zoneinfo.ZoneInfoNotFoundError:
-        tz = datetime.timezone.utc
-    return datetime.datetime.fromtimestamp(stamp / 1000, tz).strftime("%Y-%m-%d")
+    return local_date(listing, "updated")
 
 
 def convert_sold(item: dict) -> dict:

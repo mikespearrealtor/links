@@ -56,6 +56,13 @@ INDENT = " " * 6
 # Ten is enough to show momentum without doubling the length of the page.
 SOLD_LIMIT = 10
 
+# A listing this many days old or newer is flagged "New". Two weeks is long
+# enough that a home does not lose the flag over a weekend, short enough that
+# the flag still means "just came up" rather than "has been sitting". Measured
+# against the day the page is built, from the listedDate the scraper records,
+# so the flag falls off on its own without the scraper having to touch a home.
+NEW_DAYS = 14
+
 # Attribution shown under the listings. Data comes from the Compass profile,
 # so this credits Compass rather than the MLS/HAR feed.
 ATTRIBUTION = (
@@ -258,6 +265,25 @@ def spec_parts(record: dict) -> list[str]:
     return parts
 
 
+def is_new(listing: dict, today: datetime.date | None = None) -> bool:
+    """Whether a listing went up within the last NEW_DAYS days.
+
+    Reads listedDate (YYYY-MM-DD, written by the scraper). A missing or
+    unparseable date is simply not new - the flag is a bonus, never a claim we
+    would guess at. A date in the future is not new either: "coming soon" is a
+    different promise than "new", and this page does not make it.
+    """
+    raw = listing.get("listedDate")
+    if not isinstance(raw, str):
+        return False
+    try:
+        listed = datetime.date.fromisoformat(raw)
+    except ValueError:
+        return False
+    age = ((today or datetime.date.today()) - listed).days
+    return 0 <= age <= NEW_DAYS
+
+
 def meta_line(listing: dict) -> str:
     """"Montrose - 3 bd - 2 ba - 2,105 sqft - Pending", status colored."""
     parts = spec_parts(listing)
@@ -297,7 +323,12 @@ def rank(listing: dict) -> tuple:
 
 
 def render_row(listing: dict, number: int, off_map: set = frozenset()) -> list[str]:
-    text = [f'<span class="row-main">{esc(listing["address"])}</span>',
+    address = f'<span class="row-main">{esc(listing["address"])}</span>'
+    # The flag rides beside the address, not down in the spec line, so it is
+    # the first thing the eye lands on rather than the last.
+    if is_new(listing):
+        address += '<span class="row-new">New</span>'
+    text = [address,
             f'<span class="row-sub">{meta_line(listing)}</span>']
     showing = open_house_line(listing.get("openHouse", ""))
     if showing:
@@ -330,7 +361,7 @@ def render_sold_row(sale: dict, number: int, off_map: set = frozenset()) -> list
 def render_sold(sales: list[dict], chart: str = "",
                 off_map: set = frozenset()) -> str:
     lines = [f'{INDENT}<section class="group">',
-             f'{INDENT}  <h2 class="label">Recently sold in Houston</h2>']
+             f'{INDENT}  <h2 class="label">Recently sold in Houston, by Mike Spear</h2>']
     if chart:
         lines.append(chart)
     for number, sale in enumerate(sales, start=1):
@@ -344,7 +375,7 @@ def render_sold(sales: list[dict], chart: str = "",
 def render(listings: list[dict], chart: str = "",
            off_map: set = frozenset()) -> str:
     lines = [f'{INDENT}<section class="group">',
-             f'{INDENT}  <h2 class="label">Current listings in Houston</h2>']
+             f'{INDENT}  <h2 class="label">Current listings in Houston, by Mike Spear</h2>']
     if chart:
         lines.append(chart)
 
