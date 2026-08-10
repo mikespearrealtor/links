@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Install the Signature &middot; Mike Spear</title>
+<style>
+  :root {
+    --paper:#f6f7f8; --card:#fff; --ink:#14171a; --muted:#667180;
+    --rule:#e0e5e9; --accent:#2f5d72; --on-accent:#fff;
+  }
+  @media (prefers-color-scheme:dark) {
+    :root { --paper:#101215; --card:#181b1f; --ink:#e7eaed; --muted:#8b96a2;
+            --rule:#272c32; --accent:#6fa8bd; --on-accent:#0d1417; }
+  }
+  * { box-sizing:border-box; }
+  body {
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+    line-height:1.6; -webkit-font-smoothing:antialiased;
+  }
+  .wrap { max-width:46rem; margin:0 auto; padding:3rem 1.25rem 4rem;
+          display:flex; flex-direction:column; gap:2rem; }
+  .eyebrow { font-size:.6875rem; letter-spacing:.16em; text-transform:uppercase;
+             color:var(--accent); font-weight:600; }
+  h1 { font-family:Georgia,"Times New Roman",serif; font-weight:400;
+       font-size:clamp(1.6rem,4vw,2.1rem); margin:.4rem 0 0; letter-spacing:-.01em; }
+  h2 { font-family:Georgia,"Times New Roman",serif; font-weight:400;
+       font-size:1.15rem; margin:0 0 .25rem; }
+  p.lede { color:var(--muted); margin:.6rem 0 0; }
+  section { display:flex; flex-direction:column; gap:.75rem; }
+
+  .get { display:flex; flex-wrap:wrap; align-items:center; gap:.9rem; }
+  a.dl { display:inline-block; background:var(--accent); color:var(--on-accent);
+         text-decoration:none; font-weight:600; font-size:.9375rem;
+         padding:.7rem 1.4rem; border-radius:4px;
+         box-shadow:0 1px 2px rgba(20,23,26,.08),0 6px 18px -10px rgba(20,23,26,.45); }
+  a.dl:hover { filter:brightness(1.08); }
+  a.dl:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
+  .get .meta { color:var(--muted); font-size:.8125rem; }
+
+  ol.steps { margin:0; padding:0; list-style:none; counter-reset:step;
+             display:flex; flex-direction:column; gap:.7rem; }
+  ol.steps li { counter-increment:step; display:grid;
+                grid-template-columns:1.6rem 1fr; gap:.7rem; align-items:baseline; }
+  ol.steps li::before { content:counter(step); font-family:ui-monospace,Consolas,monospace;
+                        font-size:.75rem; color:var(--accent); background:var(--rule);
+                        border-radius:3px; text-align:center; padding:.15rem 0; }
+  /* The li is a grid, so its content must be one element - loose text nodes
+     would each become their own grid item and stack one word per row. */
+  ol.steps li > p { margin:0; }
+
+  .note { color:var(--muted); font-size:.9375rem;
+          display:flex; flex-direction:column; gap:.75rem;
+          border-left:2px solid var(--accent); padding-left:1rem; }
+  .note p { margin:0; }
+  .note strong { color:var(--ink); font-weight:600; }
+  .note a { color:var(--accent); }
+  ul.plain { margin:0; padding-left:1.1rem; color:var(--muted);
+             font-size:.9375rem; display:flex; flex-direction:column; gap:.4rem; }
+  footer { border-top:1px solid var(--rule); padding-top:1rem;
+           color:var(--muted); font-size:.8125rem; }
+  footer a { color:var(--accent); }
+  code { font-family:ui-monospace,Consolas,monospace; font-size:.875em;
+         background:var(--rule); border-radius:3px; padding:.1em .35em;
+         word-break:normal; overflow-wrap:break-word; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">Outlook signature</div>
+    <h1>Install the signature</h1>
+    <p class="lede">Sets up the email signature on a Windows PC. The installer
+    doesn&rsquo;t carry a copy of the signature &mdash; it downloads the current one
+    each time it runs, so it can&rsquo;t go stale.</p>
+  </header>
+
+  <section class="get">
+    <a class="dl" href="/MikeSpear-Outlook-Signature.zip" download>Download the installer</a>
+    <span class="meta">ZIP &middot; ~32&nbsp;KB &middot; Windows</span>
+  </section>
+
+  <section>
+    <h2>Four steps</h2>
+    <ol class="steps">
+      <li><p><strong>Close Outlook completely.</strong> The installer stops if it&rsquo;s
+          still running, because Outlook holds the signature in memory and will
+          overwrite the new file when it exits.</p></li>
+      <li><p>Unzip the download anywhere &mdash; Desktop is fine.</p></li>
+      <li><p>Double-click <code>Install-Signature.cmd</code>. It needs an internet
+          connection. Anything it replaces is backed up first.</p></li>
+      <li><p>Open Outlook and go to <strong>File &rarr; Options &rarr; Mail &rarr;
+          Signatures&hellip;</strong> On the right, set both <em>New messages</em>
+          and <em>Replies/forwards</em> to
+          <code>Default Sig (mike@mikespear.com)</code>, then click OK.</p></li>
+    </ol>
+  </section>
+
+  <div class="note">
+    <p><strong>Don&rsquo;t click into the big signature editing box.</strong> Choosing
+    the signature in the two dropdowns is safe. Typing or pasting in the edit box
+    is not &mdash; Word rewrites the linked images as <code>image001.png</code>
+    attachments, and attached images get stripped out of quoted replies. That is
+    the exact problem this setup exists to avoid.</p>
+  </div>
+
+  <section>
+    <h2>No scripts, if you&rsquo;d rather</h2>
+    <p class="lede">Close Outlook, then save these two files &mdash; keep the exact
+    names &mdash; into <code>%APPDATA%\Microsoft\Signatures</code>, renaming them to
+    <code>Default Sig (mike@mikespear.com).htm</code> and <code>.txt</code>:</p>
+    <ul class="plain">
+      <li><a href="/signature-outlook.htm">signature-outlook.htm</a></li>
+      <li><a href="/signature-outlook.txt">signature-outlook.txt</a></li>
+    </ul>
+    <p class="lede">The <code>.htm</code> is plain ASCII and survives any save path.
+    The <code>.txt</code> contains a &reg; and two &middot; separators; if those
+    arrive as garbage it&rsquo;s an encoding problem, and the installer handles it
+    properly &mdash; use that instead.</p>
+  </section>
+
+  <section>
+    <h2>Worth knowing</h2>
+    <ul class="plain">
+      <li>Classic Outlook for Windows only. The new Outlook and Outlook on the web
+          store signatures in the cloud and re-embed the images, so this method
+          doesn&rsquo;t work there.</li>
+      <li>Swapping an image on the site updates it everywhere on its own &mdash; no
+          reinstall needed. Only changes to the signature markup need a re-run.</li>
+      <li>Recipients may see blocked images until they click &ldquo;download
+          pictures.&rdquo; That&rsquo;s the trade-off for surviving reply chains.</li>
+    </ul>
+  </section>
+
+  <footer>
+    To see how it renders, and the markup behind it, visit the
+    <a href="/signature.html">signature reference page</a>.
+  </footer>
+
+</div>
+</body>
+</html>
