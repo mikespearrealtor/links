@@ -17,10 +17,10 @@ neither map is making a claim the rows beneath it do not support.
 
 "Recently sold" shows the ten most recent closed sales in the order Compass
 itself returns them, though its map plots all of them. The list closes with
-an "and N more" link to the Compass profile, so the extra dots are accounted
-for rather than left as a discrepancy the page never mentions. Its prices are
-last list prices, not sale prices (Texas does not disclose those), and the
-note under the section says so.
+an "and N more" link to HAR's sold-by-agent page, so the extra dots are
+accounted for rather than left as a discrepancy the page never mentions. Its
+prices are last list prices, not sale prices (Texas does not disclose those),
+and the note under the section says so.
 
 The maps are inline SVG, drawn from coordinates cached in geo.json by
 tools/geocode.py over the freeway and water geometry in basemap.json. Drawn
@@ -59,9 +59,9 @@ INDENT = " " * 6
 # The map still plots every sale, and render_more_row() links to the rest.
 SOLD_LIMIT = 10
 
-# Where "and N more" sends a reader: the Compass profile the scraper reads,
-# which is the only public page listing every closed sale.
-PROFILE_URL = "https://www.compass.com/agents/mike-spear/"
+# Where "and N more" sends a reader: HAR's sold-by-agent page, which lists
+# every closed sale rather than the ten the section shows.
+MORE_SOLD_URL = "https://www.har.com/realestatepro/sold-by-agent/spear"
 
 # The same outbound arrow the profile tiles use, in the grid column the other
 # rows spend on a price. It marks the row as a way off the page rather than
@@ -400,10 +400,10 @@ def render_more_row(hidden: int) -> list[str]:
     if hidden < 1:
         return []
     return [
-        f'{INDENT}<a class="row row-more" href="{esc(PROFILE_URL)}" target="_blank" rel="noopener">',
+        f'{INDENT}<a class="row row-more" href="{esc(MORE_SOLD_URL)}" target="_blank" rel="noopener">',
         f'{INDENT}  <span class="num" aria-hidden="true"></span>',
         f'{INDENT}  <span class="row-text"><span class="row-main">and {hidden} more</span>'
-        f'<span class="row-sub">on the Compass profile</span></span>',
+        f'<span class="row-sub">sold, on HAR.com</span></span>',
         f"{INDENT}  {ARROW}",
         f"{INDENT}</a>",
     ]
@@ -730,18 +730,12 @@ def render_map(listings: list[dict], sales: list[dict], geo: dict,
         keys.append(f'<span class="map-off">{len(missing)} '
                     "outside this view</span>")
 
-    # Frame and legend are wrapped as one block because the CSS pins them
-    # together. Pinned, they have to travel as a pair: an off-frame row lights
-    # the "outside this view" note, and a note that had scrolled away would
-    # leave that row lighting nothing.
     inner = INDENT + "  "
-    lines = [f'{inner}<div class="map-block">',
-             f'{inner}  <div class="map-frame">']
-    lines.extend(f"{inner}    {line}" for line in svg)
-    lines.append(f"{inner}  </div>")
-    if keys:
-        lines.append(f'{inner}  <p class="map-legend">{"".join(keys)}</p>')
+    lines = [f'{inner}<div class="map-frame">']
+    lines.extend(f"{inner}  {line}" for line in svg)
     lines.append(f"{inner}</div>")
+    if keys:
+        lines.append(f'{inner}<p class="map-legend">{"".join(keys)}</p>')
     # The slugs travel back with the drawing so the rows can be marked. With
     # no legend there is nothing for such a row to reach for, so the set is
     # empty. The off lists are (x, y, key) triples now, so pull the key out.
