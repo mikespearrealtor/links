@@ -16,9 +16,11 @@ only its own list - listings above the listings, sales above the sales - so
 neither map is making a claim the rows beneath it do not support.
 
 "Recently sold" shows the ten most recent closed sales in the order Compass
-itself returns them, though its map plots all of them. Its prices are last
-list prices, not sale prices (Texas does not disclose those), and the note
-under the section says so.
+itself returns them, though its map plots all of them. The list closes with
+an "and N more" link to the Compass profile, so the extra dots are accounted
+for rather than left as a discrepancy the page never mentions. Its prices are
+last list prices, not sale prices (Texas does not disclose those), and the
+note under the section says so.
 
 The maps are inline SVG, drawn from coordinates cached in geo.json by
 tools/geocode.py over the freeway and water geometry in basemap.json. Drawn
@@ -54,7 +56,19 @@ SOLD_END = "<!-- sold:end -->"
 INDENT = " " * 6
 
 # Ten is enough to show momentum without doubling the length of the page.
+# The map still plots every sale, and render_more_row() links to the rest.
 SOLD_LIMIT = 10
+
+# Where "and N more" sends a reader: the Compass profile the scraper reads,
+# which is the only public page listing every closed sale.
+PROFILE_URL = "https://www.compass.com/agents/mike-spear/"
+
+# The same outbound arrow the profile tiles use, in the grid column the other
+# rows spend on a price. It marks the row as a way off the page rather than
+# another sale; .arr already sizes and colours it.
+ARROW = ('<svg class="arr" viewBox="0 0 24 24" fill="none" stroke-width="1.7" '
+         'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+         '<path d="M7 17 17 7M9 7h8v8"/></svg>')
 
 # A listing this many days old or newer is flagged "New". Two weeks is long
 # enough that a home does not lose the flag over a weekend, short enough that
@@ -370,8 +384,33 @@ def render_sold_row(sale: dict, number: int, off_map: set = frozenset()) -> list
     ]
 
 
+def render_more_row(hidden: int) -> list[str]:
+    """The tail of a truncated list, or nothing when nothing was cut.
+
+    The map plots every sale while the list stops at SOLD_LIMIT, so without
+    this the page shows more dots than rows and never says why. It is the one
+    row that answers for the others, which is also why it carries no
+    `data-home`: the hover linking pairs one row to one dot, and this row
+    stands for eight homes at once.
+
+    It keeps the row grid so it lines up with the addresses above it, and
+    spends the price column on the outbound arrow instead - it is a way off
+    the page, not a sale, and should not look like one.
+    """
+    if hidden < 1:
+        return []
+    return [
+        f'{INDENT}<a class="row row-more" href="{esc(PROFILE_URL)}" target="_blank" rel="noopener">',
+        f'{INDENT}  <span class="num" aria-hidden="true"></span>',
+        f'{INDENT}  <span class="row-text"><span class="row-main">and {hidden} more</span>'
+        f'<span class="row-sub">on the Compass profile</span></span>',
+        f"{INDENT}  {ARROW}",
+        f"{INDENT}</a>",
+    ]
+
+
 def render_sold(sales: list[dict], chart: str = "",
-                off_map: set = frozenset()) -> str:
+                off_map: set = frozenset(), hidden: int = 0) -> str:
     lines = [f'{INDENT}<section class="group">',
              f'{INDENT}  <h2 class="label">Recently sold in Houston, by Mike Spear</h2>']
     if chart:
@@ -379,6 +418,7 @@ def render_sold(sales: list[dict], chart: str = "",
     for number, sale in enumerate(sales, start=1):
         lines.extend("  " + line for line in
                      render_sold_row(sale, number, off_map))
+    lines.extend("  " + line for line in render_more_row(hidden))
     lines.append(f'{INDENT}  <p class="mls-note">{esc(SOLD_ATTRIBUTION)}</p>')
     lines.append(f"{INDENT}</section>")
     return "\n".join(lines)
@@ -690,12 +730,18 @@ def render_map(listings: list[dict], sales: list[dict], geo: dict,
         keys.append(f'<span class="map-off">{len(missing)} '
                     "outside this view</span>")
 
+    # Frame and legend are wrapped as one block because the CSS pins them
+    # together. Pinned, they have to travel as a pair: an off-frame row lights
+    # the "outside this view" note, and a note that had scrolled away would
+    # leave that row lighting nothing.
     inner = INDENT + "  "
-    lines = [f'{inner}<div class="map-frame">']
-    lines.extend(f"{inner}  {line}" for line in svg)
-    lines.append(f"{inner}</div>")
+    lines = [f'{inner}<div class="map-block">',
+             f'{inner}  <div class="map-frame">']
+    lines.extend(f"{inner}    {line}" for line in svg)
+    lines.append(f"{inner}  </div>")
     if keys:
-        lines.append(f'{inner}<p class="map-legend">{"".join(keys)}</p>')
+        lines.append(f'{inner}  <p class="map-legend">{"".join(keys)}</p>')
+    lines.append(f"{inner}</div>")
     # The slugs travel back with the drawing so the rows can be marked. With
     # no legend there is nothing for such a row to reach for, so the set is
     # empty. The off lists are (x, y, key) triples now, so pull the key out.
@@ -770,7 +816,10 @@ def main() -> None:
 
     section = (render(listings, live_map, live_off_map)
                if listings else "")
-    sold_section = (render_sold(sales, sold_map, sold_off_map)
+    # Counted rather than assumed: the cap is a maximum, not a promise, and on
+    # a thin week there is nothing beyond it and so no line to write.
+    beyond_cap = len(all_sales) - len(sales)
+    sold_section = (render_sold(sales, sold_map, sold_off_map, beyond_cap)
                     if sales else "")
 
     hidden = [name for name, rows in (("Current listings", listings),
