@@ -61,6 +61,19 @@
     "photo": "https://www.compass.com/m/0/d6ace0cd-b8cc-4895-9974-76d297891fd9/1500x1000.jpg"
   },
   {
+    "address": "4217 Sherman Street",
+    "area": "Brady Place",
+    "beds": 3,
+    "baths": 3.5,
+    "sqft": 2000,
+    "price": 479000,
+    "status": "Active",
+    "listedDate": "2026-08-15",
+    "url": "https://www.compass.com/homedetails/4217-Sherman-St-Houston-TX-77003/BOXNR_pid/",
+    "photo": "https://www.compass.com/m/c3657d5bd0a54c6ea58221c927a6dd988d6454a375881788026788cb6061287a/1024x768.jpg",
+    "openHouse": "2026-08-16T14:00/16:00"
+  },
+  {
     "address": "4040 San Felipe Street, Unit 119",
     "area": "River Oaks Townhomes",
     "beds": 2,
