@@ -33,7 +33,8 @@
     "status": "Active",
     "listedDate": "2026-07-01",
     "url": "https://www.compass.com/homedetails/1208-Welch-St-Houston-TX-77006/AR8UD_pid/",
-    "photo": "https://www.compass.com/m/03ab0588d8d6917037347c08cbf2d03f6a5f97c5db310a1256988af1c826c51e/1024x768.jpg"
+    "photo": "https://www.compass.com/m/03ab0588d8d6917037347c08cbf2d03f6a5f97c5db310a1256988af1c826c51e/1024x768.jpg",
+    "openHouse": "2026-08-23T14:00/16:00"
   },
   {
     "address": "126 North Sidney Street",
@@ -45,18 +46,20 @@
     "status": "Active",
     "listedDate": "2026-05-20",
     "url": "https://www.compass.com/homedetails/126-N-Sidney-St-Houston-TX-77003/BVI0D_pid/",
-    "photo": "https://www.compass.com/m/b2d544763e9892557d06e2ff572e2b1a11f812dcdf2b996605e2bda4dc4d6d60/1024x768.jpg"
+    "photo": "https://www.compass.com/m/b2d544763e9892557d06e2ff572e2b1a11f812dcdf2b996605e2bda4dc4d6d60/1024x768.jpg",
+    "openHouse": "2026-08-23T14:00/16:00"
   },
   {
     "address": "77 Chelsea Boulevard",
     "area": "South End Villa",
     "beds": 3,
     "baths": 2.5,
-    "sqft": 1592,
+    "sqft": 1822,
     "price": 499000,
-    "status": "Coming Soon",
+    "status": "Active",
+    "listedDate": "2026-08-17",
     "url": "https://www.compass.com/homedetails/77-Chelsea-Blvd-Houston-TX-77006/A0M8M_pid/",
-    "photo": "https://www.compass.com/m/0/d6ace0cd-b8cc-4895-9974-76d297891fd9/1500x1000.jpg"
+    "photo": "https://www.compass.com/m/20ac9614b6c0cd16e373beb9fa0acb6926289c83f311af02539f137a1aed09de/1024x768.jpg"
   },
   {
     "address": "4217 Sherman Street",
