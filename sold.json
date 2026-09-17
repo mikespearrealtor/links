@@ -1,5 +1,14 @@
 [
   {
+    "address": "1208 Welch Street",
+    "area": "Montrose",
+    "beds": 3,
+    "baths": 4,
+    "listPrice": 839000,
+    "updated": "2026-09-14",
+    "url": "https://www.compass.com/homedetails/1208-Welch-St-Houston-TX-77006/AR8UD_pid/"
+  },
+  {
     "address": "5016 Blooming Hibiscus Lane",
     "area": "Brazoria County",
     "beds": 4,
@@ -150,14 +159,5 @@
     "listPrice": 3095000,
     "updated": "2025-12-16",
     "url": "https://www.compass.com/homedetails/1512-W-Alabama-St-Houston-TX-77006/ABGYH_pid/"
-  },
-  {
-    "address": "1213 West Pierce Street",
-    "area": "Rosemont Heights",
-    "beds": 4,
-    "baths": 4.5,
-    "listPrice": 1625000,
-    "updated": "2025-11-14",
-    "url": "https://www.compass.com/homedetails/1213-W-Pierce-St-Houston-TX-77019/21CO1G_pid/"
   }
 ]
