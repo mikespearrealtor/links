@@ -247,6 +247,30 @@ def load_object(path: pathlib.Path, note: str) -> dict:
     return data
 
 
+def apply_corrections(records: list, corrections: dict, geo: dict) -> None:
+    """Patch Compass's own mistakes, by hand, without touching the scrape.
+
+    corrections.json is keyed by the same Compass address slug as geo.json.
+    Each entry overrides fields on the matching record - "address", "area" -
+    and may carry a "geo" [lon, lat] that replaces the geocoded point, since a
+    wrong street on Compass geocodes to the wrong spot. It is applied here, at
+    render time, because listings.json is rewritten from Compass every day
+    and an edit made there would last until the next scrape. The same slug
+    follows a home from listings.json into sold.json, so one entry covers it
+    for as long as it is on the page. "why" is a note for people, not data.
+    """
+    for record in records:
+        key = geo_key(record.get("url", "")) if isinstance(record, dict) else None
+        fix = corrections.get(key or "")
+        if not isinstance(fix, dict):
+            continue
+        for field in ("address", "area"):
+            if isinstance(fix.get(field), str):
+                record[field] = fix[field]
+        if isinstance(fix.get("geo"), list) and len(fix["geo"]) == 2:
+            geo[key] = fix["geo"]
+
+
 def parse_open_house(value: str):
     """"2026-08-02T14:00/16:00" -> (start datetime, end time)."""
     try:
@@ -812,6 +836,7 @@ def main() -> None:
     parser.add_argument("--page", default=str(REPO_ROOT / "index.html"))
     parser.add_argument("--geo", default=str(REPO_ROOT / "geo.json"))
     parser.add_argument("--basemap", default=str(REPO_ROOT / "basemap.json"))
+    parser.add_argument("--corrections", default=str(REPO_ROOT / "corrections.json"))
     parser.add_argument("--sold-limit", type=int, default=SOLD_LIMIT,
                         help=f"how many closed sales to show (default {SOLD_LIMIT})")
     parser.add_argument("--dry-run", action="store_true",
@@ -826,20 +851,23 @@ def main() -> None:
     # Anything that fails to load or fails screening leaves an empty list, and
     # an empty list hides its section. A half-broken page is worse than no
     # section at all - a stale listing is something a client acts on.
-    listings = screen(load(pathlib.Path(args.listings), "listings.json"),
-                      "listing", sold=False)
-    all_sales = screen(load(pathlib.Path(args.sold), "sold.json"),
-                       "sold", sold=True)
+    # Either map input failing to load costs the maps, not the lists.
+    geo = load_object(pathlib.Path(args.geo), "the maps have nothing to plot")
+    basemap = load_object(pathlib.Path(args.basemap),
+                          "the maps have nothing to draw on")
+    corrections = load_object(pathlib.Path(args.corrections),
+                              "Compass data is shown as scraped")
+
+    raw_listings = load(pathlib.Path(args.listings), "listings.json")
+    raw_sales = load(pathlib.Path(args.sold), "sold.json")
+    apply_corrections(raw_listings + raw_sales, corrections, geo)
+    listings = screen(raw_listings, "listing", sold=False)
+    all_sales = screen(raw_sales, "sold", sold=True)
     sales = all_sales[:args.sold_limit]
 
     if sales and not find_region(page, SOLD_START, SOLD_END):
         print(f"WARNING: no sold markers in {page_path.name}; skipping that section.")
         sales = []
-
-    # Either map input failing to load costs the maps, not the lists.
-    geo = load_object(pathlib.Path(args.geo), "the maps have nothing to plot")
-    basemap = load_object(pathlib.Path(args.basemap),
-                          "the maps have nothing to draw on")
 
     # Each section gets a map of its own list and nothing else. The suffixes
     # keep the two SVGs' ids apart.
