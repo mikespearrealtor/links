@@ -1163,7 +1163,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: color 0.18s ease, opacity 0.18s ease;
+      transition: color 0.18s ease, opacity 0.18s ease, visibility 0.18s;
     }
     .map-zoom button:hover { color: var(--hint); }
     .map-zoom button:focus-visible {
@@ -1175,7 +1175,14 @@
       cursor: default;
       color: var(--muted);
     }
-    .map-zoom button[hidden] { display: none; }
+    /* The fit button keeps its slot while hidden. The column is anchored at
+       the bottom, so collapsing it would shove + and - upward the moment
+       the first press revealed it - right out from under the pointer. */
+    .map-zoom button[hidden] {
+      display: flex;
+      visibility: hidden;
+      opacity: 0;
+    }
     .map-zoom svg {
       width: 14px;
       height: 14px;
