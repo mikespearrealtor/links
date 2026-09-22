@@ -1107,6 +1107,13 @@
       cursor: grab;
       touch-action: none;
     }
+    /* A drag across the map is a pan, never a text selection. Without this
+       the labels highlight mid-drag and the browser takes the gesture over
+       as a drag of the selected text, which ends the pan. */
+    .map {
+      -webkit-user-select: none;
+      user-select: none;
+    }
     .map.is-panning,
     .map.is-panning .map-hit {
       cursor: grabbing;
