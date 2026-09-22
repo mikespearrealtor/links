@@ -115,6 +115,11 @@ MAX_ROWS = 100
 SOLD_DOT = 4.4
 LIVE_DOT = 4.6     # active listings, drawn over the sales in the accent colour
 LIVE_RING = 8.4    # halo around a live listing, so it reads through a pile
+# An invisible disc over each dot that takes the pointer for it. The dots
+# are drawn small on purpose, and at phone width a 4.6-unit dot is a target
+# about 9px across. Neighbouring discs overlap; the topmost wins, and live
+# listings are drawn above sales so a listing always wins its own pile.
+HIT_R = 9.0
 
 # Under the dots, homes that have neighbours also contribute a wide, faint,
 # blurred disc, which stack into a warm patch over Montrose, River Oaks and
@@ -761,6 +766,17 @@ def render_map(listings: list[dict], sales: list[dict], geo: dict,
     for x, y, key in live_reveal:
         svg.append(f'  <circle class="{live_class(key)} is-off" data-home="{esc(key)}" '
                    f'data-offmap cx="{x:.1f}" cy="{y:.1f}" r="{LIVE_DOT}"/>')
+
+    # The hit discs go last, over everything, so the drawing underneath never
+    # decides what the pointer lands on. The script in index.html wires the
+    # hover and the click to these; the visible dots only ever get lit.
+    def hits(points, off=False):
+        flag = " data-offmap" if off else ""
+        return [f'  <circle class="map-hit" data-home="{esc(key)}"{flag} '
+                f'cx="{x:.1f}" cy="{y:.1f}" r="{HIT_R:g}"/>'
+                for x, y, key in points]
+    svg += (hits(list(reversed(sold_points))) + hits(list(reversed(sold_reveal)), True)
+            + hits(live_points) + hits(live_reveal, True))
     svg.append("</svg>")
 
     keys = []

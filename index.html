@@ -1079,6 +1079,7 @@
        everything else. Geometry is in the renderer; only colour
        and weight live here. */
     .map-frame {
+      position: relative;
       margin-top: 4px;
       /* The frame is ~1.4:1, so on a narrow phone it would otherwise
          eat most of a screen. Capping the height keeps it a glance. */
@@ -1091,6 +1092,69 @@
       width: 100%;
       height: auto;
       max-height: inherit;
+    }
+    /* Invisible discs over the dots that take the pointer for them (see
+       HIT_R in the renderer). Painted nothing, hit-tested as if filled. */
+    .map-hit {
+      fill: transparent;
+      stroke: none;
+      pointer-events: all;
+      cursor: pointer;
+    }
+    /* Zoomed in, a drag pans. Only then does the map claim touch gestures:
+       at the default framing a finger on it has to scroll the page. */
+    .map.is-zoomed {
+      cursor: grab;
+      touch-action: none;
+    }
+    .map.is-panning,
+    .map.is-panning .map-hit {
+      cursor: grabbing;
+    }
+    /* Zoom controls, added by the script so there are none without it. */
+    .map-zoom {
+      position: absolute;
+      right: 6px;
+      bottom: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .map-zoom button {
+      width: 30px;
+      height: 30px;
+      padding: 0;
+      border: 1px solid var(--rule);
+      border-radius: 50%;
+      background: var(--bg);
+      color: var(--muted);
+      font: inherit;
+      font-size: 17px;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.18s ease, opacity 0.18s ease;
+    }
+    .map-zoom button:hover { color: var(--hint); }
+    .map-zoom button:focus-visible {
+      outline: 1px solid var(--accent);
+      outline-offset: 2px;
+    }
+    .map-zoom button:disabled {
+      opacity: 0.35;
+      cursor: default;
+      color: var(--muted);
+    }
+    .map-zoom button[hidden] { display: none; }
+    .map-zoom svg {
+      width: 14px;
+      height: 14px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.6;
+      stroke-linecap: round;
     }
     /* The wash marking the inside of 610. This is the whole argument the map
        makes, so it is the one piece of the drawing that is a filled area
@@ -1160,25 +1224,25 @@
     }
     .map-minor {
       stroke: var(--rule);
-      stroke-width: 0.7;
+      stroke-width: calc(0.7px / var(--mz, 1));
     }
     .map-toll {
       stroke: var(--rule);
-      stroke-width: 1.2;
+      stroke-width: calc(1.2px / var(--mz, 1));
     }
     .map-fwy {
       stroke: var(--faint);
-      stroke-width: 1.5;
+      stroke-width: calc(1.5px / var(--mz, 1));
     }
     .map-loop {
       stroke: var(--map-loop-line);
-      stroke-width: 2.2;
+      stroke-width: calc(2.2px / var(--mz, 1));
     }
     /* Buffalo Bayou through downtown and the Ship Channel out east. Houston
        is unrecognisable without them and instantly recognisable with them. */
     .map-water {
       stroke: var(--map-water);
-      stroke-width: 1.1;
+      stroke-width: calc(1.1px / var(--mz, 1));
     }
     /* Stroked as well as filled. Where TIGER stores a bayou as a polygon it is
        often only a unit or two wide, and fill alone left the best-known water
@@ -1187,7 +1251,7 @@
     .map-water-area {
       fill: var(--map-water);
       stroke: var(--map-water);
-      stroke-width: 0.7;
+      stroke-width: calc(0.7px / var(--mz, 1));
       stroke-linejoin: round;
     }
     /* Unstroked and translucent, so that where several sales fall on the same
@@ -1524,6 +1588,12 @@
             <circle class="map-live" data-home="77-Chelsea-Blvd-Houston-TX-77006" cx="160.4" cy="148.7" r="4.6"/>
             <circle class="map-live" data-home="4217-Sherman-St-Houston-TX-77003" cx="218.7" cy="128.6" r="4.6"/>
             <circle class="map-live" data-home="4040-San-Felipe-St-Unit-119-Houston-TX-77027" cx="100.2" cy="129.6" r="4.6"/>
+            <circle class="map-hit" data-home="2030-Southgate-Blvd-Houston-TX-77030" cx="142.9" cy="173.9" r="9"/>
+            <circle class="map-hit" data-home="3615-Ascot-Ln-Houston-TX-77018" cx="104.1" cy="53.2" r="9"/>
+            <circle class="map-hit" data-home="126-N-Sidney-St-Houston-TX-77003" cx="219.6" cy="128.0" r="9"/>
+            <circle class="map-hit" data-home="77-Chelsea-Blvd-Houston-TX-77006" cx="160.4" cy="148.7" r="9"/>
+            <circle class="map-hit" data-home="4217-Sherman-St-Houston-TX-77003" cx="218.7" cy="128.6" r="9"/>
+            <circle class="map-hit" data-home="4040-San-Felipe-St-Unit-119-Houston-TX-77027" cx="100.2" cy="129.6" r="9"/>
           </svg>
         </div>
         <p class="map-legend"><span class="map-key"><i class="map-dot is-live"></i>For sale</span><span class="map-key"><i class="map-dot is-pending"></i>Pending</span></p>
@@ -1608,6 +1678,22 @@
             <circle class="map-sold is-off" data-home="13818-Mill-Garden-Ct-Houston-TX-77059" data-offmap cx="418.4" cy="304.9" r="4.4"/>
             <circle class="map-sold is-off" data-home="12406-Whittington-Dr-Houston-TX-77077" data-offmap cx="-58.2" cy="129.7" r="4.4"/>
             <circle class="map-sold is-off" data-home="7522-Deep-Forest-Dr-Houston-TX-77088" data-offmap cx="71.6" cy="-19.4" r="4.4"/>
+            <circle class="map-hit" data-home="1512-W-Alabama-St-Houston-TX-77006" cx="151.7" cy="139.1" r="9"/>
+            <circle class="map-hit" data-home="1204-Willard-St-Houston-TX-77006" cx="155.8" cy="124.4" r="9"/>
+            <circle class="map-hit" data-home="301-W-Clay-St-Houston-TX-77019" cx="164.1" cy="119.2" r="9"/>
+            <circle class="map-hit" data-home="1210-W-Drew-St-Houston-TX-77006" cx="155.6" cy="126.0" r="9"/>
+            <circle class="map-hit" data-home="2217-W-Main-St-Houston-TX-77098" cx="135.7" cy="142.3" r="9"/>
+            <circle class="map-hit" data-home="9128-Lakes-At-610-Dr-Houston-TX-77054" cx="128.8" cy="220.9" r="9"/>
+            <circle class="map-hit" data-home="10810-Burdine-St-Houston-TX-77096" cx="65.8" cy="228.7" r="9"/>
+            <circle class="map-hit" data-home="1209-Bomar-St-Houston-TX-77006" cx="155.7" cy="123.7" r="9"/>
+            <circle class="map-hit" data-home="1306-Crocker-St-Houston-TX-77019" cx="159.9" cy="119.3" r="9"/>
+            <circle class="map-hit" data-home="10-S-Briar-Hollow-Ln-Unit-55-Houston-TX-77027" cx="98.9" cy="124.3" r="9"/>
+            <circle class="map-hit" data-home="1215-W-Pierce-St-Houston-TX-77019" cx="155.0" cy="121.1" r="9"/>
+            <circle class="map-hit" data-home="1208-Welch-St-Houston-TX-77006" cx="155.8" cy="125.2" r="9"/>
+            <circle class="map-hit" data-home="5702-Capello-Dr-Houston-TX-77035" data-offmap cx="59.8" cy="241.7" r="9"/>
+            <circle class="map-hit" data-home="13818-Mill-Garden-Ct-Houston-TX-77059" data-offmap cx="418.4" cy="304.9" r="9"/>
+            <circle class="map-hit" data-home="12406-Whittington-Dr-Houston-TX-77077" data-offmap cx="-58.2" cy="129.7" r="9"/>
+            <circle class="map-hit" data-home="7522-Deep-Forest-Dr-Houston-TX-77088" data-offmap cx="71.6" cy="-19.4" r="9"/>
           </svg>
         </div>
         <p class="map-legend"><span class="map-key"><i class="map-dot is-sold"></i>12 recent sales</span><span class="map-off">6 outside this view</span></p>
@@ -1946,12 +2032,31 @@
           var base = map.getAttribute('viewBox').split(/\s+/).map(Number);
           var ratio = base[2] / base[3];
           var cur = base.slice();
+          // Where the reader has put the map with the zoom buttons and a drag.
+          // A row's off-map reveal pulls back from here and returns here.
+          var home = base.slice();
           var raf = null, from = null, to = null, t0 = 0;
           var DUR = 460;
+
+          // The dots and rings, with their drawn radii. Zoomed in, the map
+          // grows k times but these only grow by the square root of it, and
+          // the roads thin the same way (--mz in the CSS): at full size, 4x
+          // would turn dots into coins and freeways into ribbons.
+          var sized = Array.prototype.map.call(
+            map.querySelectorAll(':scope > circle'), function (c) {
+              return [c, +c.getAttribute('r')];
+            });
 
           function setBox(b) {
             map.setAttribute('viewBox', b[0].toFixed(1) + ' ' + b[1].toFixed(1) +
               ' ' + b[2].toFixed(1) + ' ' + b[3].toFixed(1));
+            // Only zooming in counter-scales. The reveal's pull-back keeps the
+            // dots shrinking with the map, as it always has.
+            var damp = Math.sqrt(Math.max(1, base[2] / b[2]));
+            map.style.setProperty('--mz', damp.toFixed(3));
+            sized.forEach(function (s) {
+              s[0].setAttribute('r', (s[1] / damp).toFixed(2));
+            });
           }
           function step(now) {
             var k = Math.min(1, (now - t0) / DUR);
@@ -1983,14 +2088,107 @@
             return [x0, y0, w, h];
           }
 
+          // Reader zoom. A few fixed steps rather than a free scale: three
+          // presses from the whole Loop to a few blocks is plenty. Panning is
+          // clamped to the default frame, which is as far as the basemap is
+          // drawn - past it there is only the faded edge.
+          var LEVELS = [1, 1.6, 2.5, 4];
+          var level = 0;
+          function clampBox(cx, cy, scale) {
+            var w = base[2] / scale, h = base[3] / scale;
+            var x = Math.min(Math.max(cx - w / 2, base[0]), base[0] + base[2] - w);
+            var y = Math.min(Math.max(cy - h / 2, base[1]), base[1] + base[3] - h);
+            return [x, y, w, h];
+          }
+
+          var ICONS = {
+            'in': '<path d="M7 2.5v9M2.5 7h9"/>',
+            'out': '<path d="M2.5 7h9"/>',
+            'fit': '<path d="M2 5V2h3M9 2h3v3M12 9v3H9M5 12H2V9"/>'
+          };
+          var controls = document.createElement('div');
+          controls.className = 'map-zoom';
+          function button(icon, label, go) {
+            var b = document.createElement('button');
+            b.type = 'button';
+            b.setAttribute('aria-label', label);
+            b.title = label;
+            b.innerHTML = '<svg viewBox="0 0 14 14" aria-hidden="true">' +
+              ICONS[icon] + '</svg>';
+            b.addEventListener('click', go);
+            controls.appendChild(b);
+            return b;
+          }
+          function setLevel(n) {
+            level = Math.max(0, Math.min(LEVELS.length - 1, n));
+            home = clampBox(home[0] + home[2] / 2, home[1] + home[3] / 2,
+                            LEVELS[level]);
+            zoom(home);
+            sync();
+          }
+          var zin = button('in', 'Zoom in', function () { setLevel(level + 1); });
+          var zout = button('out', 'Zoom out', function () { setLevel(level - 1); });
+          var zfit = button('fit', 'Show the whole map', function () { setLevel(0); });
+          function sync() {
+            zin.disabled = level === LEVELS.length - 1;
+            zout.disabled = level === 0;
+            zfit.hidden = level === 0;
+            map.classList.toggle('is-zoomed', level > 0);
+          }
+          sync();
+          map.parentNode.appendChild(controls);
+
+          // Drag to pan, once zoomed. The pointer is only captured once the
+          // move is clearly a drag: capturing on press would retarget the
+          // click, and a tap on a dot has to stay a tap on that dot.
+          var drag = null, dragged = false;
+          map.addEventListener('pointerdown', function (e) {
+            if (!level || e.button !== 0) return;
+            drag = { id: e.pointerId, x: e.clientX, y: e.clientY,
+                     box: home.slice(), live: false };
+          });
+          map.addEventListener('pointermove', function (e) {
+            if (!drag || e.pointerId !== drag.id) return;
+            var dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+            if (!drag.live) {
+              if (dx * dx + dy * dy < 25) return;
+              drag.live = true;
+              map.setPointerCapture(e.pointerId);
+              map.classList.add('is-panning');
+            }
+            var perPx = drag.box[2] / map.getBoundingClientRect().width;
+            home = clampBox(drag.box[0] + drag.box[2] / 2 - dx * perPx,
+                            drag.box[1] + drag.box[3] / 2 - dy * perPx,
+                            LEVELS[level]);
+            if (raf) { cancelAnimationFrame(raf); raf = null; }
+            cur = home.slice();
+            setBox(cur);
+          });
+          function endDrag() {
+            if (!drag) return;
+            // The click that closes a drag is not a click on whatever dot the
+            // pointer happened to come to rest on.
+            if (drag.live) {
+              dragged = true;
+              setTimeout(function () { dragged = false; }, 0);
+            }
+            drag = null;
+            map.classList.remove('is-panning');
+          }
+          map.addEventListener('pointerup', endDrag);
+          map.addEventListener('pointercancel', endDrag);
+
           var pairs = {};
           function bucket(key) {
-            if (!pairs[key]) pairs[key] = { dots: [], rows: [] };
+            if (!pairs[key]) pairs[key] = { dots: [], hits: [], rows: [] };
             return pairs[key];
           }
+          // The visible dots are what gets lit; the invisible discs over them
+          // (.map-hit) are what the pointer actually lands on.
           Array.prototype.forEach.call(
             map.querySelectorAll('[data-home]'), function (dot) {
-              bucket(dot.getAttribute('data-home')).dots.push(dot);
+              var pair = bucket(dot.getAttribute('data-home'));
+              (dot.classList.contains('map-hit') ? pair.hits : pair.dots).push(dot);
             });
           Array.prototype.forEach.call(
             section.querySelectorAll('a.row[data-home]'), function (row) {
@@ -2002,6 +2200,25 @@
             targets.forEach(function (el) { el.classList.toggle('is-lit', on); });
           }
 
+          // Clicking a dot opens what its row opens. On a touch screen there
+          // is no hover to preview with, so the first tap lights the dot and
+          // its row and a second tap on the same dot opens it - otherwise a
+          // stray tap on a crowded map would throw the reader out to Compass.
+          function openOnClick(pair, href) {
+            if (!href || !pair.dots.length) return;
+            pair.hits.forEach(function (hit) {
+              var armed = false;
+              hit.addEventListener('pointerdown', function (e) {
+                armed = e.pointerType !== 'touch' ||
+                  pair.dots[0].classList.contains('is-lit');
+              });
+              hit.addEventListener('click', function () {
+                if (dragged || !armed) return;
+                window.open(href, '_blank', 'noopener');
+              });
+            });
+          }
+
           var moreRow = section.querySelector('a.row-more');
 
           Object.keys(pairs).forEach(function (key) {
@@ -2010,10 +2227,11 @@
             // lights the dot and the "and N more" link, which is where it lives.
             if (!pair.rows.length) {
               var extra = pair.dots.concat(moreRow ? [moreRow] : []);
-              pair.dots.forEach(function (dot) {
-                dot.addEventListener('mouseenter', function () { light(extra, true); });
-                dot.addEventListener('mouseleave', function () { light(extra, false); });
+              pair.hits.forEach(function (hit) {
+                hit.addEventListener('mouseenter', function () { light(extra, true); });
+                hit.addEventListener('mouseleave', function () { light(extra, false); });
               });
+              openOnClick(pair, moreRow && moreRow.href);
               return;
             }
 
@@ -2044,7 +2262,7 @@
             }
             function off() {
               light(targets, false);
-              if (offDot) zoom(base);
+              if (offDot) zoom(home);
             }
             // Focus is wired on the rows only. The rows are already links and
             // already in the tab order; putting the dots in it as well would
@@ -2055,10 +2273,11 @@
               row.addEventListener('focus', on);
               row.addEventListener('blur', off);
             });
-            pair.dots.forEach(function (dot) {
-              dot.addEventListener('mouseenter', on);
-              dot.addEventListener('mouseleave', off);
+            pair.hits.forEach(function (hit) {
+              hit.addEventListener('mouseenter', on);
+              hit.addEventListener('mouseleave', off);
             });
+            openOnClick(pair, pair.rows[0].href);
           });
         });
     })();
