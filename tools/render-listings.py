@@ -310,12 +310,18 @@ def is_new(listing: dict, today: datetime.date | None = None) -> bool:
     return 0 <= age <= NEW_DAYS
 
 
+def is_active(listing: dict) -> bool:
+    """Active is the default state; anything else (Pending, Option Pending,
+    Coming Soon...) is called out, and colors its whole row and dot."""
+    return (listing.get("status") or "active").strip().lower() == "active"
+
+
 def meta_line(listing: dict) -> str:
     """"Montrose - 3 bd - 2 ba - 2,105 sqft - Pending", status colored."""
     parts = spec_parts(listing)
     # Active is the default state and adds nothing; call out anything else,
     # flagged with its own color so it doesn't read as just another spec.
-    if listing.get("status") and listing["status"].lower() != "active":
+    if not is_active(listing):
         parts.append(f'<span class="row-status">{esc(listing["status"])}</span>')
     return " &middot; ".join(parts)
 
@@ -359,8 +365,9 @@ def render_row(listing: dict, number: int, off_map: set = frozenset()) -> list[s
     showing = open_house_line(listing.get("openHouse", ""))
     if showing:
         text.append(f'<span class="oh-when">{showing}</span>')
+    row_class = "row" if is_active(listing) else "row is-pending"
     return [
-        f'{INDENT}<a class="row"{home_attr(listing, off_map)} href="{esc(listing["url"])}" target="_blank" rel="noopener">',
+        f'{INDENT}<a class="{row_class}"{home_attr(listing, off_map)} href="{esc(listing["url"])}" target="_blank" rel="noopener">',
         f'{INDENT}  <span class="num">{number:02d}</span>',
         f'{INDENT}  <span class="row-text">{"".join(text)}</span>',
         f"{INDENT}  {price_cell(listing)}",
@@ -591,6 +598,15 @@ def render_map(listings: list[dict], sales: list[dict], geo: dict,
         return "", set()
 
     live_points, live_off = plot(listings, geo, LIVE_DOT, frame)
+    # Listings that are no longer simply for sale get their own dot color, so
+    # the map agrees with the row. Keyed by slug, the same as the pairing.
+    pending = {geo_key(listing.get("url", "")) for listing in listings
+               if not is_active(listing)} - {None, ""}
+    statuses = sorted({listing["status"].strip() for listing in listings
+                       if not is_active(listing)})
+
+    def live_class(key: str) -> str:
+        return "map-live is-pending" if key in pending else "map-live"
     sold_points, sold_off = plot(sales, geo, SOLD_DOT, frame)
     if not live_points and not sold_points:
         return "", set()
@@ -676,7 +692,12 @@ def render_map(listings: list[dict], sales: list[dict], geo: dict,
     # for sale in the middle of a block already sold is the thing worth
     # seeing. Each live dot gets a halo first so it still separates from a
     # pile of sales underneath it.
-    for x, y, key in sold_points:
+    #
+    # Sales are drawn oldest first, so the newest land on top. Only the newest
+    # have rows under the map, and a dot is hovered through whatever sits
+    # above it: drawn newest-first, the older sales past the cap buried the
+    # row-backed dots in every cluster and their hover never fired.
+    for x, y, key in reversed(sold_points):
         svg.append(f'  <circle class="map-sold" data-home="{esc(key)}" '
                    f'cx="{x:.1f}" cy="{y:.1f}" r="{SOLD_DOT}"/>')
     # The halo exists to punch a live dot out of a pile of sales underneath
@@ -692,12 +713,13 @@ def render_map(listings: list[dict], sales: list[dict], geo: dict,
     # through the cycle on the first frame rather than all firing together -
     # in unison it reads as a machine, offset it reads as activity. The CSS
     # stops the animation outright under prefers-reduced-motion.
-    for index, (x, y, _) in enumerate(live_points):
-        svg.append(f'  <circle class="map-pulse" cx="{x:.1f}" cy="{y:.1f}" '
+    for index, (x, y, key) in enumerate(live_points):
+        pulse = "map-pulse is-pending" if key in pending else "map-pulse"
+        svg.append(f'  <circle class="{pulse}" cx="{x:.1f}" cy="{y:.1f}" '
                    f'r="{LIVE_DOT}" style="animation-delay:'
                    f'-{index * PULSE_STAGGER:.1f}s"/>')
     for x, y, key in live_points:
-        svg.append(f'  <circle class="map-live" data-home="{esc(key)}" '
+        svg.append(f'  <circle class="{live_class(key)}" data-home="{esc(key)}" '
                    f'cx="{x:.1f}" cy="{y:.1f}" r="{LIVE_DOT}"/>')
 
     # The homes the frame left out but could still reach are drawn too, at their
@@ -709,18 +731,22 @@ def render_map(listings: list[dict], sales: list[dict], geo: dict,
     # get no dot at all: their rows fall back to lighting the note, which is the
     # older behaviour and the honest one when the map has nothing near to show.
     # Sales under listings, as above.
-    for x, y, key in sold_reveal:
+    for x, y, key in reversed(sold_reveal):
         svg.append(f'  <circle class="map-sold is-off" data-home="{esc(key)}" '
                    f'data-offmap cx="{x:.1f}" cy="{y:.1f}" r="{SOLD_DOT}"/>')
     for x, y, key in live_reveal:
-        svg.append(f'  <circle class="map-live is-off" data-home="{esc(key)}" '
+        svg.append(f'  <circle class="{live_class(key)} is-off" data-home="{esc(key)}" '
                    f'data-offmap cx="{x:.1f}" cy="{y:.1f}" r="{LIVE_DOT}"/>')
     svg.append("</svg>")
 
     keys = []
-    if live_points:
+    # Each key only when the map actually shows a dot of that color.
+    if any(key not in pending for _, _, key in live_points):
         keys.append('<span class="map-key"><i class="map-dot is-live"></i>'
                     "For sale</span>")
+    if statuses and any(key in pending for _, _, key in live_points):
+        keys.append('<span class="map-key"><i class="map-dot is-pending"></i>'
+                    f'{esc(" / ".join(statuses))}</span>')
     if sold_points:
         noun = "sale" if len(sold_points) == 1 else "sales"
         keys.append('<span class="map-key"><i class="map-dot is-sold"></i>'
@@ -763,6 +789,20 @@ def splice(page: str, start_marker: str, end_marker: str, body: str) -> str:
     if not body:
         return f"{page[:head_end]}{INDENT}{page[end:]}"
     return f"{page[:head_end]}{body}\n{INDENT}{page[end:]}"
+
+
+def touch_sitemap(sitemap_path: pathlib.Path) -> None:
+    """Set the homepage's <lastmod> to today, so search engines see the
+    listings change instead of a date frozen at the sitemap's creation."""
+    try:
+        sitemap = sitemap_path.read_text(encoding="utf-8")
+    except OSError:
+        return
+    today = datetime.date.today().isoformat()
+    updated = re.sub(r"<lastmod>[^<]*</lastmod>",
+                     f"<lastmod>{today}</lastmod>", sitemap, count=1)
+    if updated != sitemap:
+        sitemap_path.write_text(updated, encoding="utf-8", newline="\n")
 
 
 def main() -> None:
@@ -843,6 +883,7 @@ def main() -> None:
         temp = page_path.with_suffix(".tmp")
         temp.write_text(updated, encoding="utf-8", newline="\n")
         os.replace(temp, page_path)
+        touch_sitemap(page_path.parent / "sitemap.xml")
         print(f"Rendered {len(listings)} listing(s) and {len(sales)} closed "
               f"sale(s) into {page_path.name}")
     else:
