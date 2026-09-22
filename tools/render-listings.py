@@ -135,6 +135,30 @@ HEAT_R = 16.0
 HEAT_NEAR = 20.0
 HEAT_MIN = 2
 
+# Neighbourhood names, shown only once a reader zooms in - at the default
+# framing the Loop and the freeways are orientation enough, and a dozen names
+# would bury the dots. The major ones appear at the first zoom step, the rest
+# from the second, where there is room between them. Positions are rough
+# centres (lon, lat), nudged by eye to sit clear of one another.
+MAP_LABELS = [
+    ("Downtown", -95.3660, 29.7585, True),
+    ("The Heights", -95.3980, 29.7990, True),
+    ("Montrose", -95.3950, 29.7455, True),
+    ("River Oaks", -95.4200, 29.7555, True),
+    ("Galleria", -95.4610, 29.7400, True),
+    ("Medical Center", -95.4000, 29.6995, True),
+    ("East End", -95.3180, 29.7370, True),
+    ("Midtown", -95.3780, 29.7395, False),
+    ("Museum District", -95.3880, 29.7240, False),
+    ("Rice Village", -95.4170, 29.7160, False),
+    ("Third Ward", -95.3610, 29.7215, False),
+    ("EaDo", -95.3480, 29.7505, False),
+    ("Upper Kirby", -95.4240, 29.7340, False),
+    ("Memorial Park", -95.4400, 29.7650, False),
+    ("Timbergrove", -95.4220, 29.7880, False),
+    ("Bellaire", -95.4590, 29.7050, False),
+]
+
 # Seconds between one listing's pulse and the next. Long enough that the ring
 # from one dot has cleared before its neighbour starts, so a cluster reads as
 # several separate listings rather than one throb.
@@ -714,6 +738,16 @@ def render_map(listings: list[dict], sales: list[dict], geo: dict,
             + layer(basemap, "freeways", "map-fwy")
             + layer(basemap, "loop", "map-loop")]
     svg += ['  </g>']
+
+    # Neighbourhood names, over the roads and under every dot. Hidden until
+    # the map is zoomed (the script toggles them with the zoom scale); the script sizes
+    # them so they read the same on screen at any zoom.
+    for name, lon, lat, major in MAP_LABELS:
+        x, y = frame.project(lon, lat)
+        if frame.holds(x, y, 0):
+            css = "map-label" if major else "map-label is-minor"
+            svg.append(f'  <text class="{css}" x="{x:.1f}" y="{y:.1f}" '
+                       f'aria-hidden="true">{esc(name)}</text>')
 
     # Two passes, because these overlap and the order decides what survives.
     # Sales sit at the bottom, stacking into a darker patch wherever several
