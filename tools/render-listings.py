@@ -17,10 +17,10 @@ neither map is making a claim the rows beneath it do not support.
 
 "Recently sold" shows the ten most recent closed sales in the order Compass
 itself returns them, though its map plots all of them. The list closes with
-an "and N more" link to HAR's sold-by-agent page, so the extra dots are
-accounted for rather than left as a discrepancy the page never mentions. Its
-prices are last list prices, not sale prices (Texas does not disclose those),
-and the note under the section says so.
+an "and N more recently sold" link to HAR's sold-by-agent page, so the extra
+dots are accounted for rather than left as a discrepancy the page never
+mentions. Its prices are last list prices, not sale prices (Texas does not
+disclose those), and the note under the section says so.
 
 The maps are inline SVG, drawn from coordinates cached in geo.json by
 tools/geocode.py over the freeway and water geometry in basemap.json. Drawn
@@ -59,8 +59,8 @@ INDENT = " " * 6
 # The map still plots every sale, and render_more_row() links to the rest.
 SOLD_LIMIT = 10
 
-# Where "and N more" sends a reader: HAR's sold-by-agent page, which lists
-# every closed sale rather than the ten the section shows.
+# Where "and N more recently sold" sends a reader: HAR's sold-by-agent page,
+# which lists every closed sale rather than the ten the section shows.
 MORE_SOLD_URL = "https://www.har.com/realestatepro/sold-by-agent/spear"
 
 # The same outbound arrow the profile tiles use, in the grid column the other
@@ -462,8 +462,8 @@ def render_more_row(hidden: int) -> list[str]:
     return [
         f'{INDENT}<a class="row row-more" href="{esc(MORE_SOLD_URL)}" target="_blank" rel="noopener">',
         f'{INDENT}  <span class="num" aria-hidden="true"></span>',
-        f'{INDENT}  <span class="row-text"><span class="row-main">and {hidden} more</span>'
-        f'<span class="row-sub">sold, on HAR.com</span></span>',
+        f'{INDENT}  <span class="row-text"><span class="row-main">and {hidden} more recently sold</span>'
+        f'<span class="row-sub">on HAR.com</span></span>',
         f"{INDENT}  {ARROW}",
         f"{INDENT}</a>",
     ]

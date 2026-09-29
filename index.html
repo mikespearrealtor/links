@@ -1815,7 +1815,7 @@
         </a>
         <a class="row row-more" href="https://www.har.com/realestatepro/sold-by-agent/spear" target="_blank" rel="noopener">
           <span class="num" aria-hidden="true"></span>
-          <span class="row-text"><span class="row-main">and 8 more</span><span class="row-sub">sold, on HAR.com</span></span>
+          <span class="row-text"><span class="row-main">and 8 more recently sold</span><span class="row-sub">on HAR.com</span></span>
           <svg class="arr" viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
         </a>
         <p class="mls-note">Recent closed sales from Compass. Texas is a non-disclosure state; amounts shown are the last list price, not the sale price. Mike Spear, Compass RE Texas, LLC.</p>
@@ -2301,7 +2301,8 @@
           Object.keys(pairs).forEach(function (key) {
             var pair = pairs[key];
             // A sale past the list's cap has a dot but no row. Pointing at it
-            // lights the dot and the "and N more" link, which is where it lives.
+            // lights the dot and the "and N more recently sold" link, which is
+            // where it lives.
             if (!pair.rows.length) {
               var extra = pair.dots.concat(moreRow ? [moreRow] : []);
               pair.hits.forEach(function (hit) {
