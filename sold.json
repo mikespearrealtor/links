@@ -1,5 +1,14 @@
 [
   {
+    "address": "2030 Southgate Boulevard",
+    "area": "University Place",
+    "beds": 3,
+    "baths": 4,
+    "listPrice": 1250000,
+    "updated": "2026-10-16",
+    "url": "https://www.compass.com/homedetails/2030-Southgate-Blvd-Houston-TX-77030/AVEOK_pid/"
+  },
+  {
     "address": "1209 Bomar Street",
     "area": "Stratford",
     "beds": 4,
@@ -151,13 +160,5 @@
     "listPrice": 2095000,
     "updated": "2026-03-16",
     "url": "https://www.compass.com/homedetails/1210-W-Drew-St-Houston-TX-77006/9YX3Y_pid/"
-  },
-  {
-    "address": "1512 West Alabama Street",
-    "area": "Montrose",
-    "baths": 0,
-    "listPrice": 3095000,
-    "updated": "2025-12-16",
-    "url": "https://www.compass.com/homedetails/1512-W-Alabama-St-Houston-TX-77006/ABGYH_pid/"
   }
 ]
