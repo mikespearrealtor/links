@@ -39,7 +39,7 @@
   },
   {
     "address": "4040 San Felipe Street, Unit 119",
-    "area": "River Oaks Townhomes",
+    "area": "River Oaks",
     "beds": 2,
     "baths": 2.5,
     "sqft": 1380,
@@ -48,5 +48,17 @@
     "listedDate": "2026-04-03",
     "url": "https://www.compass.com/homedetails/4040-San-Felipe-St-Unit-119-Houston-TX-77027/AFVKX_pid/",
     "photo": "https://www.compass.com/m/cd60ef1ed443103a5259c0e0a5868f014decf4483b7b844e5f266ec6f2ca40fa/1024x768.jpg"
+  },
+  {
+    "address": "1901 Richmond Avenue, Unit 44",
+    "area": "Richmond Place",
+    "baths": 1,
+    "sqft": 400,
+    "price": 1400,
+    "status": "Active",
+    "listedDate": "2026-10-23",
+    "url": "https://www.compass.com/homedetails/1901-Richmond-Ave-Unit-44-Houston-TX-77098/2K403E_pid/",
+    "rental": true,
+    "photo": "https://www.compass.com/m/b05b04b91f5814eed5c873fa4733f66c1cf3093f294a9c2ca0466f7fc21a0b88/1024x768.jpg"
   }
 ]
