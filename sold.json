@@ -1,5 +1,14 @@
 [
   {
+    "address": "77 Chelsea Boulevard",
+    "area": "University Place",
+    "beds": 3,
+    "baths": 2.5,
+    "listPrice": 499000,
+    "updated": "2026-10-29",
+    "url": "https://www.compass.com/homedetails/77-Chelsea-Blvd-Houston-TX-77006/2FB5R7_pid/"
+  },
+  {
     "address": "1215 West Pierce Street",
     "area": "Montrose",
     "beds": 4,
@@ -34,15 +43,6 @@
     "listPrice": 995000,
     "updated": "2026-09-29",
     "url": "https://www.compass.com/homedetails/301-W-Clay-St-Houston-TX-77019/AN95K_pid/"
-  },
-  {
-    "address": "1204 Willard Street",
-    "area": "Stratford",
-    "beds": 4,
-    "baths": 5,
-    "listPrice": 1995000,
-    "updated": "2026-09-29",
-    "url": "https://www.compass.com/homedetails/1204-Willard-St-Houston-TX-77006/BPH8F_pid/"
   },
   {
     "address": "5702 Capello Drive",
