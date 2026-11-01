@@ -1,5 +1,14 @@
 [
   {
+    "address": "1515 Hyde Park Boulevard, Unit 5",
+    "area": "Montrose",
+    "beds": 3,
+    "baths": 3.5,
+    "listPrice": 535000,
+    "updated": "2026-10-30",
+    "url": "https://www.compass.com/homedetails/1515-Hyde-Park-Blvd-Unit-5-Houston-TX-77006/AWEVG_pid/"
+  },
+  {
     "address": "77 Chelsea Boulevard",
     "area": "University Place",
     "beds": 3,
@@ -36,15 +45,6 @@
     "url": "https://www.compass.com/homedetails/1209-Bomar-St-Houston-TX-77006/B2GU6_pid/"
   },
   {
-    "address": "301 West Clay Street",
-    "area": "Alden Place",
-    "beds": 2,
-    "baths": 2,
-    "listPrice": 995000,
-    "updated": "2026-09-29",
-    "url": "https://www.compass.com/homedetails/301-W-Clay-St-Houston-TX-77019/AN95K_pid/"
-  },
-  {
     "address": "5702 Capello Drive",
     "area": "Westbury",
     "beds": 3,
@@ -63,15 +63,6 @@
     "url": "https://www.compass.com/homedetails/7522-Deep-Forest-Dr-Houston-TX-77088/A49WM_pid/"
   },
   {
-    "address": "10 South Briar Hollow Lane, Unit 55",
-    "area": "Briar Hollow Area",
-    "beds": 3,
-    "baths": 2.5,
-    "listPrice": 749900,
-    "updated": "2026-09-29",
-    "url": "https://www.compass.com/homedetails/10-S-Briar-Hollow-Ln-Unit-55-Houston-TX-77027/AYATK_pid/"
-  },
-  {
     "address": "2826 Acacia Grv Drive",
     "area": "Fort Bend County",
     "beds": 4,
@@ -79,6 +70,15 @@
     "listPrice": 489900,
     "updated": "2026-09-29",
     "url": "https://www.compass.com/homedetails/2826-Acacia-Grv-Dr-Katy-TX-77494/BS4VB_pid/"
+  },
+  {
+    "address": "10 South Briar Hollow Lane, Unit 55",
+    "area": "Briar Hollow Area",
+    "beds": 3,
+    "baths": 2.5,
+    "listPrice": 749900,
+    "updated": "2026-09-29",
+    "url": "https://www.compass.com/homedetails/10-S-Briar-Hollow-Ln-Unit-55-Houston-TX-77027/AYATK_pid/"
   },
   {
     "address": "5016 Blooming Hibiscus Lane",
