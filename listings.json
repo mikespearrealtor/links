@@ -12,6 +12,17 @@
     "photo": "https://www.compass.com/m/4c4a68e725419384f834d18550d60dc0c42fae659f3a8196c220b80dd7cca15d/1024x768.jpg"
   },
   {
+    "address": "1613 Prospect Street",
+    "area": "Southmore",
+    "beds": 3,
+    "baths": 2.5,
+    "sqft": 2525,
+    "price": 590000,
+    "status": "Coming Soon",
+    "url": "https://www.compass.com/homedetails/1613-Prospect-St-Houston-TX-77004/ALG9N_pid/",
+    "photo": "https://www.compass.com/m/0/9453c173-56f9-43c4-bd64-ca395d7fe505/1500x999.jpg"
+  },
+  {
     "address": "126 Sidney Street",
     "area": "Brady Place",
     "beds": 3,
