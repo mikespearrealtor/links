@@ -104,6 +104,14 @@
     }
 
     @font-face {
+      font-family: 'Newsreader';
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+      src: url('/fonts/newsreader-var.woff2') format('woff2');
+    }
+
+    @font-face {
       font-family: 'InterVar';
       font-style: normal;
       font-weight: 400 600;
@@ -367,20 +375,21 @@
       margin-top: 46px;
     }
 
-    /* Section titles set in the same serif as the name, in sentence case -
-       the heading itself and the space above it do the separating. */
+    /* Section titles in Newsreader, sentence case - a quieter serif than
+       the Fraunces name, and narrow enough that the long listing headings
+       hold one line. The heading and the space above it do the separating. */
     .label {
-      font-family: 'Fraunces', Georgia, serif;
+      font-family: 'Newsreader', Georgia, serif;
+      font-optical-sizing: auto;
       font-weight: 400;
-      font-size: 24px;
+      font-size: 25px;
       line-height: 1.2;
-      letter-spacing: -0.005em;
       color: var(--text);
       margin-bottom: 6px;
     }
 
     @media (max-width: 899px) {
-      .label { font-size: 21px; }
+      .label { font-size: 22px; }
     }
 
     /* ── Profile tiles ── */
