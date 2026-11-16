@@ -18,9 +18,11 @@
     "baths": 2.5,
     "sqft": 2525,
     "price": 590000,
-    "status": "Coming Soon",
+    "status": "Active",
+    "listedDate": "2026-11-16",
     "url": "https://www.compass.com/homedetails/1613-Prospect-St-Houston-TX-77004/ALG9N_pid/",
-    "photo": "https://www.compass.com/m/0/9453c173-56f9-43c4-bd64-ca395d7fe505/1500x999.jpg"
+    "photo": "https://www.compass.com/m/85fc936affa7fedfaa044b9105ced6a36d79806f5b5f578d133f298254ef67db/1024x768.jpg",
+    "openHouse": "2026-11-22T14:00/16:00"
   },
   {
     "address": "126 Sidney Street",
@@ -33,7 +35,7 @@
     "listedDate": "2026-09-18",
     "url": "https://www.compass.com/homedetails/126-Sidney-St-Houston-TX-77003/BVI0D_pid/",
     "photo": "https://www.compass.com/m/b2d544763e9892557d06e2ff572e2b1a11f812dcdf2b996605e2bda4dc4d6d60/1024x768.jpg",
-    "openHouse": "2026-11-15T14:00/16:00"
+    "openHouse": "2026-11-22T14:00/16:00"
   },
   {
     "address": "4217 Sherman Street",
@@ -46,7 +48,7 @@
     "listedDate": "2026-08-15",
     "url": "https://www.compass.com/homedetails/4217-Sherman-St-Houston-TX-77003/BOXNR_pid/",
     "photo": "https://www.compass.com/m/c3657d5bd0a54c6ea58221c927a6dd988d6454a375881788026788cb6061287a/1024x768.jpg",
-    "openHouse": "2026-11-15T14:00/16:00"
+    "openHouse": "2026-11-22T14:00/16:00"
   },
   {
     "address": "4040 San Felipe Street, Unit 119",
