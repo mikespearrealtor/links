@@ -6,8 +6,7 @@ untouched, so this is safe to re-run.
 
 Both sections open with a map of their own contents and continue as plain
 rows, in the same idiom as the Profiles / Get in touch / Documents sections.
-Row numbers restart at 01 in each section, as the static sections do - they
-number a list, they are not a running count of everything on the page.
+Rows carry no numbers; the section heading is enough.
 
 The maps replaced a photo of the highest-priced listing. One house says one
 thing about one house; the same space spent on a map says where the work is,
@@ -421,7 +420,6 @@ def render_row(listing: dict, number: int, off_map: set = frozenset()) -> list[s
     row_class = "row" if is_active(listing) else "row is-pending"
     return [
         f'{INDENT}<a class="{row_class}"{home_attr(listing, off_map)} href="{esc(listing["url"])}" target="_blank" rel="noopener">',
-        f'{INDENT}  <span class="num">{number:02d}</span>',
         f'{INDENT}  <span class="row-text">{"".join(text)}</span>',
         f"{INDENT}  {price_cell(listing)}",
         f"{INDENT}</a>",
@@ -437,7 +435,6 @@ def render_sold_row(sale: dict, number: int, off_map: set = frozenset()) -> list
             else '<span class="row-price">&mdash;</span>')
     return [
         f'{INDENT}<a class="row"{home_attr(sale, off_map)} href="{esc(sale["url"])}" target="_blank" rel="noopener">',
-        f'{INDENT}  <span class="num">{number:02d}</span>',
         f'{INDENT}  <span class="row-text">{"".join(text)}</span>',
         f"{INDENT}  {cell}",
         f"{INDENT}</a>",
@@ -461,7 +458,6 @@ def render_more_row(hidden: int) -> list[str]:
         return []
     return [
         f'{INDENT}<a class="row row-more" href="{esc(MORE_SOLD_URL)}" target="_blank" rel="noopener">',
-        f'{INDENT}  <span class="num" aria-hidden="true"></span>',
         f'{INDENT}  <span class="row-text"><span class="row-main">and {hidden} more recently sold</span>'
         f'<span class="row-sub">on HAR.com</span></span>',
         f"{INDENT}  {ARROW}",
