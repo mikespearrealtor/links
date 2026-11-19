@@ -509,7 +509,9 @@
     .tile-logo {
       display: block;
       width: auto;
-      max-width: 100%;
+      /* Leave room for the corner arrow; on narrow phones the Compass
+         wordmark would otherwise run right up against it. */
+      max-width: calc(100% - 22px);
       object-fit: contain;
       object-position: left center;
       margin-top: 2px;
