@@ -9,6 +9,11 @@ page and writes two files:
 Closed rentals are deliberately skipped, as are all other pages. Sold entries
 carry no photo: only the active listings are shown with imagery.
 
+Each listing's first few gallery photos (--photo-count, default 5) are also
+copied into listing-photos/ and listed under "photos" with their Compass
+captions as alt text - see mirror_photos() for how new listings and replaced
+photos are picked up.
+
 A note on sold prices: Texas is a non-disclosure state, so Compass does not
 publish what a home actually closed for - every closed deal in the payload is
 flagged `hideHistoricalSoldPrice` and exposes only `price.lastKnown`, the last
@@ -33,6 +38,7 @@ import os
 import pathlib
 import re
 import sys
+import time
 import urllib.error
 import urllib.request
 import zlib
@@ -107,6 +113,27 @@ def photo_url(listing: dict, size: str) -> str | None:
     return f"{match.group(1)}{size}.jpg" if match else source
 
 
+def gallery(listing: dict, count: int) -> list[dict]:
+    """The first `count` photos in Compass gallery order, as
+    {"hash", "source", "alt"}. The hash is Compass's content hash from the
+    URL, so a photo the agent replaces comes back with a different one."""
+    shots = []
+    for item in listing.get("media") or []:
+        source = item.get("originalUrl") or item.get("thumbnailUrl") or ""
+        match = PHOTO_RE.match(source)
+        if not match:
+            continue
+        digest = match.group(1).rstrip("/").rsplit("/", 1)[-1]
+        shots.append({
+            "hash": digest,
+            "source": match.group(1),
+            "alt": (item.get("description") or "").strip(),
+        })
+        if len(shots) == count:
+            break
+    return shots
+
+
 def open_house(listing: dict) -> str | None:
     """First upcoming open house as "YYYY-MM-DDTHH:MM/HH:MM" in local time."""
     events = listing.get("openHouses") or []
@@ -145,7 +172,7 @@ def area_of(location: dict) -> str | None:
     return area or location.get("city")
 
 
-def convert(listing: dict, *, rental: bool, size: str) -> dict:
+def convert(listing: dict, *, rental: bool, size: str, count: int = 0) -> dict:
     """Map one Compass listing onto the listings.json schema."""
     location = listing.get("location") or {}
     dimensions = listing.get("size") or {}
@@ -177,13 +204,17 @@ def convert(listing: dict, *, rental: bool, size: str) -> dict:
     photo = photo_url(listing, size)
     if photo:
         record["photo"] = photo
+    shots = gallery(listing, count)
+    if shots:
+        # Placeholder for mirror_photos(), which swaps in the local files.
+        record["photos"] = shots
     showing = open_house(listing)
     if showing:
         record["openHouse"] = showing
     return {k: v for k, v in record.items() if v is not None}
 
 
-def collect(profile: dict, size: str) -> list[dict]:
+def collect(profile: dict, size: str, count: int = 0) -> list[dict]:
     """Convert the listings section, leaving Transactions untouched."""
     try:
         section = profile["data"]["agentProfileProps"]["activeListingsProps"]
@@ -206,7 +237,8 @@ def collect(profile: dict, size: str) -> list[dict]:
                 f"but embedded only {len(items)} on the page. "
                 "Scraping what is available."
             )
-        listings.extend(convert(item, rental=is_rental, size=size) for item in items)
+        listings.extend(convert(item, rental=is_rental, size=size, count=count)
+                        for item in items)
 
     # Highest price first, matching how the profile page orders them.
     listings.sort(key=lambda item: item.get("price") or 0, reverse=True)
@@ -293,6 +325,70 @@ def collect_sold(profile: dict) -> list[dict]:
     return [convert_sold(item) for item in items]
 
 
+def fetch_image(url: str, timeout: int) -> bytes:
+    """Download one photo, refusing anything that is not a JPEG or PNG."""
+    headers = dict(HEADERS, Accept="image/avif,image/webp,image/*,*/*;q=0.8")
+    headers.pop("Accept-Encoding")  # images arrive as-is; nothing to inflate
+    request = urllib.request.Request(url, headers=headers)
+    with urllib.request.urlopen(request, timeout=timeout) as response:
+        data = response.read()
+    if not (data.startswith(b"\xff\xd8\xff") or data.startswith(b"\x89PNG")):
+        raise ValueError(f"not an image ({len(data)} bytes)")
+    return data
+
+
+def mirror_photos(listings: list[dict], folder: pathlib.Path, size: str,
+                  timeout: int) -> None:
+    """Copy each listing's gallery photos onto our own server.
+
+    Files are named after Compass's content hash, so:
+      - a new listing, or a Coming Soon one that gains photos, downloads them;
+      - a photo the agent replaces on Compass has a new hash and downloads too;
+      - anything already on disk is never fetched again, so a normal day makes
+        zero image requests.
+    Files no longer referenced by any listing (sold, withdrawn, replaced) are
+    deleted. A download that fails falls back to the Compass URL for this run
+    and is retried tomorrow, since its file still will not exist.
+    """
+    folder.mkdir(exist_ok=True)
+    keep: set[str] = set()
+    fetched = failed = 0
+
+    for listing in listings:
+        resolved = []
+        for shot in listing.get("photos") or []:
+            name = f"{shot['hash'][:16]}-{size}.jpg"
+            path = folder / name
+            remote = f"{shot['source']}{size}.jpg"
+            if not path.exists():
+                try:
+                    data = fetch_image(remote, timeout)
+                except (urllib.error.URLError, TimeoutError, OSError, ValueError) as exc:
+                    failed += 1
+                    log(f"WARNING: photo for {listing.get('address')} failed "
+                        f"({exc}); using the Compass URL until it downloads.")
+                    resolved.append({"src": remote, "alt": shot["alt"]})
+                    continue
+                temp = path.with_suffix(".tmp")
+                temp.write_bytes(data)
+                os.replace(temp, path)
+                fetched += 1
+                time.sleep(0.5)  # be gentle with Compass on a big first run
+            keep.add(name)
+            resolved.append({"src": f"{folder.name}/{name}", "alt": shot["alt"]})
+        if resolved:
+            listing["photos"] = resolved
+
+    pruned = 0
+    for stale in folder.glob("*.jpg"):
+        if stale.name not in keep:
+            stale.unlink()
+            pruned += 1
+
+    log(f"Photos: {len(keep)} mirrored in {folder.name}/ "
+        f"({fetched} new, {pruned} removed, {failed} failed)")
+
+
 def write_atomic(path: pathlib.Path, payload: str) -> None:
     temp = path.with_suffix(path.suffix + ".tmp")
     temp.write_text(payload, encoding="utf-8", newline="\n")
@@ -332,6 +428,13 @@ def main() -> None:
                         help="skip the Transactions section entirely")
     parser.add_argument("--photo-size", default="1024x768",
                         help="WxH for listing photos (Compass resizes on demand)")
+    parser.add_argument("--photo-count", type=int, default=5,
+                        help="gallery photos per listing to mirror into "
+                             "listing-photos/ (0 to skip)")
+    parser.add_argument("--gallery-size", default="2048x1536",
+                        help="WxH box for mirrored photos; Compass fits "
+                             "within it without cropping (originals are "
+                             "~2172 wide, so this is near full quality)")
     parser.add_argument("--timeout", type=int, default=45, help="HTTP timeout in seconds")
     parser.add_argument("--dry-run", action="store_true",
                         help="print the JSON instead of writing it")
@@ -347,12 +450,18 @@ def main() -> None:
 
     profile = extract_profile(html)
 
-    listings = collect(profile, args.photo_size)
+    listings = collect(profile, args.photo_size, args.photo_count)
     if not listings:
         sys.exit(
             "Parsed the page but found zero listings. Refusing to overwrite "
             "the existing file - check the profile manually."
         )
+    if args.dry_run:
+        for listing in listings:
+            listing.pop("photos", None)
+    elif args.photo_count > 0:
+        mirror_photos(listings, REPO_ROOT / "listing-photos",
+                      args.gallery_size, args.timeout)
     save(listings, pathlib.Path(args.out), "listing", args)
 
     # Additive: a change to the Transactions section must never cost us the
