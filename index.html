@@ -701,37 +701,103 @@
       outline-offset: 4px;
     }
 
-    /* Copy-email action: icon + word, styled to match the Call/Text links.
-       Oversized padding (offset by negative margin) keeps a ~44px tap target
-       without shifting the row. */
-    .copy-btn {
-      display: inline-flex;
+    /* Contact + document tiles: same card as the Compass/HAR tiles, with an
+       icon + word in place of a logo. */
+    .tile-main {
+      display: flex;
       align-items: center;
-      gap: 7px;
+      gap: 9px;
+      font-size: 16px;
+      line-height: 1.3;
+      color: var(--text);
+    }
+
+    .tile-ico {
+      width: 16px;
+      height: 16px;
+      flex: none;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.6;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .ctile .tile-sub { margin-top: 7px; }
+
+    .tile-wide { grid-column: 1 / -1; }
+
+    /* Email tile: the card opens mail, and the corner icon (where the arrow
+       sits on the other tiles) copies the address. A button can't live inside
+       a link, so this tile is a div holding both side by side. */
+    .tile-split {
+      position: relative;
+      display: flex;
+      background: var(--tile-bg);
+      border: 1px solid var(--tile-border);
+      will-change: transform;
+      transition: border-color 0.35s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.35s cubic-bezier(0.22, 1, 0.36, 1), transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    @media (hover: hover) {
+      .tile-split:hover {
+        border-color: var(--hint);
+        background: var(--tile-hover-bg);
+        transform: translateY(-2px);
+      }
+    }
+
+    .tile-split:active {
+      border-color: var(--hint);
+      background: var(--tile-hover-bg);
+    }
+
+    .tile-link {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 16px 16px 15px;
+      text-decoration: none;
+    }
+
+    .tile-link:focus-visible {
+      outline: 1px solid var(--accent);
+      outline-offset: 4px;
+    }
+
+    .tile-copy {
+      position: absolute;
+      top: 3px;
+      right: 3px;
+      width: 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+      padding: 0;
       background: none;
       border: none;
       cursor: pointer;
-      font-family: inherit;
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--accent-text);
-      padding: 16px 8px;
-      margin: -16px -8px;
+      color: var(--tile-arr);
       transition: color 0.2s ease;
     }
 
-    .copy-btn .copy-label {
-      text-decoration: underline;
-      text-decoration-color: var(--accent-text);
-      text-underline-offset: 4px;
-      transition: text-decoration-color 0.2s ease;
+    @media (hover: hover) {
+      .tile-copy:hover { color: var(--hint); }
+    }
+
+    .tile-copy:active,
+    .tile-copy.copied { color: var(--hint); }
+
+    .tile-copy:focus-visible {
+      outline: 1px solid var(--accent);
+      outline-offset: -4px;
     }
 
     .copy-ico {
-      width: 13px;
-      height: 13px;
+      width: 14px;
+      height: 14px;
       stroke: currentColor;
       fill: none;
       stroke-width: 1.7;
@@ -739,25 +805,9 @@
       stroke-linejoin: round;
     }
 
-    .copy-btn .ico-check { display: none; }
-
-    @media (hover: hover) {
-      .copy-btn:hover { color: var(--hint); }
-      .copy-btn:hover .copy-label { text-decoration-color: var(--hint); }
-    }
-
-    .copy-btn:active { color: var(--hint); }
-    .copy-btn:active .copy-label { text-decoration-color: var(--hint); }
-
-    .copy-btn.copied { color: var(--hint); }
-    .copy-btn.copied .copy-label { text-decoration-color: var(--hint); }
-    .copy-btn.copied .ico-copy { display: none; }
-    .copy-btn.copied .ico-check { display: inline; stroke-width: 1.9; }
-
-    .copy-btn:focus-visible {
-      outline: 1px solid var(--accent);
-      outline-offset: 3px;
-    }
+    .tile-copy .ico-check { display: none; }
+    .tile-copy.copied .ico-copy { display: none; }
+    .tile-copy.copied .ico-check { display: block; stroke-width: 1.9; }
 
     .row-sub {
       display: block;
@@ -1614,48 +1664,44 @@
 
       <section class="group">
         <h2 class="label">Get in touch</h2>
-        <div class="row">
-          <a class="row-text row-tel" href="sms:+17132047653" id="numLink"><span class="row-main">713-204-7653</span><span class="row-sub">Mobile</span></a>
-          <span class="row-actions">
+        <div class="tiles">
+          <a class="tile ctile" href="tel:+17132047653" id="callBtn">
+            <span class="tile-main"><svg class="tile-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.81.36 1.6.7 2.34a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.74-1.27a2 2 0 0 1 2.11-.45c.74.34 1.53.57 2.34.7A2 2 0 0 1 22 16.92z"/></svg>Call</span>
+            <span class="tile-sub">713-204-7653</span>
             <svg class="arr" viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
-            <span class="row-actions-btns">
-              <a href="tel:+17132047653" id="callBtn">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.81.36 1.6.68 2.34a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.74-1.74a2 2 0 0 1 2.11-.45c.74.32 1.53.55 2.34.68A2 2 0 0 1 22 16.92z"/></svg>
-                <span class="act-label">Call</span>
-              </a>
-              <span class="sep" aria-hidden="true">&middot;</span>
-              <a href="sms:+17132047653" id="textBtn">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                <span class="act-label">Text</span>
-              </a>
-            </span>
-          </span>
-        </div>
-        <div class="row">
-          <a class="row-text row-tel" href="mailto:mike@mikespear.com"><span class="row-main">mike@mikespear.com</span><span class="row-sub">Email</span></a>
-          <span class="row-actions">
+          </a>
+          <a class="tile ctile" href="sms:+17132047653" id="textBtn">
+            <span class="tile-main"><svg class="tile-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Text</span>
+            <span class="tile-sub">Send a message</span>
             <svg class="arr" viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
-            <span class="row-actions-btns">
-              <button class="copy-btn" id="copyEmail" type="button" aria-label="Copy email address">
-                <svg class="copy-ico ico-copy" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>
-                <svg class="copy-ico ico-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
-                <span class="copy-label">Copy</span>
-              </button>
-            </span>
-          </span>
+          </a>
+          <div class="tile ctile tile-split">
+            <a class="tile-link" href="mailto:mike@mikespear.com">
+              <span class="tile-main"><svg class="tile-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>Email</span>
+              <span class="tile-sub">mike@mikespear.com</span>
+            </a>
+            <button class="tile-copy" id="copyEmail" type="button" aria-label="Copy email address" title="Copy email address">
+              <svg class="copy-ico ico-copy" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>
+              <svg class="copy-ico ico-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+            </button>
+          </div>
+          <a class="tile ctile" href="/contact.vcf" id="saveContact">
+            <span class="tile-main"><svg class="tile-ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Save contact</span>
+            <span class="tile-sub">Add to phone</span>
+            <svg class="arr" viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+          </a>
         </div>
-        <a class="row" href="/contact.vcf" id="saveContact">
-          <span class="row-text"><span class="row-main">Save contact</span><span class="row-sub">Add to phone</span></span>
-          <svg class="arr" viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
-        </a>
       </section>
 
       <section class="group">
         <h2 class="label">Documents</h2>
-        <a class="row" href="https://files.mikespear.com/docs">
-          <span class="row-text"><span class="row-main">Forms &amp; disclosures</span><span class="row-sub">Wire fraud notice, brokerage info</span></span>
-          <svg class="arr" viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
-        </a>
+        <div class="tiles">
+          <a class="tile ctile tile-wide" href="https://files.mikespear.com/docs">
+            <span class="tile-main"><svg class="tile-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h6"/></svg>Forms &amp; disclosures</span>
+            <span class="tile-sub">Wire fraud notice, brokerage info</span>
+            <svg class="arr" viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+          </a>
+        </div>
       </section>
 
       <!-- listings:start - generated by tools/render-listings.py, do not edit by hand -->
@@ -2046,7 +2092,6 @@
       bindTrigger('saveContact', 'contact');
       bindTrigger('callBtn', 'call');
       bindTrigger('textBtn', 'text');
-      bindTrigger('numLink', 'call');
 
       // Deep link for #contact (used by the email signature): desktop opens
       // the QR modal straight away, mobile goes straight to the vCard.
@@ -2071,30 +2116,21 @@
         }
       }
 
-      // Mobile default is sms: (set in the HTML) so tapping the number texts
-      // without needing JS. Desktop has separate Call/Text buttons, so point
-      // the number itself back to tel: — bindTrigger above still intercepts
-      // the click there and opens the Call QR modal.
-      if (isDesktop.matches) {
-        document.getElementById('numLink').setAttribute('href', 'tel:+17132047653');
-      }
-
       // Copy email to clipboard; the address itself stays a mailto: link for
       // anyone with a working mail client. Briefly confirm with a gold check.
       (function () {
         var btn = document.getElementById('copyEmail');
-        var label = btn.querySelector('.copy-label');
         var email = 'mike@mikespear.com';
         var resetTimer = null;
         if (!navigator.clipboard) { btn.hidden = true; return; }
         btn.addEventListener('click', function () {
           navigator.clipboard.writeText(email).then(function () {
             btn.classList.add('copied');
-            label.textContent = 'Copied';
+            btn.setAttribute('aria-label', 'Email address copied');
             clearTimeout(resetTimer);
             resetTimer = setTimeout(function () {
               btn.classList.remove('copied');
-              label.textContent = 'Copy';
+              btn.setAttribute('aria-label', 'Copy email address');
             }, 1600);
           }).catch(function () {});
         });
