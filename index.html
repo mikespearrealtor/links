@@ -725,6 +725,15 @@
 
     .ctile .tile-sub { margin-top: 7px; }
 
+    /* Phones: two tiles per row leave too little room for icon + "Save
+       contact" beside the corner arrow, so stack the icon above the word. */
+    .tile-main { white-space: nowrap; }
+
+    @media (max-width: 420px) {
+      .tile-main { flex-direction: column; align-items: flex-start; gap: 9px; }
+      .tile-ico { width: 18px; height: 18px; }
+    }
+
     .tile-wide { grid-column: 1 / -1; }
 
     /* Email tile: the card opens mail, and the corner icon (where the arrow
