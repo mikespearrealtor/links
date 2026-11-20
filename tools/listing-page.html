@@ -258,6 +258,23 @@
        band in the dark theme, plain white in the light theme. ── */
     /* Agent: a quiet sign-off on the page's own background, sized as a
        footer rather than a headline. */
+    /* Mike's other homes, closest in price: small tiles like the Text Mike /
+       Compass ones, three across on a computer, stacked on a phone. */
+    .others { max-width: 1100px; margin: 0 auto; padding: 64px 26px 0; }
+    .others h2 { font-family: 'Fraunces', Georgia, serif; font-weight: 360; font-size: 30px; letter-spacing: -.01em; line-height: 1.1; margin-bottom: 22px; }
+    .ot { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .ot a { display: flex; align-items: center; gap: 14px; padding: 12px; color: var(--text); text-decoration: none; background: var(--tile-bg); border: 1px solid var(--tile-border);
+      transition: border-color .35s cubic-bezier(.22,1,.36,1), transform .35s cubic-bezier(.22,1,.36,1), background-color .35s ease; }
+    @media (hover: hover) { .ot a:hover { border-color: var(--hint); background: var(--tile-hover-bg); transform: translateY(-2px); } }
+    .ot a:active { border-color: var(--hint); }
+    .ot img { width: 104px; aspect-ratio: 4/3; object-fit: cover; flex: none; display: block; background: var(--ph-bg); }
+    .ot .tx { min-width: 0; }
+    .ot .ad { font-family: 'Fraunces', Georgia, serif; font-size: 18px; font-weight: 400; line-height: 1.15; }
+    .ot .pr { font-family: 'Fraunces', Georgia, serif; font-size: 17px; margin-top: 4px; }
+    .ot .sp { font-size: 12.5px; line-height: 1.45; color: var(--tile-sub); margin-top: 3px; }
+    .ot .sp span { white-space: nowrap; }
+    @media (max-width: 1000px) { .ot { grid-template-columns: 1fr; gap: 10px; } }
+    @media (max-width: 640px) { .others { padding-top: 48px; } .others h2 { font-size: 25px; margin-bottom: 18px; } }
     .sig { color: var(--text); --sig-sub: var(--muted); }
     .sig-in { max-width: 1100px; margin: 0 auto; padding: 48px 26px 8px; display: flex; align-items: center; gap: 22px; }
     .sig img.face { width: 92px; height: 92px; object-fit: cover; flex: none; display: block; }
@@ -392,7 +409,7 @@
 {{grid}}
     </div>
   </main>
-{{map}}
+{{map}}{{others}}
   <section class="sig" aria-label="Listing agent">
     <div class="sig-in">
       <img class="face" src="/agent-headshot.jpg" alt="Mike Spear" width="148" height="148" loading="lazy">

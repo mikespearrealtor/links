@@ -23,6 +23,7 @@ Usage:
 
 import html
 import json
+import math
 import pathlib
 import re
 
@@ -164,7 +165,7 @@ def short_alt(alt: str, address: str, i: int) -> str:
     return alt if alt else (f"{address}" if i == 0 else f"{address}, photo {i + 1}")
 
 
-def render(l: dict, map_html: str | None) -> str:
+def render(l: dict, map_html: str | None, others: str = "") -> str:
     d = l.get("details") or {}
     address = l["address"]
     slug = slug_of(address)
@@ -269,6 +270,7 @@ def render(l: dict, map_html: str | None) -> str:
         "strip": strip,
         "gallery": gallery_json,
         "map": map_block,
+        "others": others,
     }
     for k, v in fills.items():
         page = page.replace("{{" + k + "}}", v)
@@ -276,6 +278,38 @@ def render(l: dict, map_html: str | None) -> str:
     if leftover:
         raise SystemExit(f"template placeholders left unfilled: {leftover}")
     return page
+
+
+def others_block(l: dict, listings: list[dict]) -> str:
+    """Up to three of Mike's other homes, closest in price to this one, as
+    small tiles to their own pages. Same deal only (sale with sale, lease with
+    lease) and nothing pending; no section at all when there's nothing to show."""
+    rental = bool(l.get("rental"))
+    pool = [o for o in listings if o is not l and bool(o.get("rental")) == rental
+            and (o.get("status") or "Active") in ("Active", "Coming Soon")
+            and o.get("price") and o.get("address")]
+    if not pool:
+        return ""
+    here = l.get("price") or 0
+    pool.sort(key=lambda o: abs(math.log(o["price"] / here)) if here else 0)
+    tiles = []
+    for o in pool[:3]:
+        bits = [o.get("area") or ""]
+        if o.get("beds"):
+            bits.append(f"{num(o['beds'])} bd")
+        if o.get("baths"):
+            bits.append(f"{num(o['baths'])} ba")
+        if o.get("sqft"):
+            bits.append(f"{num(o['sqft'])} sq ft")
+        sp = " &middot; ".join(f"<span>{esc(b)}</span>" for b in bits if b)
+        shots = o.get("photos") or ([{"src": o["photo"]}] if o.get("photo") else [])
+        img = f'<img src="{esc(photo_src(shots[0]))}" alt="" loading="lazy">' if shots else ""
+        price = money(o["price"]) + ("/mo" if rental else "")
+        tiles.append(f'<a href="/homes/{slug_of(o["address"])}/">{img}<div class="tx"><div class="ad">{esc(o["address"])}</div>'
+                     f'<div class="pr">{price}</div><div class="sp">{sp}</div></div></a>')
+    deal = "for lease" if rental else "for sale"
+    return (f'\n  <section class="others" aria-label="Mike Spear’s other homes {deal}">\n'
+            f'    <h2>Mike&rsquo;s other homes {deal}</h2>\n    <div class="ot">{"".join(tiles)}</div>\n  </section>\n')
 
 
 def update_sitemap(slugs: list[str]) -> None:
@@ -306,11 +340,13 @@ def main() -> None:
             for field in ("address", "area"):
                 if isinstance(fix.get(field), str):
                     l[field] = fix[field]
-        if not l.get("address"):
-            continue
+    # Every listing gets a page in this same run, so the tiles can link to
+    # each other's pages before they're written.
+    listings = [l for l in listings if l.get("address")]
+    for l in listings:
         slug = slug_of(l["address"])
         mp = MAPS / f"{slug}.html"
-        page = render(l, mp.read_text(encoding="utf-8") if mp.exists() else None)
+        page = render(l, mp.read_text(encoding="utf-8") if mp.exists() else None, others_block(l, listings))
         out = PAGES / slug / "index.html"
         out.parent.mkdir(exist_ok=True)
         old = out.read_text(encoding="utf-8") if out.exists() else None
