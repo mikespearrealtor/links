@@ -1170,6 +1170,17 @@
         object-position: 50% 15%;
       }
 
+      /* The photo's inner edge fades into the page, as on the listing
+         pages; eased, so there's no line where it ends. */
+      .hero::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        pointer-events: none;
+        background: linear-gradient(to left, var(--bg) 0%, color-mix(in srgb, var(--bg) 99.5%, transparent) 4.17%, color-mix(in srgb, var(--bg) 96.5%, transparent) 8.33%, color-mix(in srgb, var(--bg) 89.6%, transparent) 12.5%, color-mix(in srgb, var(--bg) 79%, transparent) 16.67%, color-mix(in srgb, var(--bg) 65.3%, transparent) 20.83%, color-mix(in srgb, var(--bg) 50%, transparent) 25%, color-mix(in srgb, var(--bg) 34.7%, transparent) 29.17%, color-mix(in srgb, var(--bg) 21%, transparent) 33.33%, color-mix(in srgb, var(--bg) 10.4%, transparent) 37.5%, color-mix(in srgb, var(--bg) 3.5%, transparent) 41.67%, color-mix(in srgb, var(--bg) 0.5%, transparent) 45.83%, transparent 50%);
+      }
+
       .content {
         padding: clamp(56px, 9vh, 110px) clamp(48px, 6vw, 100px) 56px;
         max-width: 640px;

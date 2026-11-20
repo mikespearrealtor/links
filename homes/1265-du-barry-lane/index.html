@@ -312,8 +312,8 @@
     @media (min-width: 900px) {
       .hero { height: auto; min-height: 90vh; min-height: min(90svh, 1100px); max-height: none; background: var(--bg); display: flex; }
       .slides { left: 34%; }
-      .hero::after { background: linear-gradient(to right, var(--bg) 34%, rgba(255,255,255,0) 46%), linear-gradient(to bottom, rgba(0,0,0,.25), rgba(0,0,0,0) 18%); }
-      [data-theme="dark"] .hero::after { background: linear-gradient(to right, var(--bg) 34%, rgba(10,10,10,0) 46%), linear-gradient(to bottom, rgba(0,0,0,.25), rgba(0,0,0,0) 18%); }
+      /* an eased fade, so there's no line where it ends */
+      .hero::after { background: linear-gradient(to right, var(--bg) 34%, color-mix(in srgb, var(--bg) 99.5%, transparent) 35.67%, color-mix(in srgb, var(--bg) 96.5%, transparent) 37.33%, color-mix(in srgb, var(--bg) 89.6%, transparent) 39%, color-mix(in srgb, var(--bg) 79%, transparent) 40.67%, color-mix(in srgb, var(--bg) 65.3%, transparent) 42.33%, color-mix(in srgb, var(--bg) 50%, transparent) 44%, color-mix(in srgb, var(--bg) 34.7%, transparent) 45.67%, color-mix(in srgb, var(--bg) 21%, transparent) 47.33%, color-mix(in srgb, var(--bg) 10.4%, transparent) 49%, color-mix(in srgb, var(--bg) 3.5%, transparent) 50.67%, color-mix(in srgb, var(--bg) 0.5%, transparent) 52.33%, transparent 54%), linear-gradient(to bottom, rgba(0,0,0,.25), rgba(0,0,0,0) 18%); }
       .hero-text { position: relative; left: auto; right: auto; bottom: auto; width: 38%; max-width: none; margin: 0; padding: 84px 40px 48px 6vw; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; }
       .address { font-size: clamp(40px, 4.2vw, 68px); color: var(--text); }
       .status { color: var(--text); border-color: var(--muted); }
