@@ -137,10 +137,8 @@
     .hero .back, .hero-text { cursor: auto; }
     .hero .theme-toggle { cursor: pointer; }
     .pv { position: fixed; inset: 0; z-index: 50; color: #fff; display: flex; flex-direction: column;
-      background: rgba(8,8,8,.74); -webkit-backdrop-filter: blur(14px) saturate(.8); backdrop-filter: blur(14px) saturate(.8); }
-    /* The page shows through, blurred and dimmed, darkening toward the edges. */
-    .pv::before { content: ''; position: absolute; inset: 0; pointer-events: none;
-      background: radial-gradient(ellipse 75% 70% at 50% 50%, rgba(0,0,0,0) 35%, rgba(0,0,0,.7) 100%); }
+      background: var(--overlay); }
+    /* Same plain dim as the Text Mike QR popup: the page shows through as is. */
     .pv-top, .pv-track { position: relative; }
     .pv .pv-nav { z-index: 1; }
     .pv[hidden] { display: none; }
