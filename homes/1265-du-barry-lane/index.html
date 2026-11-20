@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>1265 Du Barry Lane · Oak Forest · Mike Spear</title>
-  <meta name="description" content="4 bd · 4.5 ba · 4,453 sq ft · 2 stories in Oak Forest, Houston. For sale, listed by Mike Spear, Compass.">
+  <meta name="description" content="4 bd · 4.5 ba · 4,453 sq ft · 2 stories in Oak Forest, Houston. Single-family home for sale, listed by Mike Spear, Compass.">
   <link rel="canonical" href="https://links.mikespear.com/homes/1265-du-barry-lane/">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://links.mikespear.com/homes/1265-du-barry-lane/">
@@ -120,6 +120,41 @@
     a.ph img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .6s cubic-bezier(.22,1,.36,1); }
     @media (hover: hover) { a.ph:hover img { transform: scale(1.04); } }
 
+    /* ── Photo viewer: every photo we mirror, full size, then a card that
+       hands off to Compass for the rest. Dark in both themes. ── */
+    .hero, a.ph { cursor: zoom-in; }
+    .hero .back, .hero-text { cursor: auto; }
+    .pv { position: fixed; inset: 0; z-index: 50; background: #0b0b0b; color: #fff; display: flex; flex-direction: column; }
+    .pv[hidden] { display: none; }
+    .pv-top { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; font-size: 14px; color: #bdbdbd; flex: none; }
+    .pv-count { font-variant-numeric: tabular-nums; letter-spacing: .02em; }
+    .pv button { background: none; border: 0; color: #fff; cursor: pointer; padding: 0; display: grid; place-items: center; font: inherit; }
+    .pv button svg { stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+    .pv-x { width: 40px; height: 40px; margin-right: -8px; }
+    .pv-x svg { width: 22px; height: 22px; }
+    .pv-track { flex: 1; min-height: 0; display: flex; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior: contain; }
+    .pv-track::-webkit-scrollbar { display: none; }
+    .pv-slide { flex: none; width: 100%; height: 100%; scroll-snap-align: center; scroll-snap-stop: always; display: grid; place-items: center; padding: 0 84px 28px; position: relative; overflow: hidden; }
+    .pv-slide img { max-width: 100%; max-height: 100%; object-fit: contain; display: block; user-select: none; -webkit-user-drag: none; }
+    .pv .pv-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 52px; height: 52px; border-radius: 50%; background: rgba(255,255,255,.08); transition: background .15s, opacity .15s; }
+    .pv .pv-nav:hover { background: rgba(255,255,255,.18); }
+    .pv .pv-nav:disabled { opacity: 0; pointer-events: none; }
+    .pv-nav svg { width: 22px; height: 22px; }
+    .pv-prev { left: 16px; } .pv-next { right: 16px; }
+    .pv-end .pv-bg { position: absolute; inset: -40px; background-size: cover; background-position: center; filter: blur(28px) brightness(.32); }
+    .pv-card { position: relative; text-align: center; max-width: 420px; }
+    .pv-card h2 { font-family: 'Fraunces', Georgia, serif; font-weight: 360; font-size: clamp(30px, 5vw, 42px); line-height: 1.08; letter-spacing: -.01em; }
+    .pv-card p { margin-top: 12px; font-size: 15px; line-height: 1.55; color: #cfcfcf; }
+    .pv-card a { display: inline-flex; align-items: center; gap: 10px; margin-top: 26px; padding: 14px 22px; border: 1px solid rgba(255,255,255,.7); color: #fff; text-decoration: none; font-size: 15px; transition: background .15s, color .15s; }
+    .pv-card a:hover { background: #fff; color: #0b0b0b; }
+    .pv-card a svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 1.7; }
+    .pv .pv-again { display: block; margin: 18px auto 0; font-size: 13.5px; color: #a8a8a8; text-decoration: underline; text-underline-offset: 3px; }
+    @media (max-width: 760px), (hover: none) {
+      .pv-slide { padding: 0 0 20px; }
+      .pv-slide.pv-end { padding: 0 28px 20px; }
+      .pv .pv-nav { display: none; }
+    }
+
     /* ── Buttons ── */
     .tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 26px; }
     a.tile {
@@ -225,7 +260,7 @@
     </div>
     <a class="back" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>Mike Spear</a>
     <div class="hero-text">
-      <span class="status">For sale</span>
+      <span class="status">Single-family home for sale</span>
       <h1 class="address">1265 Du Barry Lane</h1>
       <p class="area">Oak Forest, Houston 77018</p>
     </div>
@@ -253,7 +288,7 @@
           <svg class="arr" viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
         </a></div>
       </div>
-      <div class="g4"><a class="ph" href="https://www.compass.com/homedetails/1265-Du-Barry-Ln-Houston-TX-77018/B4Y5I_pid/" target="_blank" rel="noopener"><img src="/listing-photos/a400a43e44ac10ea-2048x1536.jpg" alt="Progress as of 11/8. Huge lot with garage access from the street behind, so from the street your home isn&#x27;t dominated by the garage!" loading="lazy"></a><a class="ph" href="https://www.compass.com/homedetails/1265-Du-Barry-Ln-Houston-TX-77018/B4Y5I_pid/" target="_blank" rel="noopener"><img src="/listing-photos/84085c2feb8d3746-2048x1536.jpg" alt="Spacious, elegantly appointed living room featuring a stunning stone fireplace, rich wood accents, sophisticated tray ceiling with ambient lighting, and expansive windows inviting abundant natural light. Refined finishes and contemporary furnishings create an atmosphere of luxury. (Render of a similar product.)" loading="lazy"></a><a class="ph" href="https://www.compass.com/homedetails/1265-Du-Barry-Ln-Houston-TX-77018/B4Y5I_pid/" target="_blank" rel="noopener"><img src="/listing-photos/99719bd8f261223d-2048x1536.jpg" alt="Progress as of 11/8, same view as the previous photos. This room is so much bigger than the render makes it look!" loading="lazy"></a><a class="ph" href="https://www.compass.com/homedetails/1265-Du-Barry-Ln-Houston-TX-77018/B4Y5I_pid/" target="_blank" rel="noopener"><img src="/listing-photos/54bfdd6f126c3bd7-2048x1536.jpg" alt="Experience modern elegance in this spacious kitchen featuring sleek cabinetry, a large island with seating, pendant lighting, and ample natural light through expansive windows. (Render of a similar product.)" loading="lazy"></a></div>
+      <div class="g4"><a class="ph" href="https://www.compass.com/homedetails/1265-Du-Barry-Ln-Houston-TX-77018/B4Y5I_pid/" target="_blank" rel="noopener" data-i="1"><img src="/listing-photos/a400a43e44ac10ea-2048x1536.jpg" alt="Progress as of 11/8. Huge lot with garage access from the street behind, so from the street your home isn&#x27;t dominated by the garage!" loading="lazy"></a><a class="ph" href="https://www.compass.com/homedetails/1265-Du-Barry-Ln-Houston-TX-77018/B4Y5I_pid/" target="_blank" rel="noopener" data-i="2"><img src="/listing-photos/84085c2feb8d3746-2048x1536.jpg" alt="Spacious, elegantly appointed living room featuring a stunning stone fireplace, rich wood accents, sophisticated tray ceiling with ambient lighting, and expansive windows inviting abundant natural light. Refined finishes and contemporary furnishings create an atmosphere of luxury. (Render of a similar product.)" loading="lazy"></a><a class="ph" href="https://www.compass.com/homedetails/1265-Du-Barry-Ln-Houston-TX-77018/B4Y5I_pid/" target="_blank" rel="noopener" data-i="3"><img src="/listing-photos/99719bd8f261223d-2048x1536.jpg" alt="Progress as of 11/8, same view as the previous photos. This room is so much bigger than the render makes it look!" loading="lazy"></a><a class="ph" href="https://www.compass.com/homedetails/1265-Du-Barry-Ln-Houston-TX-77018/B4Y5I_pid/" target="_blank" rel="noopener" data-i="4"><img src="/listing-photos/54bfdd6f126c3bd7-2048x1536.jpg" alt="Experience modern elegance in this spacious kitchen featuring sleek cabinetry, a large island with seating, pendant lighting, and ample natural light through expansive windows. (Render of a similar product.)" loading="lazy"></a></div>
     </div>
   </main>
 
@@ -278,6 +313,17 @@
     <p class="mls-note">Listing information from Compass, updated daily. All information should be independently verified. Map data © OpenStreetMap contributors. Mike Spear, Compass RE Texas, LLC.</p>
     <footer><a href="/">mikespear.com</a></footer>
   </main>
+
+  <div class="pv" id="pv" role="dialog" aria-modal="true" aria-label="Photos" hidden>
+    <div class="pv-top">
+      <span class="pv-count" aria-live="polite"></span>
+      <button class="pv-x" type="button" aria-label="Close photos"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="pv-track"></div>
+    <button class="pv-nav pv-prev" type="button" aria-label="Previous photo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <button class="pv-nav pv-next" type="button" aria-label="Next photo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+  </div>
+  <script type="application/json" id="pv-photos">[{"src": "/listing-photos/4c4a68e725419384-2048x1536.jpg", "alt": "Stunning modern home with clean lines, large windows, and a charming stone facade, complemented by a wooden fence and lush green landscaping. (All current photos are renders. Photos of the current construction state to be uploaded by 11/13/26.)"}, {"src": "/listing-photos/a400a43e44ac10ea-2048x1536.jpg", "alt": "Progress as of 11/8. Huge lot with garage access from the street behind, so from the street your home isn't dominated by the garage!"}, {"src": "/listing-photos/84085c2feb8d3746-2048x1536.jpg", "alt": "Spacious, elegantly appointed living room featuring a stunning stone fireplace, rich wood accents, sophisticated tray ceiling with ambient lighting, and expansive windows inviting abundant natural light. Refined finishes and contemporary furnishings create an atmosphere of luxury. (Render of a similar product.)"}, {"src": "/listing-photos/99719bd8f261223d-2048x1536.jpg", "alt": "Progress as of 11/8, same view as the previous photos. This room is so much bigger than the render makes it look!"}, {"src": "/listing-photos/54bfdd6f126c3bd7-2048x1536.jpg", "alt": "Experience modern elegance in this spacious kitchen featuring sleek cabinetry, a large island with seating, pendant lighting, and ample natural light through expansive windows. (Render of a similar product.)"}]</script>
 
   <script>
     // Days on market, counted in the visitor's browser so it is always
@@ -310,6 +356,113 @@
       el.textContent = 'Open house ' + day + ' · ' + t(+m[4], +m[5], !same) + '–' + t(+m[6], +m[7], true);
       el.hidden = false;
     });
+    // Photo viewer. Opens from the hero or any grid photo; swipe, arrow keys
+    // or the side buttons move through the photos, and the last slide sends
+    // people to Compass for the full set. The back button closes it.
+    (function () {
+      var pv = document.getElementById('pv');
+      var photos = [];
+      try { photos = JSON.parse(document.getElementById('pv-photos').textContent); } catch (e) {}
+      if (!pv || !photos.length) return;
+      var compass = (document.querySelector('a.tile[target="_blank"]') || {}).href || '';
+      var track = pv.querySelector('.pv-track');
+      var count = pv.querySelector('.pv-count');
+      var prev = pv.querySelector('.pv-prev');
+      var next = pv.querySelector('.pv-next');
+      var total = photos.length + (compass ? 1 : 0);
+      var built = false, at = 0, lastFocus = null;
+
+      function build() {
+        if (built) return;
+        built = true;
+        photos.forEach(function (p) {
+          var s = document.createElement('div');
+          s.className = 'pv-slide';
+          var img = document.createElement('img');
+          img.src = p.src; img.alt = p.alt; img.decoding = 'async';
+          s.appendChild(img);
+          track.appendChild(s);
+        });
+        if (!compass) return;
+        var end = document.createElement('div');
+        end.className = 'pv-slide pv-end';
+        var bg = document.createElement('div');
+        bg.className = 'pv-bg';
+        bg.style.backgroundImage = 'url("' + photos[photos.length - 1].src + '")';
+        var card = document.createElement('div');
+        card.className = 'pv-card';
+        card.innerHTML = '<h2>More photos on Compass</h2>' +
+          '<p>The full gallery and every detail of the listing.</p>' +
+          '<a target="_blank" rel="noopener">See all photos<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a>' +
+          '<button class="pv-again" type="button">Back to the first photo</button>';
+        card.querySelector('a').href = compass;
+        card.querySelector('.pv-again').addEventListener('click', function () { go(0, true); });
+        end.appendChild(bg);
+        end.appendChild(card);
+        track.appendChild(end);
+      }
+      function show(i) {
+        at = i;
+        count.textContent = i < photos.length ? (i + 1) + ' / ' + photos.length : '';
+        prev.disabled = i <= 0;
+        next.disabled = i >= total - 1;
+      }
+      function go(i, smooth) {
+        i = Math.max(0, Math.min(total - 1, i));
+        track.scrollTo({ left: i * track.clientWidth, behavior: smooth ? 'smooth' : 'auto' });
+        show(i);
+      }
+      function open(i) {
+        build();
+        lastFocus = document.activeElement;
+        pv.hidden = false;
+        document.documentElement.style.overflow = 'hidden';
+        go(i, false);
+        pv.querySelector('.pv-x').focus({ preventScroll: true });
+        try { history.pushState({ pv: 1 }, ''); } catch (e) {}
+      }
+      function shut(fromHistory) {
+        if (pv.hidden) return;
+        pv.hidden = true;
+        document.documentElement.style.overflow = '';
+        if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true });
+        if (!fromHistory && history.state && history.state.pv) history.back();
+      }
+
+      var tick;
+      track.addEventListener('scroll', function () {
+        clearTimeout(tick);
+        tick = setTimeout(function () { show(Math.round(track.scrollLeft / track.clientWidth)); }, 60);
+      }, { passive: true });
+      prev.addEventListener('click', function () { go(at - 1, true); });
+      next.addEventListener('click', function () { go(at + 1, true); });
+      pv.querySelector('.pv-x').addEventListener('click', function () { shut(false); });
+      window.addEventListener('popstate', function () { shut(true); });
+      window.addEventListener('resize', function () { if (!pv.hidden) go(at, false); });
+      document.addEventListener('keydown', function (e) {
+        if (pv.hidden) return;
+        if (e.key === 'Escape') shut(false);
+        else if (e.key === 'ArrowRight') go(at + 1, true);
+        else if (e.key === 'ArrowLeft') go(at - 1, true);
+      });
+      // A tap on the dark space around a photo closes, like most viewers.
+      track.addEventListener('click', function (e) {
+        var t = e.target;
+        if (t.classList.contains('pv-slide') && !t.classList.contains('pv-end')) shut(false);
+      });
+
+      document.querySelectorAll('a.ph[data-i]').forEach(function (a) {
+        a.addEventListener('click', function (e) {
+          if (e.metaKey || e.ctrlKey || e.shiftKey) return;
+          e.preventDefault();
+          open(+a.dataset.i);
+        });
+      });
+      document.querySelector('.hero').addEventListener('click', function (e) {
+        if (e.target.closest('.back')) return;
+        open(0);
+      });
+    })();
   </script>
 </body>
 </html>
