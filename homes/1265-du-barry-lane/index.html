@@ -395,11 +395,10 @@
         var card = document.createElement('div');
         card.className = 'pv-card';
         card.innerHTML = '<h2>More photos on Compass</h2>' +
-          '<p>The full gallery and every detail of the listing.</p>' +
           '<a target="_blank" rel="noopener">See all photos<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a>' +
-          '<button class="pv-again" type="button">Back to the first photo</button>';
+          '<button class="pv-again" type="button">Close</button>';
         card.querySelector('a').href = compass;
-        card.querySelector('.pv-again').addEventListener('click', function () { go(0, true); });
+        card.querySelector('.pv-again').addEventListener('click', function () { shut(false); });
         end.appendChild(bg);
         end.appendChild(card);
         track.appendChild(end);
