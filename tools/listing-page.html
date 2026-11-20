@@ -261,7 +261,6 @@
     .hood { background: #ffffff; margin-top: 8px; }
     .lm { position: relative; overflow: hidden; }
     .lm svg { display: block; width: 100%; }
-    .lm .lm-tall { display: none; height: auto; }
     .lm-credit { position: absolute; right: 12px; bottom: 8px; font: 300 11px "InterVar", Arial, sans-serif; color: #8a8a8a; background: rgba(255,255,255,.8); padding: 1px 4px; pointer-events: none; }
     .lm a.lm-pl { cursor: pointer; transition: opacity .25s ease; }
     .lm a.lm-pl rect, .lm a.lm-pl circle, .lm a.lm-pl line { transition: stroke .2s ease, stroke-width .2s ease, fill .2s ease, r .2s ease; }
@@ -276,7 +275,7 @@
     /* Light theme: the map fades into the page above and below it, and still
        runs edge to edge across the window. */
     [data-theme="light"] .hood { margin-top: 0; }
-    [data-theme="light"] .lm > svg {
+    [data-theme="light"] .lm .lm-wide {
       -webkit-mask-image: linear-gradient(to bottom, transparent, #000 80px, #000 calc(100% - 80px), transparent);
       mask-image: linear-gradient(to bottom, transparent, #000 80px, #000 calc(100% - 80px), transparent);
     }
@@ -341,14 +340,35 @@
       .sig .reach a { display: block; }
       .sig .bar, .sig .compass { display: none; }
     }
+    /* Phones: the computer map at full height in a strip you swipe sideways
+       (the page script wraps it and trims it to the part with places).
+       Vertical swipes scroll the page as usual; hard top and bottom edges,
+       soft side edges and the position bar say it only moves sideways. */
+    .sw-hint, .sw-bar { display: none; }
     @media (max-width: 640px) {
-      .lm .lm-wide { display: none; }
-      .lm .lm-tall { display: block; }
-      .lm-credit { display: none; }
-      [data-theme="light"] .lm > svg {
-        -webkit-mask-image: linear-gradient(to bottom, transparent, #000 44px, #000 calc(100% - 44px), transparent);
-        mask-image: linear-gradient(to bottom, transparent, #000 44px, #000 calc(100% - 44px), transparent);
+      .lm { --mh: min(700px, 80svh); }
+      [data-theme="light"] .lm .lm-wide { -webkit-mask-image: none; mask-image: none; }
+      .sw {
+        overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain; scrollbar-width: none;
+        -webkit-mask-image: linear-gradient(to right, transparent, #000 22px, #000 calc(100% - 22px), transparent);
+        mask-image: linear-gradient(to right, transparent, #000 22px, #000 calc(100% - 22px), transparent);
       }
+      .sw::-webkit-scrollbar { display: none; }
+      .sw .lm-wide { height: var(--mh) !important; width: calc(var(--mh) * var(--ar, 2.2)) !important; max-width: none; }
+      .lm-credit { background: rgba(255,255,255,.85); bottom: 8px; }
+      [data-theme="light"] .lm-credit { background: rgba(255,255,255,.85); bottom: 8px; }
+      .sw-hint {
+        position: absolute; left: 50%; top: calc(var(--mh) - 58px); transform: translateX(-50%);
+        display: flex; align-items: center; gap: 10px; white-space: nowrap; pointer-events: none;
+        background: rgba(255,255,255,.94); color: #111; border: 1px solid #d4d4d4;
+        font-size: 13px; padding: 8px 14px; box-shadow: 0 2px 10px rgba(0,0,0,.1); transition: opacity .5s ease;
+      }
+      .sw-hint svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 1.7; }
+      .sw-hint.gone { opacity: 0; }
+      /* on the map's white band in both themes */
+      .hood { padding-bottom: 14px; }
+      .sw-bar { display: block; position: relative; height: 2px; margin: 12px 26px 0; background: #dddddd; }
+      .sw-thumb { position: absolute; top: 0; height: 2px; background: #111111; }
     }
 
     /* ── Computers: title, price, facts and buttons on the left, the photo
@@ -670,6 +690,61 @@
         if (e.target.closest('.hero-text') && matchMedia('(min-width: 900px)').matches) return;
         open(0);
       });
+    })();
+    // Phones: the computer map in a sideways strip. It is trimmed to what a
+    // computer shows plus a margin (all the places sit there; the rest is
+    // empty streets drawn for very wide screens) and starts on the house.
+    (function () {
+      var lm = document.querySelector('.lm'), wide = lm && lm.querySelector('.lm-wide');
+      if (!wide) return;
+      var vb = wide.getAttribute('viewBox'), p = vb.split(/\s+/).map(Number), W = p[2], H = p[3], KEEP = 2000;
+      var sc = document.createElement('div'); sc.className = 'sw';
+      wide.parentNode.insertBefore(sc, wide); sc.appendChild(wide);
+      lm.style.setProperty('--ar', KEEP / H);
+      var hint = document.createElement('div'); hint.className = 'sw-hint'; hint.setAttribute('aria-hidden', 'true');
+      hint.innerHTML = '<svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>Swipe to explore<svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>';
+      lm.appendChild(hint);
+      var bar = document.createElement('div'); bar.className = 'sw-bar'; bar.innerHTML = '<div class="sw-thumb"></div>';
+      lm.parentNode.insertBefore(bar, lm.nextSibling);
+      var thumb = bar.firstChild, phone = matchMedia('(max-width: 640px)');
+
+      function paint() {
+        if (!sc.scrollWidth) return;
+        thumb.style.width = (sc.clientWidth / sc.scrollWidth * 100) + '%';
+        thumb.style.left = (sc.scrollLeft / sc.scrollWidth * 100) + '%';
+      }
+      function home() { sc.scrollLeft = (sc.scrollWidth - sc.clientWidth) / 2; paint(); }
+      function fit() {
+        wide.setAttribute('viewBox', phone.matches ? ((W - KEEP) / 2) + ' 0 ' + KEEP + ' ' + H : vb);
+        if (phone.matches) home();
+      }
+      fit();
+      phone.addEventListener ? phone.addEventListener('change', fit) : phone.addListener(fit);
+      addEventListener('load', function () { if (phone.matches) home(); });
+      addEventListener('resize', paint);
+
+      var shown = false;
+      sc.addEventListener('scroll', function () {
+        paint();
+        if (shown && !hint.classList.contains('gone')) setTimeout(function () { hint.classList.add('gone'); }, 600);
+      }, { passive: true });
+      // The first time the map comes into view it slides a little and back,
+      // so the swipe is shown rather than only told.
+      if (phone.matches && 'IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        var io = new IntersectionObserver(function (es) {
+          if (!es[0].isIntersecting) return;
+          io.disconnect();
+          var x0 = sc.scrollLeft;
+          setTimeout(function () {
+            sc.scrollTo({ left: x0 + 70, behavior: 'smooth' });
+            setTimeout(function () {
+              sc.scrollTo({ left: x0, behavior: 'smooth' });
+              setTimeout(function () { shown = true; }, 700);
+            }, 650);
+          }, 500);
+        }, { threshold: 0.6 });
+        io.observe(sc);
+      } else shown = true;
     })();
   </script>
 </body>

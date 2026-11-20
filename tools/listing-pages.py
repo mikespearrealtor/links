@@ -248,6 +248,9 @@ def render(l: dict, map_html: str | None, others: str = "") -> str:
     gallery_json = json.dumps(gallery, ensure_ascii=False).replace("</", r"<\/")
     map_block = ""
     if map_html:
+        # Phones swipe across the computer map now, so the separate phone
+        # map (~30 KB) is left out of the page.
+        map_html = re.sub(r'<svg class="lm-tall".*?</svg>', "", map_html, flags=re.S)
         map_block = f'\n  <section class="hood">\n{map_html}  </section>\n'
 
     page = TEMPLATE
