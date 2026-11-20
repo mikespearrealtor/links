@@ -135,7 +135,9 @@
     .pv-track { flex: 1; min-height: 0; display: flex; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior: contain; }
     .pv-track::-webkit-scrollbar { display: none; }
     .pv-slide { flex: none; width: 100%; height: 100%; scroll-snap-align: center; scroll-snap-stop: always; display: grid; place-items: center; padding: 0 84px 28px; position: relative; overflow: hidden; }
-    .pv-slide img { max-width: 100%; max-height: 100%; object-fit: contain; display: block; user-select: none; -webkit-user-drag: none; }
+    /* Sized off the window, not the slide: a percentage height inside the
+       grid cell let tall windows push the photo past the bottom edge. */
+    .pv-slide img { max-width: min(100%, 1400px); max-height: calc(100vh - 150px); max-height: calc(100dvh - 150px); object-fit: contain; display: block; user-select: none; -webkit-user-drag: none; }
     .pv .pv-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 52px; height: 52px; border-radius: 50%; background: rgba(255,255,255,.08); transition: background .15s, opacity .15s; }
     .pv .pv-nav:hover { background: rgba(255,255,255,.18); }
     .pv .pv-nav:disabled { opacity: 0; pointer-events: none; }
@@ -151,6 +153,7 @@
     .pv .pv-again { display: block; margin: 18px auto 0; font-size: 13.5px; color: #a8a8a8; text-decoration: underline; text-underline-offset: 3px; }
     @media (max-width: 760px), (hover: none) {
       .pv-slide { padding: 0 0 20px; }
+      .pv-slide img { max-height: calc(100dvh - 120px); }
       .pv-slide.pv-end { padding: 0 28px 20px; }
       .pv .pv-nav { display: none; }
     }
