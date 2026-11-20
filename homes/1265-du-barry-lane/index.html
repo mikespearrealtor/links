@@ -144,7 +144,9 @@
     .pv[hidden] { display: none; }
     /* Opens like the Acker-Blum photo on the home page: the dim fades in
        and the photo settles up from 96%. */
-    .pv { opacity: 0; transition: opacity .3s ease; }
+    .pv { opacity: 0; transition: opacity .3s ease, background-color .4s ease, backdrop-filter .4s ease, -webkit-backdrop-filter .4s ease; }
+    /* On the Compass card the whole page behind goes soft, so the text sits on calm, even ground. */
+    .pv.end { background-color: rgba(0,0,0,.6); -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); }
     .pv.show { opacity: 1; }
     .pv-slide img, .pv-card { transform: scale(.96); transition: transform .35s cubic-bezier(.22,1,.36,1); }
     .pv.show .pv-slide img, .pv.show .pv-card { transform: scale(1); }
@@ -167,11 +169,7 @@
     .pv .pv-nav:disabled { opacity: 0; pointer-events: none; }
     .pv-nav svg { width: 22px; height: 22px; }
     .pv-prev { left: 16px; } .pv-next { right: 16px; }
-    .pv-card { position: relative; text-align: center; max-width: 640px; isolation: isolate; }
-    /* Frosted halo: the page blurs out behind the text, feathered at the edges. */
-    .pv-card::before { content: ''; position: absolute; inset: -150px -230px; z-index: -1; pointer-events: none;
-      background: rgba(0,0,0,.35); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
-      -webkit-mask-image: radial-gradient(closest-side, #000 50%, transparent); mask-image: radial-gradient(closest-side, #000 50%, transparent); }
+    .pv-card { position: relative; text-align: center; max-width: 640px; }
     .pv-card h2 { font-family: 'Fraunces', Georgia, serif; font-weight: 360; font-size: clamp(30px, 5vw, 42px); line-height: 1.08; letter-spacing: -.01em; }
     .pv-card p { margin-top: 12px; font-size: 15px; line-height: 1.55; color: #cfcfcf; }
     /* Behaves like the page's other buttons (a.tile): gold border, a 2px
@@ -509,6 +507,7 @@
       }
       function show(i) {
         at = i;
+        pv.classList.toggle('end', i >= photos.length);
         count.textContent = i < photos.length ? (i + 1) + ' / ' + photos.length : '';
         prev.disabled = i <= 0;
         next.disabled = i >= total - 1;
