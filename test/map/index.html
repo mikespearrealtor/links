@@ -733,19 +733,21 @@
   var pts = {}, last = null, moved = 0, pinch = null;
 
   function fitK() { return Math.min(innerWidth / W, innerHeight / H); }
+  function coverK() { return Math.max(innerWidth / W, innerHeight / H); }
   function clamp() {
     // keep at least a third of the screen covered by map in each direction
     var mw = W * k, mh = H * k, vw = innerWidth, vh = innerHeight;
-    x = Math.min(vw * 0.66, Math.max(vw * 0.34 - mw, x));
-    y = Math.min(vh * 0.66, Math.max(vh * 0.34 - mh, y));
+    // the map always fills the screen: no grey edges
+    x = mw <= vw ? (vw - mw) / 2 : Math.min(0, Math.max(vw - mw, x));
+    y = mh <= vh ? (vh - mh) / 2 : Math.min(0, Math.max(vh - mh, y));
   }
   function apply() { clamp(); stage.style.transform = 'translate(' + x + 'px,' + y + 'px) scale(' + k + ')'; }
   function zoomAt(nk, cx, cy) {
-    nk = Math.max(MIN * fitK(), Math.min(MAX, nk));
+    nk = Math.max(coverK(), Math.min(MAX, nk));
     x = cx - (cx - x) * nk / k; y = cy - (cy - y) * nk / k; k = nk; apply();
   }
   function home() {
-    k = Math.max(1.6, fitK() * 1.15);
+    k = Math.max(1.6, coverK());
     x = innerWidth / 2 - HX * k; y = innerHeight / 2 - HY * k; apply();
   }
   function smooth(fn) { stage.style.transition = 'transform .25s ease'; fn(); setTimeout(function () { stage.style.transition = ''; }, 260); }
