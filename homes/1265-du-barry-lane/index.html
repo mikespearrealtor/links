@@ -142,6 +142,13 @@
     .pv-top, .pv-track { position: relative; }
     .pv .pv-nav { z-index: 1; }
     .pv[hidden] { display: none; }
+    /* Opens like the Acker-Blum photo on the home page: the dim fades in
+       and the photo settles up from 96%. */
+    .pv { opacity: 0; transition: opacity .3s ease; }
+    .pv.show { opacity: 1; }
+    .pv-slide img, .pv-card { transform: scale(.96); transition: transform .35s cubic-bezier(.22,1,.36,1); }
+    .pv.show .pv-slide img, .pv.show .pv-card { transform: scale(1); }
+    @media (prefers-reduced-motion: reduce) { .pv, .pv-slide img, .pv-card { transition: none; } }
     .pv-top { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; font-size: 14px; color: #bdbdbd; flex: none; }
     .pv-count { font-variant-numeric: tabular-nums; letter-spacing: .02em; }
     .pv button { background: none; border: 0; color: #fff; cursor: pointer; padding: 0; display: grid; place-items: center; font: inherit; }
@@ -154,7 +161,7 @@
     .pv-slide { flex: none; width: 100%; height: 100%; scroll-snap-align: center; scroll-snap-stop: always; display: grid; place-items: center; padding: 0 84px 28px; position: relative; overflow: hidden; }
     /* Sized off the window, not the slide: a percentage height inside the
        grid cell let tall windows push the photo past the bottom edge. */
-    .pv-slide img { max-width: min(100%, 1400px); max-height: calc(100vh - 150px); max-height: calc(100dvh - 150px); object-fit: contain; display: block; user-select: none; -webkit-user-drag: none; }
+    .pv-slide img { max-width: min(100%, 1400px); max-height: calc(100vh - 150px); max-height: calc(100dvh - 150px); object-fit: contain; display: block; user-select: none; -webkit-user-drag: none; border-radius: 3px; box-shadow: 0 20px 50px rgba(0,0,0,.5); }
     .pv .pv-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 52px; height: 52px; border-radius: 50%; background: rgba(255,255,255,.08); transition: background .15s, opacity .15s; }
     .pv .pv-nav:hover { background: rgba(255,255,255,.18); }
     .pv .pv-nav:disabled { opacity: 0; pointer-events: none; }
@@ -503,14 +510,19 @@
         build();
         lastFocus = document.activeElement;
         pv.hidden = false;
+        clearTimeout(fade);
+        void pv.offsetWidth; // lay out the hidden state first so the fade runs
+        pv.classList.add('show');
         document.documentElement.style.overflow = 'hidden';
         go(i, false);
         pv.querySelector('.pv-x').focus({ preventScroll: true });
         try { history.pushState({ pv: 1 }, ''); } catch (e) {}
       }
+      var fade;
       function shut(fromHistory) {
-        if (pv.hidden) return;
-        pv.hidden = true;
+        if (pv.hidden || !pv.classList.contains('show')) return;
+        pv.classList.remove('show');
+        fade = setTimeout(function () { pv.hidden = true; }, 300);
         document.documentElement.style.overflow = '';
         if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true });
         if (!fromHistory && history.state && history.state.pv) history.back();
