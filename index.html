@@ -1201,6 +1201,9 @@
       .theme-toggle:hover { color: var(--text); }
 
       .group { margin-top: 40px; }
+      /* The small, light tagline doesn't hold an edge like a row of buttons
+         does, so a full section gap under it reads as a hole. */
+      .group:first-of-type { margin-top: 28px; }
 
       .eb-sep { display: inline; }
       .eb-loc { display: inline; }
