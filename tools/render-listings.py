@@ -406,6 +406,15 @@ def rank(listing: dict) -> tuple:
     return (-(listing.get("price") or 0), listing.get("address") or "")
 
 
+def row_link(listing: dict) -> str:
+    """The listing's own page (tools/listing-pages.py) when it has one, opened
+    in the same tab; Compass in a new tab otherwise."""
+    slug = re.sub(r"[^a-z0-9]+", "-", (listing.get("address") or "").lower()).strip("-")
+    if slug and (REPO_ROOT / "homes" / slug / "index.html").exists():
+        return f'href="/homes/{slug}/"'
+    return f'href="{esc(listing["url"])}" target="_blank" rel="noopener"'
+
+
 def render_row(listing: dict, number: int, off_map: set = frozenset()) -> list[str]:
     address = f'<span class="row-main">{esc(listing["address"])}</span>'
     # The flag rides beside the address, not down in the spec line, so it is
@@ -419,7 +428,7 @@ def render_row(listing: dict, number: int, off_map: set = frozenset()) -> list[s
         text.append(f'<span class="oh-when">{showing}</span>')
     row_class = "row" if is_active(listing) else "row is-pending"
     return [
-        f'{INDENT}<a class="{row_class}"{home_attr(listing, off_map)} href="{esc(listing["url"])}" target="_blank" rel="noopener">',
+        f'{INDENT}<a class="{row_class}"{home_attr(listing, off_map)} {row_link(listing)}>',
         f'{INDENT}  <span class="row-text">{"".join(text)}</span>',
         f"{INDENT}  {price_cell(listing)}",
         f"{INDENT}</a>",

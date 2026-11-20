@@ -81,7 +81,7 @@ jobs:
           python-version: "3.12"
 
       # No dependencies to install - the scraper is stdlib only. It also
-      # mirrors each listing's first 5 photos into listing-photos/, fetching
+      # mirrors each listing's first 9 photos into listing-photos/, fetching
       # only hashes it has not seen (new listings, replaced photos).
       - name: Scrape listings
         run: python tools/scrape-listings.py --no-backup | tee scrape.log
@@ -92,6 +92,46 @@ jobs:
       - name: Geocode new addresses
         continue-on-error: true
         run: python tools/geocode.py | tee geocode.log
+
+      # Draws the neighbourhood map for any listing that does not have one
+      # yet, from OpenStreetMap (Overpass). Maps are committed, so a normal
+      # day makes no requests at all. Never fails the run: a listing whose
+      # map can't be drawn today just goes without one and is retried tomorrow.
+      # Building outlines come from Microsoft's footprint files, one per map
+      # tile (Houston's is ~140 MB). They're kept in the Actions cache, not
+      # the repo; listing-map.py downloads a tile the first time a listing
+      # lands in it, and the cache is only re-saved when that happened.
+      - name: Restore building footprints
+        id: fp
+        uses: actions/cache/restore@v4
+        with:
+          path: ~/footprints
+          key: footprints-v1-${{ github.run_id }}
+          restore-keys: footprints-v1-
+
+      - name: Draw listing maps
+        continue-on-error: true
+        run: |
+          export FOOTPRINT_DIR="$HOME/footprints"
+          python tools/listing-map.py | tee map.log
+
+      - name: Check for new footprint downloads
+        if: always() && hashFiles('map.log') != ''
+        continue-on-error: true
+        run: grep -q "downloading building footprints" map.log && echo "save=yes" >> "$GITHUB_ENV" || true
+
+      - name: Cache new building footprints
+        if: env.save == 'yes'
+        continue-on-error: true
+        uses: actions/cache/save@v4
+        with:
+          path: ~/footprints
+          key: footprints-v1-${{ github.run_id }}
+
+      # One page per listing at /homes/<address>/, before the render so the
+      # home page rows can link to the pages that exist.
+      - name: Write listing pages
+        run: python tools/listing-pages.py | tee pages.log
 
       # Exit 3 is "a section was hidden because its data was unusable". That
       # is a successful render - the fix has to be committed below before the
@@ -112,7 +152,7 @@ jobs:
         run: |
           # --porcelain also reports a file as untracked, which a plain
           # `git diff` would miss on the very first run.
-          if [ -z "$(git status --porcelain -- listings.json sold.json geo.json index.html sitemap.xml listing-photos)" ]; then
+          if [ -z "$(git status --porcelain -- listings.json sold.json geo.json index.html sitemap.xml listing-photos listing-maps homes)" ]; then
             echo "No listing changes today."
             echo "changed=no" >> "$GITHUB_ENV"
             exit 0
@@ -120,7 +160,7 @@ jobs:
           echo "changed=yes" >> "$GITHUB_ENV"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A listings.json sold.json geo.json index.html sitemap.xml listing-photos
+          git add -A listings.json sold.json geo.json index.html sitemap.xml listing-photos listing-maps homes
           git commit -m "Update listings from Compass profile"
           # A push to main made while this job ran would otherwise reject the
           # push and cost the day's update. Replay on top of it instead.
@@ -159,6 +199,8 @@ jobs:
             echo '```'
             cat scrape.log 2>/dev/null || echo "(scraper produced no output)"
             cat geocode.log 2>/dev/null
+            cat map.log 2>/dev/null
+            cat pages.log 2>/dev/null
             cat render.log 2>/dev/null
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"

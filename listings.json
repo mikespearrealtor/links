@@ -30,8 +30,49 @@
       {
         "src": "listing-photos/54bfdd6f126c3bd7-2048x1536.jpg",
         "alt": "Experience modern elegance in this spacious kitchen featuring sleek cabinetry, a large island with seating, pendant lighting, and ample natural light through expansive windows. (Render of a similar product.)"
+      },
+      {
+        "src": "listing-photos/ad946a3b80aa5b7c-2048x1536.jpg",
+        "alt": "Kitchen progress as of 11/8."
+      },
+      {
+        "src": "listing-photos/353d0d2119bea660-2048x1536.jpg",
+        "alt": "Relaxing primary bedroom with vaulted ceiling and plenty of natural lighting, featuring room for a king-sized bed. (Render of a similar product.)"
+      },
+      {
+        "src": "listing-photos/10b268f535f8d63e-2048x1536.jpg",
+        "alt": "Primary bedroom progress as of 11/8. The ceiling soars to 18 feet!"
+      },
+      {
+        "src": "listing-photos/1bb44b75c5bf081b-2048x1536.jpg",
+        "alt": "Stylish primary bathroom featuring a freestanding bathtub, modern wood cabinetry, and large illuminated mirrors, offering a serene spa-like atmosphere. (Render of a similar product.)"
       }
-    ]
+    ],
+    "photoCount": 25,
+    "details": {
+      "propertyType": "Single Family",
+      "stories": 2,
+      "lotSqft": 8542,
+      "yearBuilt": 2026,
+      "garage": 2,
+      "newConstruction": true,
+      "pricePerSqft": 427,
+      "features": [
+        "Corner Lot",
+        "Alley Access",
+        "Wet Bar",
+        "Fireplace",
+        "Double Oven",
+        "Hardwood Floors",
+        "High Ceilings",
+        "Soaking Tub",
+        "Balcony",
+        "Deck",
+        "Patio",
+        "Porch",
+        "Private Yard"
+      ]
+    }
   },
   {
     "address": "1613 Prospect Street",
@@ -64,20 +105,51 @@
       {
         "src": "listing-photos/9e8821b4b8f1dd15-2048x1536.jpg",
         "alt": "The large primary bathroom features a rustic brick accent wall, elegant wooden cabinetry, and modern light fixtures, offering ample counter space and storage."
+      },
+      {
+        "src": "listing-photos/4e5d231709b3cf2b-2048x1536.jpg",
+        "alt": "The large pavered patio offers room for cozy seating, perfect for outdoor relaxation and entertaining, extending the usable living space of the home."
+      },
+      {
+        "src": "listing-photos/f63f5ff07905c731-2048x1536.jpg",
+        "alt": "The main entrance with a brick facade shows the artificial turf along the side of the home, perfect for pets or direct access to the backyard."
+      },
+      {
+        "src": "listing-photos/8f278fdae6ddedca-2048x1536.jpg",
+        "alt": "Inviting entryway with a stylish dark wood door and hardwood flooring offer a welcoming ambiance."
+      },
+      {
+        "src": "listing-photos/2cafd288ce15f21e-2048x1536.jpg",
+        "alt": "Just inside both the front door and the garage door is this mudroom with built-in storage and coat hooks, leading to a charming bathroom featuring an exposed brick wall and modern fixtures."
       }
     ],
-    "openHouse": "2026-11-22T14:00/16:00"
+    "photoCount": 38,
+    "openHouse": "2026-11-22T14:00/16:00",
+    "details": {
+      "propertyType": "Single Family",
+      "stories": 2,
+      "lotSqft": 2495,
+      "yearBuilt": 2014,
+      "garage": 2,
+      "pricePerSqft": 234,
+      "features": [
+        "Fireplace",
+        "Hardwood Floors",
+        "High Ceilings",
+        "Soaking Tub"
+      ]
+    }
   },
   {
-    "address": "126 Sidney Street",
-    "area": "Brady Place",
+    "address": "126 North Sidney Street",
+    "area": "Second Ward",
     "beds": 3,
     "baths": 3.5,
     "sqft": 2248,
-    "price": 509900,
+    "price": 499000,
     "status": "Active",
-    "listedDate": "2026-09-18",
-    "url": "https://www.compass.com/homedetails/126-Sidney-St-Houston-TX-77003/BVI0D_pid/",
+    "listedDate": "2026-11-20",
+    "url": "https://www.compass.com/homedetails/126-N-Sidney-St-Houston-TX-77003/BVI0D_pid/",
     "photo": "https://www.compass.com/m/b2d544763e9892557d06e2ff572e2b1a11f812dcdf2b996605e2bda4dc4d6d60/1024x768.jpg",
     "photos": [
       {
@@ -99,25 +171,57 @@
       {
         "src": "listing-photos/f543159f4e0f1870-2048x1536.jpg",
         "alt": "The primary suite occupies the top floor and impresses immediately with its vaulted ceiling featuring exposed decorative wood beams, large windows on two elevations, and plush carpet. A ceiling fan and generous square footage make this a true owner's retreat."
+      },
+      {
+        "src": "listing-photos/b02618e055962ab0-2048x1536.jpg",
+        "alt": "The primary bath delivers a spa-like experience: a freestanding soaking tub, an oversized walk-in shower finished in large-format tile with a glass panel and rain showerhead, and a skylight above that floods the space with natural light. The custom walk-in closet is visible through the doorway beyond."
+      },
+      {
+        "src": "listing-photos/6d8d52ea39490c49-2048x1536.jpg",
+        "alt": "Sherman Landing: three architecturally cohesive new-construction homes on Sidney Street in Houston's EaDo. Each unit offers 3 stories of modern living with private 2-car garages and individual entries, a rare opportunity to own new construction in one of Houston's most walkable and fast-growing urban neighborhoods."
+      },
+      {
+        "src": "listing-photos/5bc01b3a2f10c8ca-2048x1536.jpg",
+        "alt": "A bold set of glass-panel French doors in a standout color sets the tone for this contemporary home. The covered entry provides a welcoming transition into the open foyer, a small detail that speaks to the care taken throughout this new construction."
+      },
+      {
+        "src": "listing-photos/84f88d107d9f162a-2048x1536.jpg",
+        "alt": "The entry foyer announces the home's design ambitions immediately. A dramatic open-riser floating staircase with a black steel frame and wood treads anchors the space, while polished concrete floors and a built-in storage cabinet balance form with function. High ceilings amplify the sense of arrival."
       }
     ],
-    "openHouse": "2026-11-22T14:00/16:00"
+    "photoCount": 31,
+    "openHouse": "2026-11-22T14:00/16:00",
+    "details": {
+      "propertyType": "Single Family",
+      "stories": 3,
+      "lotSqft": 2069,
+      "yearBuilt": 2026,
+      "garage": 2,
+      "pricePerSqft": 222,
+      "features": [
+        "Corner Lot",
+        "Fireplace",
+        "Hardwood Floors",
+        "High Ceilings",
+        "Private Yard"
+      ]
+    }
   },
   {
-    "address": "4217 Sherman Street",
+    "address": "4215 Sherman Street",
     "area": "Brady Place",
     "beds": 3,
     "baths": 3.5,
     "sqft": 2000,
-    "price": 479000,
+    "price": 469000,
     "status": "Active",
-    "listedDate": "2026-08-15",
-    "url": "https://www.compass.com/homedetails/4217-Sherman-St-Houston-TX-77003/BOXNR_pid/",
-    "photo": "https://www.compass.com/m/c3657d5bd0a54c6ea58221c927a6dd988d6454a375881788026788cb6061287a/1024x768.jpg",
+    "listedDate": "2026-11-20",
+    "url": "https://www.compass.com/homedetails/4215-Sherman-St-Houston-TX-77003/21CN5Y_pid/",
+    "photo": "https://www.compass.com/m/c2ceba357493aad3d2c441e7a74b914861c380cb26c0cbf50268ef34f8f2293d/1024x768.jpg",
     "photos": [
       {
-        "src": "listing-photos/c3657d5bd0a54c6e-2048x1536.jpg",
-        "alt": "Discover bold new construction at 4217 Sherman Street in Sherman Landing, a striking 3-story home featuring contemporary horizontal siding, large windows, and a convenient 2-car garage with driveway parking, all just minutes from Downtown Houston in the vibrant heart of EaDo."
+        "src": "listing-photos/c2ceba357493aad3-2048x1536.jpg",
+        "alt": "Discover bold new construction at 4215 Sherman Street in Sherman Landing, a striking 3-story home featuring contemporary horizontal siding, large windows, and a convenient 2-car garage with driveway parking, all just minutes from Downtown Houston in the vibrant heart of EaDo."
       },
       {
         "src": "listing-photos/b59eafae108433d0-2048x1536.jpg",
@@ -134,9 +238,41 @@
       {
         "src": "listing-photos/a5d9f8742e3f2980-2048x1536.jpg",
         "alt": "Experience a spa-like retreat in the primary bath, featuring a serene freestanding soaking tub and an oversized walk-in shower with a rain showerhead, beautifully illuminated by a skylight. Mirrors to be installed."
+      },
+      {
+        "src": "listing-photos/673c97ee38a5de2c-2048x1536.jpg",
+        "alt": "The sleek blue garage door and matching entry, accented by contrasting red beams and contemporary lighting make the home really pop. Off street parking for guests is a great bonus, and it's even environmentally friendly, as the surface is water-permeable."
+      },
+      {
+        "src": "listing-photos/304759865f5dcd8b-2048x1536.jpg",
+        "alt": "Upon entering, you're greeted by a contemporary floating staircase and polished concrete floors. A bright and airy entrance will wow your guests."
+      },
+      {
+        "src": "listing-photos/ef401bedfe1fb2ea-2048x1536.jpg",
+        "alt": "The first floor bedroom continues the polished concrete flooring and has access to the outdoor space, perfect for a small cafe table and chairs or a dog run."
+      },
+      {
+        "src": "listing-photos/7783df77e51e47e1-2048x1536.jpg",
+        "alt": "Bright and minimalistic room featuring sleek concrete floors, neutral walls, and modern black ceiling fan, offering a contemporary and versatile space."
       }
     ],
-    "openHouse": "2026-11-22T14:00/16:00"
+    "photoCount": 35,
+    "openHouse": "2026-11-22T14:00/16:00",
+    "details": {
+      "propertyType": "Townhouse",
+      "stories": 3,
+      "lotSqft": 1532,
+      "yearBuilt": 2026,
+      "garage": 2,
+      "pricePerSqft": 234,
+      "features": [
+        "Fireplace",
+        "Hardwood Floors",
+        "High Ceilings",
+        "Soaking Tub",
+        "Private Yard"
+      ]
+    }
   },
   {
     "address": "4040 San Felipe Street, Unit 119",
@@ -169,8 +305,38 @@
       {
         "src": "listing-photos/c9bbdffee8f7ad25-2048x1536.jpg",
         "alt": "This functional kitchen is equipped with stainless steel appliances, granite countertops, and crisp white cabinetry. The rich wood flooring flows seamlessly through the space, which also features an adjacent pantry for additional storage and easy access to the formal dining area."
+      },
+      {
+        "src": "listing-photos/2022ad42b79e3c6e-2048x1536.jpg",
+        "alt": "The classic brick exterior and architectural detailing of this English-style condominium create an inviting first impression. Surrounded by lush greenery and towering oaks, this ground-level unit offers a serene living experience within a secure, manned-gated community in the heart of River Oaks."
+      },
+      {
+        "src": "listing-photos/aeeaaa82cab8de49-2048x1536.jpg",
+        "alt": "The formal entry features rich wood flooring and a neutral palette, offering an inviting welcome into the home. This space provides seamless access to the main living areas, a convenient storage closet, and stairs leading to the private bedrooms on the second level."
+      },
+      {
+        "src": "listing-photos/8c7b00127fa5f3d6-2048x1536.jpg",
+        "alt": "This perspective captures the seamless connection between the living room and the formal dining area. Featuring warm wood flooring and a classic white brick fireplace, the open layout creates a spacious environment that is perfect for both quiet evenings and entertaining guests."
+      },
+      {
+        "src": "listing-photos/d35f0b3b69dad516-2048x1536.jpg",
+        "alt": "Oversized windows act as a natural focal point, bathing the interior in soft light while offering a peaceful view of the mature trees outside. The smooth ceilings and updated neutral paint create a clean, modern aesthetic that makes this generous living area feel exceptionally open and inviting."
       }
-    ]
+    ],
+    "photoCount": 22,
+    "details": {
+      "propertyType": "Condo",
+      "stories": 2,
+      "yearBuilt": 1956,
+      "pricePerSqft": 167,
+      "features": [
+        "Fireplace",
+        "Hardwood Floors",
+        "Balcony",
+        "Deck",
+        "Patio"
+      ]
+    }
   },
   {
     "address": "1901 Richmond Avenue, Unit 44",
@@ -203,7 +369,35 @@
       {
         "src": "listing-photos/a0c7e0ca9595e29d-2048x1536.jpg",
         "alt": "Virtually staged."
+      },
+      {
+        "src": "listing-photos/ea35cc654017f84f-2048x1536.jpg",
+        "alt": ""
+      },
+      {
+        "src": "listing-photos/a7f53b1079f13585-2048x1536.jpg",
+        "alt": "Virtually staged."
+      },
+      {
+        "src": "listing-photos/dfe898a43e96d3c9-2048x1536.jpg",
+        "alt": ""
+      },
+      {
+        "src": "listing-photos/5e7cf2c2491a4901-2048x1536.jpg",
+        "alt": ""
       }
-    ]
+    ],
+    "photoCount": 21,
+    "details": {
+      "propertyType": "Multi Family",
+      "stories": 2,
+      "lotSqft": 25874,
+      "yearBuilt": 1960,
+      "garage": 0,
+      "pricePerSqft": 4,
+      "features": [
+        "Corner Lot"
+      ]
+    }
   }
 ]

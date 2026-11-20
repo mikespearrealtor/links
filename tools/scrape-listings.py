@@ -215,7 +215,62 @@ def convert(listing: dict, *, rental: bool, size: str, count: int = 0) -> dict:
     showing = open_house(listing)
     if showing:
         record["openHouse"] = showing
+    extra = details(listing)
+    if extra:
+        record["details"] = extra
     return {k: v for k, v in record.items() if v is not None}
+
+
+# Features worth calling out on a listing page, in the order they're shown.
+# Compass spreads these across several MLS lists (amenities, lot, parking,
+# outdoor space); anything not named here (dishwasher, central AC...) is
+# left out as standard.
+HIGHLIGHTS = [
+    "Pool", "Elevator", "Corner Lot", "Alley Access", "Wine Cellar", "Wet Bar",
+    "Fireplace", "Outdoor Kitchen", "Double Oven", "Hardwood Floors",
+    "High Ceilings", "Soaking Tub", "Walk-In Closet", "Media Room", "Balcony",
+    "Roof Deck", "Rooftop Deck", "Deck", "Patio", "Porch", "Private Yard",
+    "Generator", "Gated",
+]
+
+
+def details(listing: dict) -> dict:
+    """Extra facts for the per-listing page, all from the same profile JSON
+    (no extra requests): property type, stories, lot size, year built, garage, new
+    construction, price per square foot and a short list of standout
+    features. Days on market is left to the page, which counts it from
+    listedDate so it never goes stale between scrapes. Assessor
+    data is skipped on purpose - for new builds it still describes the old
+    house."""
+    info = listing.get("detailedInfo") or {}
+    size = listing.get("size") or {}
+    price = listing.get("price") or {}
+    tagged = set()
+    for key in ("amenities", "lotFeatures", "parkingFeatures", "outdoorSpace"):
+        tagged.update(info.get(key) or [])
+    features = [name for name in HIGHLIGHTS if name in tagged]
+    if info.get("poolPrivateYN") and "Pool" not in features:
+        features.insert(0, "Pool")
+    if info.get("primaryBedroomOnMainLevel"):
+        features.append("Primary Bedroom Down")
+    badges = (listing.get("badges") or {}).get("cornerBadges") or []
+    per_sqft = price.get("perSquareFoot")
+    stories = size.get("stories")
+    # Compass's own type labels, e.g. ["Single Family"] / ["Townhouse"] /
+    # ["Condo"] / ["Rental", "Multi Family"]; "Rental" is the deal, not the home.
+    kinds = ((info.get("propertyType") or {}).get("masterType") or {}).get("GLOBAL") or []
+    kinds = [k for k in kinds if isinstance(k, str) and k != "Rental"]
+    out = {
+        "propertyType": kinds[0] if kinds else None,
+        "stories": (int(stories) if stories == int(stories) else stories) if stories else None,
+        "lotSqft": size.get("lotSizeInSquareFeet"),
+        "yearBuilt": (listing.get("buildingInfo") or {}).get("buildingYearOpened"),
+        "garage": info.get("garageSpaces"),
+        "newConstruction": any(b.get("displayText") == "New Construction" for b in badges) or None,
+        "pricePerSqft": round(per_sqft) if per_sqft else None,
+        "features": features or None,
+    }
+    return {k: v for k, v in out.items() if v is not None}
 
 
 def collect(profile: dict, size: str, count: int = 0) -> list[dict]:

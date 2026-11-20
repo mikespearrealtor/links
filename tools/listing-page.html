@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{title}}</title>
+  <meta name="description" content="{{description}}">
+  <link rel="canonical" href="{{canonical}}">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="{{canonical}}">
+  <meta property="og:title" content="{{og_title}}">
+  <meta property="og:description" content="{{og_description}}">
+  <meta property="og:image" content="{{og_image}}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <link rel="icon" href="/favicon.png">
+  <script>
+    // Same light/dark setting as the home page: the visitor's choice there,
+    // else their device's. ?theme=light|dark overrides it for previews.
+    (function () {
+      var t = (location.search.match(/[?&]theme=(light|dark)/) || [])[1];
+      try { if (!t) t = localStorage.getItem('theme'); } catch (e) {}
+      if (t !== 'light' && t !== 'dark') t = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', t);
+      var metas = document.querySelectorAll('meta[name="theme-color"]');
+      for (var i = 0; i < metas.length; i++) metas[i].setAttribute('content', t === 'light' ? '#ffffff' : '#0a0a0a');
+    })();
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    @font-face { font-family: 'Fraunces'; font-style: normal; font-weight: 300 600; font-display: swap; src: url('/fonts/fraunces-var.woff2') format('woff2'); }
+    @font-face { font-family: 'Fraunces'; font-style: italic; font-weight: 300 600; font-display: swap; src: url('/fonts/fraunces-italic-var.woff2') format('woff2'); }
+    @font-face { font-family: 'Newsreader'; font-style: normal; font-weight: 400; font-display: swap; src: url('/fonts/newsreader-var.woff2') format('woff2'); }
+    @font-face { font-family: 'InterVar'; font-style: normal; font-weight: 300 600; font-display: swap; src: url('/fonts/inter-var.woff2') format('woff2'); }
+
+    :root {
+      color-scheme: dark;
+      --bg: #0a0a0a;
+      --overlay: rgba(0, 0, 0, 0.65);
+      --card: #141414;
+      --text: #ffffff;
+      --muted: #999999;
+      --body: #cfcfcf;
+      --rule: #2b2b2b;
+      --hint: #bd9a6b;
+      --faint: #555555;
+      --tile-bg: #141414;
+      --tile-hover-bg: #141414;
+      --tile-border: #2b2b2b;
+      --tile-sub: #8a8a8a;
+      --ph-bg: #111111;
+      --logo-filter: grayscale(1) invert(1) brightness(1.35);
+      --hero-fade: rgba(10,10,10,.92);
+    }
+    [data-theme="light"] {
+      color-scheme: light;
+      --bg: #ffffff;
+      --overlay: rgba(0, 0, 0, 0.55);
+      --card: #ffffff;
+      --text: #0a0a0a;
+      --muted: #666666;
+      --body: #333333;
+      --rule: #dddddd;
+      --hint: #9c5f10;
+      --faint: #bbbbbb;
+      --tile-bg: transparent;
+      --tile-hover-bg: #faf5ed;
+      --tile-border: #dddddd;
+      --tile-sub: #767676;
+      --ph-bg: #f2f2f2;
+      --logo-filter: grayscale(1);
+      /* the photo keeps a dark wash for the white address, but no black slab */
+      --hero-fade: rgba(0,0,0,.6);
+    }
+
+    a, button { -webkit-tap-highlight-color: transparent; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'InterVar', -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    /* ── Photo ── */
+    .hero { position: relative; height: 62vh; height: 62svh; min-height: 360px; max-height: 760px; overflow: hidden; background: #111; }
+    .slides { position: absolute; inset: 0; }
+    .slide { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; }
+    .hero::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(to bottom, rgba(0,0,0,.35) 0%, rgba(0,0,0,0) 22%, rgba(0,0,0,0) 48%, var(--hero-fade) 100%);
+    }
+    .back {
+      position: absolute; top: 18px; left: 20px; z-index: 2;
+      color: #fff; text-decoration: none; font-size: 13px;
+      display: flex; align-items: center; gap: 7px;
+      filter: drop-shadow(0 1px 6px rgba(0,0,0,.5));
+    }
+    .back svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 1.7; }
+    /* Same light/dark button as the home page, top right of the photo. */
+    .theme-toggle { position: absolute; top: 9px; right: 12px; z-index: 2; width: 40px; height: 40px; background: none; border: none; color: #fff; filter: drop-shadow(0 1px 6px rgba(0,0,0,.45)); display: flex; align-items: center; justify-content: center; }
+    .theme-toggle svg { width: 19px; height: 19px; stroke: currentColor; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+    .theme-toggle:focus-visible { outline: 1px solid #fff; outline-offset: 3px; }
+    .theme-toggle .moon { display: none; }
+    [data-theme="light"] .theme-toggle .sun { display: none; }
+    [data-theme="light"] .theme-toggle .moon { display: block; }
+    .hero-text { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; padding: 0 26px 26px; max-width: 1100px; margin: 0 auto; }
+    .status { display: inline-block; font-size: 12.5px; color: #fff; border: 1px solid rgba(255,255,255,.55); padding: 4px 10px 5px; margin-bottom: 14px; }
+    .address { font-family: 'Fraunces', Georgia, serif; font-weight: 360; font-variation-settings: "opsz" 144; font-size: clamp(40px, 9vw, 72px); line-height: 1; letter-spacing: -0.015em; color: #fff; }
+    .area { font-family: 'Fraunces', Georgia, serif; font-style: italic; font-weight: 340; font-size: 18px; color: #d6d6d6; margin-top: 10px; }
+
+    /* ── Facts and photos ── */
+    .content { max-width: 1100px; margin: 0 auto; padding: 8px 26px 44px; }
+    .gl { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px; padding: 26px 0 4px; align-items: start; }
+    .gl.solo { grid-template-columns: minmax(0, 1fr); }
+    .price { display: block; font-family: 'Fraunces', Georgia, serif; font-weight: 400; font-size: 40px; line-height: 1.05; }
+    .price .per { font-size: .55em; color: var(--muted); }
+    .specs { display: block; margin-top: 10px; font-size: 16px; }
+    .specs b { font-weight: 600; }
+    .specs .dot { color: var(--faint); margin: 0 9px; }
+    .oh { display: block; margin-top: 8px; font-size: 15px; color: var(--hint); font-weight: 600; }
+    .dom { display: block; margin-top: 8px; font-size: 15px; color: var(--hint); }
+    .oh:not([hidden]) + .dom { margin-top: 2px; }
+    .fl { list-style: none; margin: 22px 0 0; font-size: 15px; line-height: 1.9; color: var(--body); }
+    .fl b { color: var(--text); font-weight: 600; }
+    .feat { font-size: 15px; line-height: 1.65; color: var(--muted); margin-top: 14px; }
+    .feat b { color: var(--text); font-weight: 600; }
+    .g4 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .g4.one { grid-template-columns: 1fr; }
+    a.ph { display: block; overflow: hidden; background: var(--ph-bg); aspect-ratio: 4 / 3; }
+    a.ph img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .6s cubic-bezier(.22,1,.36,1); }
+    @media (hover: hover) { a.ph:hover img { transform: scale(1.04); } }
+
+    /* ── Photo viewer: every photo we mirror, full size, then a card that
+       hands off to Compass for the rest. Dark in both themes. ── */
+    .hero, a.ph { cursor: zoom-in; }
+    .hero .back, .hero-text { cursor: auto; }
+    .hero .theme-toggle { cursor: pointer; }
+    .pv { position: fixed; inset: 0; z-index: 50; color: #fff; display: flex; flex-direction: column;
+      background: var(--overlay); }
+    /* Same plain dim as the Text Mike QR popup: the page shows through as is. */
+    .pv-top, .pv-track { position: relative; }
+    .pv .pv-nav { z-index: 1; }
+    .pv[hidden] { display: none; }
+    /* Opens like the Acker-Blum photo on the home page: the dim fades in
+       and the photo settles up from 96%. */
+    .pv { opacity: 0; transition: opacity .3s ease, background-color .4s ease, backdrop-filter .4s ease, -webkit-backdrop-filter .4s ease; }
+    /* On the Compass card the whole page behind goes soft, so the text sits on calm, even ground. */
+    .pv.end { background-color: rgba(0,0,0,.6); -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); }
+    .pv.show { opacity: 1; }
+    .pv-slide img, .pv-card { transform: scale(.96); transition: transform .35s cubic-bezier(.22,1,.36,1); }
+    .pv.show .pv-slide img, .pv.show .pv-card { transform: scale(1); }
+    @media (prefers-reduced-motion: reduce) { .pv, .pv-slide img, .pv-card { transition: none; } }
+    .pv-top { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; font-size: 14px; color: #bdbdbd; flex: none; }
+    .pv-count { font-variant-numeric: tabular-nums; letter-spacing: .02em; }
+    .pv button { background: none; border: 0; color: #fff; cursor: pointer; padding: 0; display: grid; place-items: center; font: inherit; }
+    .pv button svg { stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+    .pv-x { width: 40px; height: 40px; margin-right: -8px; }
+    .pv-x svg { width: 22px; height: 22px; }
+    .pv button:focus:not(:focus-visible), .qr-close:focus:not(:focus-visible) { outline: none; }
+    .pv-track { flex: 1; min-height: 0; display: flex; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior: contain; }
+    .pv-track::-webkit-scrollbar { display: none; }
+    .pv-slide { flex: none; width: 100%; height: 100%; scroll-snap-align: center; scroll-snap-stop: always; display: grid; place-items: center; padding: 0 84px 28px; position: relative; overflow: hidden; }
+    /* Sized off the window, not the slide: a percentage height inside the
+       grid cell let tall windows push the photo past the bottom edge. */
+    .pv-slide img { max-width: min(100%, 1400px); max-height: calc(100vh - 150px); max-height: calc(100dvh - 150px); object-fit: contain; display: block; user-select: none; -webkit-user-drag: none; border-radius: 3px; box-shadow: 0 20px 50px rgba(0,0,0,.5); }
+    .pv .pv-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 52px; height: 52px; border-radius: 50%; background: rgba(255,255,255,.08); transition: background .15s, opacity .15s; }
+    .pv .pv-nav:hover { background: rgba(255,255,255,.18); }
+    .pv .pv-nav:disabled { opacity: 0; pointer-events: none; }
+    .pv-nav svg { width: 22px; height: 22px; }
+    .pv-prev { left: 16px; } .pv-next { right: 16px; }
+    .pv-card { position: relative; text-align: center; max-width: 640px; }
+    .pv-card h2 { font-family: 'Fraunces', Georgia, serif; font-weight: 360; font-size: clamp(30px, 5vw, 42px); line-height: 1.08; letter-spacing: -.01em; }
+    .pv-card p { margin-top: 12px; font-size: 15px; line-height: 1.55; color: #cfcfcf; }
+    /* Behaves like the page's other buttons (a.tile): gold border, a 2px
+       lift and the arrow nudging out. The viewer is dark in both themes, so
+       it always uses the dark theme's tile colours and gold. */
+    .pv-card a { display: inline-flex; align-items: center; gap: 10px; margin-top: 26px; padding: 14px 20px; background: #141414; border: 1px solid #2b2b2b; color: #fff; text-decoration: none; font-size: 15px;
+      transition: border-color .35s cubic-bezier(.22,1,.36,1), transform .35s cubic-bezier(.22,1,.36,1); }
+    .pv-card a svg { width: 15px; height: 15px; stroke: #fff; fill: none; stroke-width: 1.7; transition: transform .35s cubic-bezier(.22,1,.36,1), stroke .35s ease; }
+    @media (hover: hover) {
+      .pv-card a:hover { border-color: #bd9a6b; transform: translateY(-2px); }
+      .pv-card a:hover svg { transform: translate(2px,-2px); stroke: #bd9a6b; }
+    }
+    .pv-card a:active { border-color: #bd9a6b; }
+    .pv .pv-again { display: block; margin: 18px auto 0; font-size: 13.5px; color: #a8a8a8; text-decoration: underline; text-underline-offset: 3px; }
+    @media (max-width: 760px), (hover: none) {
+      .pv-slide { padding: 0 0 20px; }
+      .pv-slide img { max-height: calc(100dvh - 120px); }
+      .pv-slide.pv-end { padding: 0 28px 20px; }
+      .pv .pv-nav { display: none; }
+    }
+
+    /* ── Text QR (desktop): same card as the home page's ── */
+    .qr-overlay { position: fixed; inset: 0; background: var(--overlay); display: none; align-items: center; justify-content: center; z-index: 40; padding: 24px; }
+    .qr-overlay.open { display: flex; }
+    .qr-card { background: var(--card); border: 1px solid var(--rule); padding: 34px 32px 28px; max-width: 330px; width: 100%; text-align: center; position: relative; }
+    .qr-close { position: absolute; top: 10px; right: 10px; width: 34px; height: 34px; background: none; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--muted); }
+    .qr-close:hover { color: var(--text); }
+    .qr-close svg { width: 15px; height: 15px; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; }
+    .qr-title { font-family: 'Fraunces', Georgia, serif; font-weight: 380; font-size: 24px; letter-spacing: -0.01em; margin-bottom: 6px; }
+    .qr-sub { font-size: 12.5px; color: var(--muted); margin-bottom: 22px; }
+    .qr-tile { background: #ffffff; padding: 16px; display: inline-block; line-height: 0; }
+    .qr-tile svg { width: 176px; height: 176px; }
+    .qr-fallback { display: block; margin: 18px auto 0; font: inherit; font-size: 12px; letter-spacing: 0.02em; color: var(--hint); background: none; border: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+    .qr-fallback:hover { color: var(--text); }
+    @media (prefers-reduced-motion: no-preference) {
+      .qr-overlay.open .qr-card { animation: qr-pop .18s ease; }
+      @keyframes qr-pop { from { opacity: 0; transform: scale(.97); } to { opacity: 1; transform: scale(1); } }
+    }
+
+    /* ── Buttons ── */
+    .tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 26px; }
+    a.tile {
+      position: relative; display: flex; flex-direction: column; align-items: flex-start;
+      padding: 16px 16px 15px; background: var(--tile-bg); border: 1px solid var(--tile-border); text-decoration: none;
+      transition: border-color .35s cubic-bezier(.22,1,.36,1), transform .35s cubic-bezier(.22,1,.36,1), background-color .35s ease;
+    }
+    @media (hover: hover) {
+      a.tile:hover { border-color: var(--hint); background: var(--tile-hover-bg); transform: translateY(-2px); }
+      a.tile:hover .arr { transform: translate(2px,-2px); stroke: var(--hint); }
+    }
+    a.tile:active { border-color: var(--hint); }
+    .tile .arr { position: absolute; top: 14px; right: 14px; width: 16px; height: 16px; stroke: var(--text); transition: transform .35s cubic-bezier(.22,1,.36,1), stroke .35s ease; }
+    .tile-main { display: flex; align-items: center; gap: 9px; font-size: 16px; line-height: 1.3; color: var(--text); white-space: nowrap; }
+    .tile-ico { width: 16px; height: 16px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+    .tile-logo { display: block; height: 15px; width: auto; max-width: calc(100% - 22px); object-fit: contain; object-position: left center; margin-top: 2px; filter: var(--logo-filter); }
+    .tile-sub { font-size: 11.5px; color: var(--tile-sub); margin-top: 9px; }
+
+    /* ── Map: a full-bleed white band ── */
+    .hood { background: #ffffff; margin-top: 8px; }
+    .lm { position: relative; overflow: hidden; }
+    .lm svg { display: block; width: 100%; }
+    .lm .lm-tall { display: none; height: auto; }
+    .lm-credit { position: absolute; right: 12px; bottom: 8px; font: 300 11px "InterVar", Arial, sans-serif; color: #8a8a8a; background: rgba(255,255,255,.8); padding: 1px 4px; pointer-events: none; }
+    .lm a.lm-pl { cursor: pointer; transition: opacity .25s ease; }
+    .lm a.lm-pl rect, .lm a.lm-pl circle, .lm a.lm-pl line { transition: stroke .2s ease, stroke-width .2s ease, fill .2s ease, r .2s ease; }
+    .lm a.lm-pl text { transition: fill .2s ease; }
+    .lm a.lm-pl:hover rect, .lm a.lm-pl:focus-visible rect { stroke: var(--c); stroke-width: 2; }
+    .lm a.lm-pl:hover text, .lm a.lm-pl:focus-visible text { fill: var(--c); }
+    .lm a.lm-pl:hover circle, .lm a.lm-pl:focus-visible circle { r: 7; }
+    .lm a.lm-pl:hover line, .lm a.lm-pl:focus-visible line { stroke-width: 2; }
+    .lm a.lm-pl:focus { outline: none; }
+    /* Pointing at one place quietly steps the others back. */
+    .lm svg:has(a.lm-pl:hover) a.lm-pl:not(:hover) { opacity: .4; }
+    /* Light theme: the map fades into the page above and below it, and still
+       runs edge to edge across the window. */
+    [data-theme="light"] .hood { margin-top: 0; }
+    [data-theme="light"] .lm > svg {
+      -webkit-mask-image: linear-gradient(to bottom, transparent, #000 80px, #000 calc(100% - 80px), transparent);
+      mask-image: linear-gradient(to bottom, transparent, #000 80px, #000 calc(100% - 80px), transparent);
+    }
+    [data-theme="light"] .lm-credit { background: none; bottom: 24px; }
+
+    /* ── Agent: laid out like the foot of Mike's printed maps. The photo
+       is square and the name, title and contact line fill exactly its
+       height, name at the top edge, contact line at the bottom. A black
+       band in the dark theme, plain white in the light theme. ── */
+    /* Agent: a quiet sign-off on the page's own background, sized as a
+       footer rather than a headline. */
+    .sig { color: var(--text); --sig-sub: var(--muted); }
+    .sig-in { max-width: 1100px; margin: 0 auto; padding: 48px 26px 8px; display: flex; align-items: center; gap: 22px; }
+    .sig img.face { width: 92px; height: 92px; object-fit: cover; flex: none; display: block; }
+    .sig .id { min-width: 0; }
+    .sig .who { font-family: 'Fraunces', Georgia, serif; font-size: 30px; font-weight: 380; line-height: 1; letter-spacing: -.01em; }
+    .sig .role { font-size: 12.5px; color: var(--sig-sub); margin-top: 6px; }
+    .sig .reach { font-size: 15px; line-height: 1.3; margin-top: 12px; }
+    .sig .reach a { color: inherit; text-decoration: none; transition: color .15s; }
+    .sig .reach a:hover { color: var(--hint); }
+    .sig .reach .k { color: var(--sig-sub); }
+    .sig .bar { display: inline-block; width: 1px; height: .95em; background: var(--rule); margin: 0 14px; vertical-align: -.12em; }
+    .sig .compass { height: 17px; width: auto; margin-left: auto; opacity: .75; filter: grayscale(1) invert(1) brightness(1.35); }
+    [data-theme="light"] .sig .compass { filter: grayscale(1); opacity: .85; }
+    .sig + .content { padding-top: 6px; }
+    .mls-note { font-size: 9.5px; line-height: 1.55; letter-spacing: .04em; color: var(--faint); margin-top: 34px; }
+    footer { font-size: 10px; letter-spacing: .3em; text-transform: uppercase; color: var(--faint); text-align: center; margin-top: 30px; }
+    footer a { color: inherit; text-decoration: none; }
+
+    /* ── Phones: price first, then the photos as a sideways swipe, then the
+       facts, then the buttons full width ── */
+    @media (max-width: 760px) {
+      .gl { grid-template-columns: 1fr; gap: 0; }
+      .gl > div:first-child { display: contents; }
+      .price { order: 1; font-size: 34px; } .specs { order: 2; } .oh, .dom { order: 3; }
+      .g4 { order: 4; } .fl { order: 5; margin-top: 24px; } .feat { order: 6; } .tiles { order: 7; }
+      .g4, .g4.one { display: flex; gap: 8px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; margin: 22px calc(50% - 50vw) 0 0; padding-right: 26px; }
+      .g4::-webkit-scrollbar { display: none; }
+      .g4 a.ph { flex: none; width: 78vw; scroll-snap-align: start; }
+      .tiles { grid-template-columns: 1fr; gap: 10px; }
+      a.tile { padding: 16px 18px; }
+      .sig-in { padding: 36px 26px 4px; gap: 18px; }
+      .sig img.face { width: 84px; height: 84px; }
+      .sig .who { font-size: 26px; }
+      .sig .reach { font-size: 14.5px; line-height: 1.5; margin-top: 8px; }
+      .sig .reach a { display: block; }
+      .sig .bar, .sig .compass { display: none; }
+    }
+    @media (max-width: 640px) {
+      .lm .lm-wide { display: none; }
+      .lm .lm-tall { display: block; }
+      .lm-credit { display: none; }
+      [data-theme="light"] .lm > svg {
+        -webkit-mask-image: linear-gradient(to bottom, transparent, #000 44px, #000 calc(100% - 44px), transparent);
+        mask-image: linear-gradient(to bottom, transparent, #000 44px, #000 calc(100% - 44px), transparent);
+      }
+    }
+
+    /* ── Computers: title, price, facts and buttons on the left, the photo
+       fading in on the right (so tall homes aren't cropped), then a row of
+       photos. Phones and tablets keep the photo-on-top layout above. ── */
+    .hx, .strip { display: none; }
+    @media (min-width: 900px) {
+      .hero { height: auto; min-height: 90vh; min-height: min(90svh, 1100px); max-height: none; background: var(--bg); display: flex; }
+      .slides { left: 34%; }
+      /* an eased fade, so there's no line where it ends */
+      .hero::after { background: linear-gradient(to right, var(--bg) 34%, color-mix(in srgb, var(--bg) 99.5%, transparent) 35.67%, color-mix(in srgb, var(--bg) 96.5%, transparent) 37.33%, color-mix(in srgb, var(--bg) 89.6%, transparent) 39%, color-mix(in srgb, var(--bg) 79%, transparent) 40.67%, color-mix(in srgb, var(--bg) 65.3%, transparent) 42.33%, color-mix(in srgb, var(--bg) 50%, transparent) 44%, color-mix(in srgb, var(--bg) 34.7%, transparent) 45.67%, color-mix(in srgb, var(--bg) 21%, transparent) 47.33%, color-mix(in srgb, var(--bg) 10.4%, transparent) 49%, color-mix(in srgb, var(--bg) 3.5%, transparent) 50.67%, color-mix(in srgb, var(--bg) 0.5%, transparent) 52.33%, transparent 54%), linear-gradient(to bottom, rgba(0,0,0,.25), rgba(0,0,0,0) 18%); }
+      .hero-text { position: relative; left: auto; right: auto; bottom: auto; width: 38%; max-width: none; margin: 0; padding: 84px 40px 48px 6vw; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; }
+      .address { font-size: clamp(40px, 4.2vw, 68px); color: var(--text); }
+      .status { color: var(--text); border-color: var(--muted); }
+      .area { color: var(--muted); }
+      .back { color: var(--text); filter: none; }
+      .hx { display: block; align-self: stretch; margin-top: 34px; }
+      .hx .price { font-size: 40px; }
+      .hx .fl { display: grid; grid-template-columns: auto; column-gap: 28px; justify-content: start; margin-top: 22px; line-height: 1.75; }
+      .hx .feat { margin-top: 12px; max-width: 500px; }
+      .hx .tiles { margin-top: 28px; max-width: 500px; }
+      .intro { display: none; }
+      .strip { display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: 6px; margin: 28px 0 72px; }
+      /* no photo row: keep the same breathing room before the map */
+      .hero + .intro + .hood { margin-top: 72px; }
+      .strip .more { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; aspect-ratio: 4 / 3; background: var(--ph-bg); color: var(--text); text-align: center; text-decoration: none; }
+      .strip .more .big { font-family: 'Fraunces', Georgia, serif; font-size: 22px; font-weight: 400; line-height: 1.1; }
+      .strip .more.soon .big { font-style: italic; font-size: 20px; }
+      .strip .more .sub { font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 5px; }
+      .strip .more .sub svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 1.7; }
+      .strip a.more { transition: background .2s; }
+      .strip a.more:hover { background: var(--tile-hover-bg); }
+      .strip.few { grid-template-columns: repeat(var(--n), calc((100% - 30px) / 6)); justify-content: center; }
+    }
+    @media (min-width: 1300px) {
+      .hx .fl { grid-template-columns: auto auto; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="hero">
+    <div class="slides">
+{{slides}}
+    </div>
+    <a class="back" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>Mike Spear</a>
+    <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch between light and dark theme">
+      <svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+    </button>
+    <div class="hero-text">
+      <span class="status">{{status}}</span>
+      <h1 class="address">{{address}}</h1>
+      <p class="area">{{area}}</p>
+      <div class="hx">
+        <span class="price">{{price}}</span>{{specs}}{{open_house}}<span class="dom" data-listed="{{listed}}" hidden></span>
+{{facts}}{{features}}
+        <div class="tiles"><a class="tile text-tile" href="sms:+17132047653">
+          <span class="tile-main"><svg class="tile-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Text Mike</span>
+          <span class="tile-sub">Schedule a showing</span>
+          <svg class="arr" viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+        </a><a class="tile" href="{{compass}}" target="_blank" rel="noopener">
+          <img class="tile-logo" src="/compass-logo.png" alt="Compass">
+          <span class="tile-sub">All photos and details</span>
+          <svg class="arr" viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+        </a></div>
+      </div>
+    </div>
+  </header>
+{{strip}}
+
+  <main class="content intro">
+    <div class="gl{{solo}}">
+      <div>
+        <span class="price">{{price}}</span>{{specs}}{{open_house}}<span class="dom" data-listed="{{listed}}" hidden></span>
+{{facts}}{{features}}
+        <div class="tiles"><a class="tile text-tile" href="sms:+17132047653">
+          <span class="tile-main"><svg class="tile-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Text Mike</span>
+          <span class="tile-sub">Schedule a showing</span>
+          <svg class="arr" viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+        </a><a class="tile" href="{{compass}}" target="_blank" rel="noopener">
+          <img class="tile-logo" src="/compass-logo.png" alt="Compass">
+          <span class="tile-sub">All photos and details</span>
+          <svg class="arr" viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+        </a></div>
+      </div>
+{{grid}}
+    </div>
+  </main>
+{{map}}
+  <section class="sig" aria-label="Listing agent">
+    <div class="sig-in">
+      <img class="face" src="/agent-headshot.jpg" alt="Mike Spear" width="148" height="148" loading="lazy">
+      <div class="id">
+        <div class="who">Mike Spear</div>
+        <div class="role">REALTOR®</div>
+        <div class="reach"><a href="tel:+17132047653"><span class="k">M:</span> 713.204.7653</a><span class="bar" aria-hidden="true"></span><a href="mailto:mike@mikespear.com"><span class="k">E:</span> mike@mikespear.com</a></div>
+      </div>
+      <img class="compass" src="/compass-logo.png" alt="Compass">
+    </div>
+  </section>
+
+  <main class="content">
+    <p class="mls-note">Listing information from Compass, updated daily. All information should be independently verified. Map data © OpenStreetMap contributors. Mike Spear, Compass RE Texas, LLC.</p>
+    <footer><a href="/">mikespear.com</a></footer>
+  </main>
+
+  <div class="qr-overlay" id="qrOverlay" role="dialog" aria-modal="true" aria-labelledby="qrTitle">
+    <div class="qr-card">
+      <button class="qr-close" id="qrClose" type="button" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      <p class="qr-title" id="qrTitle">Text 713-204-7653</p>
+      <p class="qr-sub">Point your phone's camera at the code</p>
+      <span class="qr-tile">{{text_qr}}</span>
+      <button class="qr-fallback" id="qrCopy" type="button">or copy the number</button>
+    </div>
+  </div>
+
+  <div class="pv" id="pv" role="dialog" aria-modal="true" aria-label="Photos" hidden>
+    <div class="pv-top">
+      <span class="pv-count" aria-live="polite"></span>
+      <button class="pv-x" type="button" aria-label="Close photos"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="pv-track"></div>
+    <button class="pv-nav pv-prev" type="button" aria-label="Previous photo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <button class="pv-nav pv-next" type="button" aria-label="Next photo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+  </div>
+  <script type="application/json" id="pv-photos">{{gallery}}</script>
+
+  <script>
+    // Light/dark button: flips the theme and remembers it, shared with the
+    // home page through the same storage key.
+    document.getElementById('themeToggle').addEventListener('click', function () {
+      var next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', next);
+      try { localStorage.setItem('theme', next); } catch (e) {}
+      var metas = document.querySelectorAll('meta[name="theme-color"]');
+      for (var i = 0; i < metas.length; i++) metas[i].setAttribute('content', next === 'light' ? '#ffffff' : '#0a0a0a');
+    });
+
+    // Text Mike on a computer: show the QR to scan with a phone (as on the
+    // home page). Phones and tablets follow the sms: link as normal.
+    (function () {
+      var btn = null;
+      var overlay = document.getElementById('qrOverlay');
+      var copy = document.getElementById('qrCopy');
+      var desktop = matchMedia('(hover: hover) and (pointer: fine)');
+      var timer;
+      function close() { overlay.classList.remove('open'); if (btn) btn.focus({ preventScroll: true }); }
+      document.querySelectorAll('.text-tile').forEach(function (b) { b.addEventListener('click', function (e) {
+        if (!desktop.matches) return;
+        btn = b;
+        e.preventDefault();
+        copy.textContent = 'or copy the number';
+        overlay.classList.add('open');
+        document.getElementById('qrClose').focus();
+      }); });
+      document.getElementById('qrClose').addEventListener('click', close);
+      overlay.addEventListener('click', function (e) { if (e.target === overlay) close(); });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && overlay.classList.contains('open')) close();
+      });
+      if (!navigator.clipboard) copy.hidden = true;
+      copy.addEventListener('click', function () {
+        navigator.clipboard.writeText('713-204-7653').then(function () {
+          copy.textContent = 'Copied';
+          clearTimeout(timer);
+          timer = setTimeout(function () { copy.textContent = 'or copy the number'; }, 1600);
+        }).catch(function () {});
+      });
+    })();
+
+    // Days on market, counted in the visitor's browser so it is always
+    // current; shown only for the first 30 days.
+    // "More photos soon" only while the listing is new (or still Coming Soon).
+    document.querySelectorAll('.strip .soon').forEach(function (el) {
+      var t = Date.parse(el.dataset.listed + 'T00:00:00');
+      if (el.hasAttribute('data-always') || (t && Date.now() - t < 14 * 864e5)) return;
+      var strip = el.parentNode;
+      el.remove();
+      var n = strip.children.length;
+      if (!n) { strip.remove(); return; }
+      strip.style.setProperty('--n', n);
+      strip.classList.toggle('few', n < 4);
+    });
+    document.querySelectorAll('.dom[data-listed]').forEach(function (el) {
+      var p = el.dataset.listed.split('-');
+      if (p.length !== 3) return;
+      var listed = new Date(+p[0], p[1] - 1, +p[2]);
+      var now = new Date(); now.setHours(0, 0, 0, 0);
+      var days = Math.round((now - listed) / 864e5);
+      if (!(days >= 0 && days <= 30)) return;
+      el.textContent = days === 0 ? 'Listed today' : 'On the market ' + days + (days === 1 ? ' day' : ' days');
+      el.hidden = false;
+    });
+
+    // Next open house from the daily Compass scrape ("YYYY-MM-DDTHH:MM/HH:MM",
+    // Houston time); hidden once it has ended.
+    document.querySelectorAll('.oh[data-oh]').forEach(function (el) {
+      var m = el.dataset.oh.match(/^(\d+)-(\d+)-(\d+)T(\d+):(\d+)\/(\d+):(\d+)$/);
+      if (!m) return;
+      var start = new Date(+m[1], m[2] - 1, +m[3], +m[4], +m[5]);
+      var end = new Date(+m[1], m[2] - 1, +m[3], +m[6], +m[7]);
+      if (new Date() > end) return;
+      function t(h, min, ap) {
+        var s = (h % 12 || 12) + (min ? ':' + String(min).padStart(2, '0') : '');
+        return ap ? s + (h < 12 ? ' am' : ' pm') : s;
+      }
+      var same = (+m[4] < 12) === (+m[6] < 12);
+      var day = start.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+      el.textContent = 'Open house ' + day + ' · ' + t(+m[4], +m[5], !same) + '–' + t(+m[6], +m[7], true);
+      el.hidden = false;
+    });
+    // Photo viewer. Opens from the hero or any grid photo; swipe, arrow keys
+    // or the side buttons move through the photos, and the last slide sends
+    // people to Compass for the full set. The back button closes it.
+    (function () {
+      var pv = document.getElementById('pv');
+      var photos = [];
+      try { photos = JSON.parse(document.getElementById('pv-photos').textContent); } catch (e) {}
+      if (!pv || !photos.length) return;
+      var compass = (document.querySelector('a.tile[target="_blank"]') || {}).href || '';
+      var track = pv.querySelector('.pv-track');
+      var count = pv.querySelector('.pv-count');
+      var prev = pv.querySelector('.pv-prev');
+      var next = pv.querySelector('.pv-next');
+      var total = photos.length + (compass ? 1 : 0);
+      var built = false, at = 0, lastFocus = null;
+
+      function build() {
+        if (built) return;
+        built = true;
+        photos.forEach(function (p) {
+          var s = document.createElement('div');
+          s.className = 'pv-slide';
+          var img = document.createElement('img');
+          img.src = p.src; img.alt = p.alt; img.decoding = 'async';
+          s.appendChild(img);
+          track.appendChild(s);
+        });
+        if (!compass) return;
+        var end = document.createElement('div');
+        end.className = 'pv-slide pv-end';
+        var card = document.createElement('div');
+        card.className = 'pv-card';
+        card.innerHTML = '<h2>More photos on Compass</h2>' +
+          '<a target="_blank" rel="noopener">See all photos<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a>' +
+          '<button class="pv-again" type="button">Close</button>';
+        card.querySelector('a').href = compass;
+        card.querySelector('.pv-again').addEventListener('click', function () { shut(false); });
+        end.appendChild(card);
+        track.appendChild(end);
+      }
+      function show(i) {
+        at = i;
+        pv.classList.toggle('end', i >= photos.length);
+        count.textContent = i < photos.length ? (i + 1) + ' / ' + photos.length : '';
+        prev.disabled = i <= 0;
+        next.disabled = i >= total - 1;
+      }
+      function go(i, smooth) {
+        i = Math.max(0, Math.min(total - 1, i));
+        track.scrollTo({ left: i * track.clientWidth, behavior: smooth ? 'smooth' : 'auto' });
+        show(i);
+      }
+      function open(i) {
+        build();
+        lastFocus = document.activeElement;
+        pv.hidden = false;
+        clearTimeout(fade);
+        void pv.offsetWidth; // lay out the hidden state first so the fade runs
+        pv.classList.add('show');
+        document.documentElement.style.overflow = 'hidden';
+        go(i, false);
+        pv.querySelector('.pv-x').focus({ preventScroll: true });
+        try { history.pushState({ pv: 1 }, ''); } catch (e) {}
+      }
+      var fade;
+      function shut(fromHistory) {
+        if (pv.hidden || !pv.classList.contains('show')) return;
+        pv.classList.remove('show');
+        fade = setTimeout(function () { pv.hidden = true; }, 300);
+        document.documentElement.style.overflow = '';
+        if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true });
+        if (!fromHistory && history.state && history.state.pv) history.back();
+      }
+
+      var tick;
+      track.addEventListener('scroll', function () {
+        clearTimeout(tick);
+        tick = setTimeout(function () { show(Math.round(track.scrollLeft / track.clientWidth)); }, 60);
+      }, { passive: true });
+      prev.addEventListener('click', function () { go(at - 1, true); });
+      next.addEventListener('click', function () { go(at + 1, true); });
+      pv.querySelector('.pv-x').addEventListener('click', function () { shut(false); });
+      window.addEventListener('popstate', function () { shut(true); });
+      window.addEventListener('resize', function () { if (!pv.hidden) go(at, false); });
+      document.addEventListener('keydown', function (e) {
+        if (pv.hidden) return;
+        if (e.key === 'Escape') shut(false);
+        else if (e.key === 'ArrowRight') go(at + 1, true);
+        else if (e.key === 'ArrowLeft') go(at - 1, true);
+      });
+      // A tap on the dark space around a photo closes, like most viewers.
+      track.addEventListener('click', function (e) {
+        var t = e.target;
+        if (t.classList.contains('pv-slide') && !t.classList.contains('pv-end')) shut(false);
+      });
+
+      document.querySelectorAll('a.ph[data-i]').forEach(function (a) {
+        a.addEventListener('click', function (e) {
+          if (e.metaKey || e.ctrlKey || e.shiftKey) return;
+          e.preventDefault();
+          open(+a.dataset.i);
+        });
+      });
+      document.querySelector('.hero').addEventListener('click', function (e) {
+        if (e.target.closest('.back, .theme-toggle, .hx')) return;
+        // On a computer the left side is text, not photo.
+        if (e.target.closest('.hero-text') && matchMedia('(min-width: 900px)').matches) return;
+        open(0);
+      });
+    })();
+  </script>
+</body>
+</html>
