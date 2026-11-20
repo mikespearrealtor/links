@@ -705,7 +705,7 @@
 .mv.open{display:block}
 .mv-stage{position:absolute;left:0;top:0;transform-origin:0 0;cursor:grab;will-change:transform}
 .mv.drag .mv-stage{cursor:grabbing}
-.mv-stage svg{display:block;width:460px!important;height:536px!important;-webkit-mask-image:none!important;mask-image:none!important;background:#fff;box-shadow:0 0 0 1px #ddd}
+.mv-stage svg{display:block;width:4881px!important;height:909px!important;-webkit-mask-image:none!important;mask-image:none!important;background:#fff;box-shadow:0 0 0 1px #ddd}
 .mv-bar{position:absolute;right:14px;top:14px;display:flex;flex-direction:column;gap:8px;z-index:2}
 .mv-bar button{width:44px;height:44px;background:#fff;border:1px solid #cfcfcf;display:grid;place-items:center;cursor:pointer;color:#111;font:300 24px/1 InterVar,sans-serif;box-shadow:0 1px 6px rgba(0,0,0,.08)}
 .mv-bar button:hover{border-color:#111}
@@ -728,7 +728,7 @@
 <script>
 (function () {
   var mv = document.getElementById('mv'), stage = document.getElementById('mvStage');
-  var W = 460, H = 536, HX = 230, HY = 268;       // map size and the house, in map units
+  var W = 4881, H = 909, HX = 2440.5, HY = 454.5;       // map size and the house, in map units
   var k = 1, x = 0, y = 0, MIN = 0.6, MAX = 5;
   var pts = {}, last = null, moved = 0, pinch = null;
 
@@ -747,14 +747,14 @@
     x = cx - (cx - x) * nk / k; y = cy - (cy - y) * nk / k; k = nk; apply();
   }
   function home() {
-    k = Math.max(1.6, coverK());
+    k = coverK();
     x = innerWidth / 2 - HX * k; y = innerHeight / 2 - HY * k; apply();
   }
   function smooth(fn) { stage.style.transition = 'transform .25s ease'; fn(); setTimeout(function () { stage.style.transition = ''; }, 260); }
 
   window.mvOpen = function () {
     if (!stage.firstChild) {
-      var t = document.querySelector('.lm .lm-tall').cloneNode(true);
+      var t = document.querySelector('.lm .lm-wide').cloneNode(true);
       t.removeAttribute('class'); t.style.display = 'block';
       stage.appendChild(t);
     }
