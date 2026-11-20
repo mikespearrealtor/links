@@ -4,12 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>1265 Du Barry Lane · Oak Forest · Mike Spear</title>
-  <meta name="description" content="4 bd · 4.5 ba · 4,453 sq ft in Oak Forest, Houston. For sale, listed by Mike Spear, Compass.">
+  <meta name="description" content="4 bd · 4.5 ba · 4,453 sq ft · 2 stories in Oak Forest, Houston. For sale, listed by Mike Spear, Compass.">
   <link rel="canonical" href="https://links.mikespear.com/homes/1265-du-barry-lane/">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://links.mikespear.com/homes/1265-du-barry-lane/">
   <meta property="og:title" content="1265 Du Barry Lane · $1,899,900">
-  <meta property="og:description" content="4 bd · 4.5 ba · 4,453 sq ft · Oak Forest">
+  <meta property="og:description" content="4 bd · 4.5 ba · 4,453 sq ft · 2 stories · Oak Forest">
   <meta property="og:image" content="https://links.mikespear.com/listing-photos/4c4a68e725419384-2048x1536.jpg">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)">
@@ -81,8 +81,7 @@
     /* ── Photo ── */
     .hero { position: relative; height: 62vh; height: 62svh; min-height: 360px; max-height: 760px; overflow: hidden; background: #111; }
     .slides { position: absolute; inset: 0; }
-    .slide { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.6s ease; }
-    .slide.on { opacity: 1; }
+    .slide { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; }
     .hero::after {
       content: ''; position: absolute; inset: 0;
       background: linear-gradient(to bottom, rgba(0,0,0,.35) 0%, rgba(0,0,0,0) 22%, rgba(0,0,0,0) 48%, var(--hero-fade) 100%);
@@ -222,11 +221,7 @@
 
   <header class="hero">
     <div class="slides">
-      <img class="slide on" src="/listing-photos/4c4a68e725419384-2048x1536.jpg" alt="Stunning modern home with clean lines, large windows, and a charming stone facade, complemented by a wooden fence and lush green landscaping. (All current photos are renders. Photos of the current construction state to be uploaded by 11/13/26.)">
-      <img class="slide" src="/listing-photos/a400a43e44ac10ea-2048x1536.jpg" alt="Progress as of 11/8. Huge lot with garage access from the street behind, so from the street your home isn&#x27;t dominated by the garage!" loading="lazy">
-      <img class="slide" src="/listing-photos/84085c2feb8d3746-2048x1536.jpg" alt="Spacious, elegantly appointed living room featuring a stunning stone fireplace, rich wood accents, sophisticated tray ceiling with ambient lighting, and expansive windows inviting abundant natural light. Refined finishes and contemporary furnishings create an atmosphere of luxury. (Render of a similar product.)" loading="lazy">
-      <img class="slide" src="/listing-photos/99719bd8f261223d-2048x1536.jpg" alt="Progress as of 11/8, same view as the previous photos. This room is so much bigger than the render makes it look!" loading="lazy">
-      <img class="slide" src="/listing-photos/54bfdd6f126c3bd7-2048x1536.jpg" alt="Experience modern elegance in this spacious kitchen featuring sleek cabinetry, a large island with seating, pendant lighting, and ample natural light through expansive windows. (Render of a similar product.)" loading="lazy">
+      <img class="slide" src="/listing-photos/4c4a68e725419384-2048x1536.jpg" alt="Stunning modern home with clean lines, large windows, and a charming stone facade, complemented by a wooden fence and lush green landscaping. (All current photos are renders. Photos of the current construction state to be uploaded by 11/13/26.)">
     </div>
     <a class="back" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>Mike Spear</a>
     <div class="hero-text">
@@ -239,7 +234,14 @@
   <main class="content">
     <div class="gl">
       <div>
-        <span class="price">$1,899,900</span><span class="specs"><b>4</b> bd<span class="dot">·</span><b>4.5</b> ba<span class="dot">·</span><b>4,453</b> sq ft</span><span class="dom" data-listed="2026-11-09" hidden></span>
+        <span class="price">$1,899,900</span><span class="specs"><b>4</b> bd<span class="dot">·</span><b>4.5</b> ba<span class="dot">·</span><b>4,453</b> sq ft<span class="dot">·</span><b>2</b> stories</span><span class="dom" data-listed="2026-11-09" hidden></span>
+        <ul class="fl">
+          <li><b>8,542 sq ft</b> corner lot, 0.20 acre</li>
+          <li><b>Built 2026</b>, new construction</li>
+          <li><b>2-car garage</b> off the alley</li>
+          <li><b>$427</b> per sq ft</li>
+        </ul>
+        <p class="feat"><b>Inside:</b> wet bar, fireplace, double oven, hardwood floors, high ceilings, soaking tub. <b>Outside:</b> balcony, deck, patio, porch, private yard.</p>
 
         <div class="tiles"><a class="tile" href="sms:+17132047653&amp;body=Hi%20Mike%2C%20I%27d%20like%20to%20see%201265%20Du%20Barry%20Lane.">
           <span class="tile-main"><svg class="tile-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Text Mike</span>
@@ -278,20 +280,6 @@
   </main>
 
   <script>
-    // Fade through the listing photos. Holds still for people who ask for
-    // reduced motion, and pauses while the tab is in the background.
-    (function () {
-      var slides = document.querySelectorAll('.slide');
-      if (slides.length < 2 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-      var i = 0;
-      setInterval(function () {
-        if (document.hidden) return;
-        slides[i].classList.remove('on');
-        i = (i + 1) % slides.length;
-        slides[i].classList.add('on');
-      }, 5500);
-    })();
-
     // Days on market, counted in the visitor's browser so it is always
     // current; shown only for the first 30 days.
     document.querySelectorAll('.dom[data-listed]').forEach(function (el) {
