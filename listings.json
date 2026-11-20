@@ -13,39 +13,48 @@
     "photos": [
       {
         "src": "listing-photos/4c4a68e725419384-2048x1536.jpg",
-        "alt": "Stunning modern home with clean lines, large windows, and a charming stone facade, complemented by a wooden fence and lush green landscaping. (All current photos are renders. Photos of the current construction state to be uploaded by 11/13/26.)"
+        "alt": "Stunning modern home with clean lines, large windows, and a charming stone facade, complemented by a wooden fence and lush green landscaping. (All current photos are renders. Photos of the current construction state to be uploaded by 11/13/26.)",
+        "thumb": "listing-photos/4c4a68e725419384-640x480.jpg"
       },
       {
         "src": "listing-photos/a400a43e44ac10ea-2048x1536.jpg",
-        "alt": "Progress as of 11/8. Huge lot with garage access from the street behind, so from the street your home isn't dominated by the garage!"
+        "alt": "Progress as of 11/8. Huge lot with garage access from the street behind, so from the street your home isn't dominated by the garage!",
+        "thumb": "listing-photos/a400a43e44ac10ea-640x480.jpg"
       },
       {
         "src": "listing-photos/84085c2feb8d3746-2048x1536.jpg",
-        "alt": "Spacious, elegantly appointed living room featuring a stunning stone fireplace, rich wood accents, sophisticated tray ceiling with ambient lighting, and expansive windows inviting abundant natural light. Refined finishes and contemporary furnishings create an atmosphere of luxury. (Render of a similar product.)"
+        "alt": "Spacious, elegantly appointed living room featuring a stunning stone fireplace, rich wood accents, sophisticated tray ceiling with ambient lighting, and expansive windows inviting abundant natural light. Refined finishes and contemporary furnishings create an atmosphere of luxury. (Render of a similar product.)",
+        "thumb": "listing-photos/84085c2feb8d3746-640x480.jpg"
       },
       {
         "src": "listing-photos/99719bd8f261223d-2048x1536.jpg",
-        "alt": "Progress as of 11/8, same view as the previous photos. This room is so much bigger than the render makes it look!"
+        "alt": "Progress as of 11/8, same view as the previous photos. This room is so much bigger than the render makes it look!",
+        "thumb": "listing-photos/99719bd8f261223d-640x480.jpg"
       },
       {
         "src": "listing-photos/54bfdd6f126c3bd7-2048x1536.jpg",
-        "alt": "Experience modern elegance in this spacious kitchen featuring sleek cabinetry, a large island with seating, pendant lighting, and ample natural light through expansive windows. (Render of a similar product.)"
+        "alt": "Experience modern elegance in this spacious kitchen featuring sleek cabinetry, a large island with seating, pendant lighting, and ample natural light through expansive windows. (Render of a similar product.)",
+        "thumb": "listing-photos/54bfdd6f126c3bd7-640x480.jpg"
       },
       {
         "src": "listing-photos/ad946a3b80aa5b7c-2048x1536.jpg",
-        "alt": "Kitchen progress as of 11/8."
+        "alt": "Kitchen progress as of 11/8.",
+        "thumb": "listing-photos/ad946a3b80aa5b7c-640x480.jpg"
       },
       {
         "src": "listing-photos/353d0d2119bea660-2048x1536.jpg",
-        "alt": "Relaxing primary bedroom with vaulted ceiling and plenty of natural lighting, featuring room for a king-sized bed. (Render of a similar product.)"
+        "alt": "Relaxing primary bedroom with vaulted ceiling and plenty of natural lighting, featuring room for a king-sized bed. (Render of a similar product.)",
+        "thumb": "listing-photos/353d0d2119bea660-640x480.jpg"
       },
       {
         "src": "listing-photos/10b268f535f8d63e-2048x1536.jpg",
-        "alt": "Primary bedroom progress as of 11/8. The ceiling soars to 18 feet!"
+        "alt": "Primary bedroom progress as of 11/8. The ceiling soars to 18 feet!",
+        "thumb": "listing-photos/10b268f535f8d63e-640x480.jpg"
       },
       {
         "src": "listing-photos/1bb44b75c5bf081b-2048x1536.jpg",
-        "alt": "Stylish primary bathroom featuring a freestanding bathtub, modern wood cabinetry, and large illuminated mirrors, offering a serene spa-like atmosphere. (Render of a similar product.)"
+        "alt": "Stylish primary bathroom featuring a freestanding bathtub, modern wood cabinetry, and large illuminated mirrors, offering a serene spa-like atmosphere. (Render of a similar product.)",
+        "thumb": "listing-photos/1bb44b75c5bf081b-640x480.jpg"
       }
     ],
     "photoCount": 25,
@@ -88,39 +97,48 @@
     "photos": [
       {
         "src": "listing-photos/85fc936affa7fedf-2048x1536.jpg",
-        "alt": "Charming brick home with a modern design features a spacious driveway, lush landscaping, and distinctive garage doors, offering both curb appeal and convenience. With first floor living and all bedrooms up, this is a rare find!"
+        "alt": "Charming brick home with a modern design features a spacious driveway, lush landscaping, and distinctive garage doors, offering both curb appeal and convenience. With first floor living and all bedrooms up, this is a rare find!",
+        "thumb": "listing-photos/85fc936affa7fedf-640x480.jpg"
       },
       {
         "src": "listing-photos/26afc9cd577bbc03-2048x1536.jpg",
-        "alt": "This roomy living room with warm hardwood floors, a brick fireplace, and abundant natural light offers plenty of room for gatherings, and direct access to back patio."
+        "alt": "This roomy living room with warm hardwood floors, a brick fireplace, and abundant natural light offers plenty of room for gatherings, and direct access to back patio.",
+        "thumb": "listing-photos/26afc9cd577bbc03-640x480.jpg"
       },
       {
         "src": "listing-photos/a03448c4c94aab5b-2048x1536.jpg",
-        "alt": "Spacious and open kitchen with warm wood cabinetry, exposed brick backsplash, and sleek stainless steel appliances, complemented by a modern range hood and an inviting breakfast bar with gas cooktop"
+        "alt": "Spacious and open kitchen with warm wood cabinetry, exposed brick backsplash, and sleek stainless steel appliances, complemented by a modern range hood and an inviting breakfast bar with gas cooktop",
+        "thumb": "listing-photos/a03448c4c94aab5b-640x480.jpg"
       },
       {
         "src": "listing-photos/739cd786465c8530-2048x1536.jpg",
-        "alt": "The primary bedroom features elegant hardwood floors, abundant natural light through large windows, and a cozy ambiance enhanced by a tray ceiling with fan."
+        "alt": "The primary bedroom features elegant hardwood floors, abundant natural light through large windows, and a cozy ambiance enhanced by a tray ceiling with fan.",
+        "thumb": "listing-photos/739cd786465c8530-640x480.jpg"
       },
       {
         "src": "listing-photos/9e8821b4b8f1dd15-2048x1536.jpg",
-        "alt": "The large primary bathroom features a rustic brick accent wall, elegant wooden cabinetry, and modern light fixtures, offering ample counter space and storage."
+        "alt": "The large primary bathroom features a rustic brick accent wall, elegant wooden cabinetry, and modern light fixtures, offering ample counter space and storage.",
+        "thumb": "listing-photos/9e8821b4b8f1dd15-640x480.jpg"
       },
       {
         "src": "listing-photos/4e5d231709b3cf2b-2048x1536.jpg",
-        "alt": "The large pavered patio offers room for cozy seating, perfect for outdoor relaxation and entertaining, extending the usable living space of the home."
+        "alt": "The large pavered patio offers room for cozy seating, perfect for outdoor relaxation and entertaining, extending the usable living space of the home.",
+        "thumb": "listing-photos/4e5d231709b3cf2b-640x480.jpg"
       },
       {
         "src": "listing-photos/f63f5ff07905c731-2048x1536.jpg",
-        "alt": "The main entrance with a brick facade shows the artificial turf along the side of the home, perfect for pets or direct access to the backyard."
+        "alt": "The main entrance with a brick facade shows the artificial turf along the side of the home, perfect for pets or direct access to the backyard.",
+        "thumb": "listing-photos/f63f5ff07905c731-640x480.jpg"
       },
       {
         "src": "listing-photos/8f278fdae6ddedca-2048x1536.jpg",
-        "alt": "Inviting entryway with a stylish dark wood door and hardwood flooring offer a welcoming ambiance."
+        "alt": "Inviting entryway with a stylish dark wood door and hardwood flooring offer a welcoming ambiance.",
+        "thumb": "listing-photos/8f278fdae6ddedca-640x480.jpg"
       },
       {
         "src": "listing-photos/2cafd288ce15f21e-2048x1536.jpg",
-        "alt": "Just inside both the front door and the garage door is this mudroom with built-in storage and coat hooks, leading to a charming bathroom featuring an exposed brick wall and modern fixtures."
+        "alt": "Just inside both the front door and the garage door is this mudroom with built-in storage and coat hooks, leading to a charming bathroom featuring an exposed brick wall and modern fixtures.",
+        "thumb": "listing-photos/2cafd288ce15f21e-640x480.jpg"
       }
     ],
     "photoCount": 38,
@@ -154,39 +172,48 @@
     "photos": [
       {
         "src": "listing-photos/b2d544763e989255-2048x1536.jpg",
-        "alt": "126 Sidney Street at Sherman Landing, bold new construction in the heart of EaDo. This 3-story home makes a striking first impression with contemporary horizontal siding, large windows, a 2-car garage, and fresh landscaping. One of three newly built homes in this boutique development, just minutes from Downtown Houston."
+        "alt": "126 Sidney Street at Sherman Landing, bold new construction in the heart of EaDo. This 3-story home makes a striking first impression with contemporary horizontal siding, large windows, a 2-car garage, and fresh landscaping. One of three newly built homes in this boutique development, just minutes from Downtown Houston.",
+        "thumb": "listing-photos/b2d544763e989255-640x480.jpg"
       },
       {
         "src": "listing-photos/8e7532fd1ca80623-2048x1536.jpg",
-        "alt": "The open-plan second floor is the heart of the home. Soaring exposed trusses tie the living and kitchen areas together, while a 42\" gas fireplace anchors the living room and the kitchen's dark flat-front cabinetry draws the eye. Wood floors and recessed lighting run throughout."
+        "alt": "The open-plan second floor is the heart of the home. Soaring exposed trusses tie the living and kitchen areas together, while a 42\" gas fireplace anchors the living room and the kitchen's dark flat-front cabinetry draws the eye. Wood floors and recessed lighting run throughout.",
+        "thumb": "listing-photos/8e7532fd1ca80623-640x480.jpg"
       },
       {
         "src": "listing-photos/46061aeb56804d86-2048x1536.jpg",
-        "alt": "Dramatic exposed structural trusses define the second-floor dining space, adding an industrial-chic character rarely found in new construction. A large picture window frames the treeline, and a modern pendant light fixture centers the room, an inviting backdrop for everyday meals and entertaining alike."
+        "alt": "Dramatic exposed structural trusses define the second-floor dining space, adding an industrial-chic character rarely found in new construction. A large picture window frames the treeline, and a modern pendant light fixture centers the room, an inviting backdrop for everyday meals and entertaining alike.",
+        "thumb": "listing-photos/46061aeb56804d86-640x480.jpg"
       },
       {
         "src": "listing-photos/18375b0952137b87-2048x1536.jpg",
-        "alt": "The chef's kitchen is a standout feature of this home. Dark flat-front cabinetry runs floor to ceiling, complemented by stone countertops, a tile backsplash, stainless steel gas range, and a large island with seating for four. Hardwood floors and pendant lighting complete the look."
+        "alt": "The chef's kitchen is a standout feature of this home. Dark flat-front cabinetry runs floor to ceiling, complemented by stone countertops, a tile backsplash, stainless steel gas range, and a large island with seating for four. Hardwood floors and pendant lighting complete the look.",
+        "thumb": "listing-photos/18375b0952137b87-640x480.jpg"
       },
       {
         "src": "listing-photos/f543159f4e0f1870-2048x1536.jpg",
-        "alt": "The primary suite occupies the top floor and impresses immediately with its vaulted ceiling featuring exposed decorative wood beams, large windows on two elevations, and plush carpet. A ceiling fan and generous square footage make this a true owner's retreat."
+        "alt": "The primary suite occupies the top floor and impresses immediately with its vaulted ceiling featuring exposed decorative wood beams, large windows on two elevations, and plush carpet. A ceiling fan and generous square footage make this a true owner's retreat.",
+        "thumb": "listing-photos/f543159f4e0f1870-640x480.jpg"
       },
       {
         "src": "listing-photos/b02618e055962ab0-2048x1536.jpg",
-        "alt": "The primary bath delivers a spa-like experience: a freestanding soaking tub, an oversized walk-in shower finished in large-format tile with a glass panel and rain showerhead, and a skylight above that floods the space with natural light. The custom walk-in closet is visible through the doorway beyond."
+        "alt": "The primary bath delivers a spa-like experience: a freestanding soaking tub, an oversized walk-in shower finished in large-format tile with a glass panel and rain showerhead, and a skylight above that floods the space with natural light. The custom walk-in closet is visible through the doorway beyond.",
+        "thumb": "listing-photos/b02618e055962ab0-640x480.jpg"
       },
       {
         "src": "listing-photos/6d8d52ea39490c49-2048x1536.jpg",
-        "alt": "Sherman Landing: three architecturally cohesive new-construction homes on Sidney Street in Houston's EaDo. Each unit offers 3 stories of modern living with private 2-car garages and individual entries, a rare opportunity to own new construction in one of Houston's most walkable and fast-growing urban neighborhoods."
+        "alt": "Sherman Landing: three architecturally cohesive new-construction homes on Sidney Street in Houston's EaDo. Each unit offers 3 stories of modern living with private 2-car garages and individual entries, a rare opportunity to own new construction in one of Houston's most walkable and fast-growing urban neighborhoods.",
+        "thumb": "listing-photos/6d8d52ea39490c49-640x480.jpg"
       },
       {
         "src": "listing-photos/5bc01b3a2f10c8ca-2048x1536.jpg",
-        "alt": "A bold set of glass-panel French doors in a standout color sets the tone for this contemporary home. The covered entry provides a welcoming transition into the open foyer, a small detail that speaks to the care taken throughout this new construction."
+        "alt": "A bold set of glass-panel French doors in a standout color sets the tone for this contemporary home. The covered entry provides a welcoming transition into the open foyer, a small detail that speaks to the care taken throughout this new construction.",
+        "thumb": "listing-photos/5bc01b3a2f10c8ca-640x480.jpg"
       },
       {
         "src": "listing-photos/84f88d107d9f162a-2048x1536.jpg",
-        "alt": "The entry foyer announces the home's design ambitions immediately. A dramatic open-riser floating staircase with a black steel frame and wood treads anchors the space, while polished concrete floors and a built-in storage cabinet balance form with function. High ceilings amplify the sense of arrival."
+        "alt": "The entry foyer announces the home's design ambitions immediately. A dramatic open-riser floating staircase with a black steel frame and wood treads anchors the space, while polished concrete floors and a built-in storage cabinet balance form with function. High ceilings amplify the sense of arrival.",
+        "thumb": "listing-photos/84f88d107d9f162a-640x480.jpg"
       }
     ],
     "photoCount": 31,
@@ -221,39 +248,48 @@
     "photos": [
       {
         "src": "listing-photos/c2ceba357493aad3-2048x1536.jpg",
-        "alt": "Discover bold new construction at 4215 Sherman Street in Sherman Landing, a striking 3-story home featuring contemporary horizontal siding, large windows, and a convenient 2-car garage with driveway parking, all just minutes from Downtown Houston in the vibrant heart of EaDo."
+        "alt": "Discover bold new construction at 4215 Sherman Street in Sherman Landing, a striking 3-story home featuring contemporary horizontal siding, large windows, and a convenient 2-car garage with driveway parking, all just minutes from Downtown Houston in the vibrant heart of EaDo.",
+        "thumb": "listing-photos/c2ceba357493aad3-640x480.jpg"
       },
       {
         "src": "listing-photos/b59eafae108433d0-2048x1536.jpg",
-        "alt": "The open-plan second floor captivates with soaring exposed trusses uniting the living, kitchen, and dining areas, all enhanced by sleek wood floors, a recessed living room, and modern light fixtures."
+        "alt": "The open-plan second floor captivates with soaring exposed trusses uniting the living, kitchen, and dining areas, all enhanced by sleek wood floors, a recessed living room, and modern light fixtures.",
+        "thumb": "listing-photos/b59eafae108433d0-640x480.jpg"
       },
       {
         "src": "listing-photos/1d78e9dee6309b5f-2048x1536.jpg",
-        "alt": "The chef's kitchen dazzles with bold blue cabinetry, granite countertops, a mosaic tile backsplash, and a sleek stainless steel gas range, all anchored by a large peninsula island with seating, complemented by hardwood floors and spectacular modern lighting."
+        "alt": "The chef's kitchen dazzles with bold blue cabinetry, granite countertops, a mosaic tile backsplash, and a sleek stainless steel gas range, all anchored by a large peninsula island with seating, complemented by hardwood floors and spectacular modern lighting.",
+        "thumb": "listing-photos/1d78e9dee6309b5f-640x480.jpg"
       },
       {
         "src": "listing-photos/d9016660fed3156f-2048x1536.jpg",
-        "alt": "The top-floor primary suite dazzles with a vaulted ceiling and exposed wood beams, complemented by large windows, plush carpeting, a ceiling fan, and a generous walk-in closet, creating the ultimate owner's retreat."
+        "alt": "The top-floor primary suite dazzles with a vaulted ceiling and exposed wood beams, complemented by large windows, plush carpeting, a ceiling fan, and a generous walk-in closet, creating the ultimate owner's retreat.",
+        "thumb": "listing-photos/d9016660fed3156f-640x480.jpg"
       },
       {
         "src": "listing-photos/a5d9f8742e3f2980-2048x1536.jpg",
-        "alt": "Experience a spa-like retreat in the primary bath, featuring a serene freestanding soaking tub and an oversized walk-in shower with a rain showerhead, beautifully illuminated by a skylight. Mirrors to be installed."
+        "alt": "Experience a spa-like retreat in the primary bath, featuring a serene freestanding soaking tub and an oversized walk-in shower with a rain showerhead, beautifully illuminated by a skylight. Mirrors to be installed.",
+        "thumb": "listing-photos/a5d9f8742e3f2980-640x480.jpg"
       },
       {
         "src": "listing-photos/673c97ee38a5de2c-2048x1536.jpg",
-        "alt": "The sleek blue garage door and matching entry, accented by contrasting red beams and contemporary lighting make the home really pop. Off street parking for guests is a great bonus, and it's even environmentally friendly, as the surface is water-permeable."
+        "alt": "The sleek blue garage door and matching entry, accented by contrasting red beams and contemporary lighting make the home really pop. Off street parking for guests is a great bonus, and it's even environmentally friendly, as the surface is water-permeable.",
+        "thumb": "listing-photos/673c97ee38a5de2c-640x480.jpg"
       },
       {
         "src": "listing-photos/304759865f5dcd8b-2048x1536.jpg",
-        "alt": "Upon entering, you're greeted by a contemporary floating staircase and polished concrete floors. A bright and airy entrance will wow your guests."
+        "alt": "Upon entering, you're greeted by a contemporary floating staircase and polished concrete floors. A bright and airy entrance will wow your guests.",
+        "thumb": "listing-photos/304759865f5dcd8b-640x480.jpg"
       },
       {
         "src": "listing-photos/ef401bedfe1fb2ea-2048x1536.jpg",
-        "alt": "The first floor bedroom continues the polished concrete flooring and has access to the outdoor space, perfect for a small cafe table and chairs or a dog run."
+        "alt": "The first floor bedroom continues the polished concrete flooring and has access to the outdoor space, perfect for a small cafe table and chairs or a dog run.",
+        "thumb": "listing-photos/ef401bedfe1fb2ea-640x480.jpg"
       },
       {
         "src": "listing-photos/7783df77e51e47e1-2048x1536.jpg",
-        "alt": "Bright and minimalistic room featuring sleek concrete floors, neutral walls, and modern black ceiling fan, offering a contemporary and versatile space."
+        "alt": "Bright and minimalistic room featuring sleek concrete floors, neutral walls, and modern black ceiling fan, offering a contemporary and versatile space.",
+        "thumb": "listing-photos/7783df77e51e47e1-640x480.jpg"
       }
     ],
     "photoCount": 35,
@@ -288,39 +324,48 @@
     "photos": [
       {
         "src": "listing-photos/cd60ef1ed443103a-2048x1536.jpg",
-        "alt": "Welcome to 4040 San Felipe Street, Unit 119. Framed by majestic, mature oak trees, this classic English-style brick condominium offers ground-level convenience in the heart of Houston's prestigious River Oaks area. This 1,380 square foot residence features 2 bedrooms and 2.5 baths within a secure, manned-gated community. Zoned to top-tier schools including River Oaks Elementary, Lanier Middle, and Lamar High, this property combines timeless curb appeal with an unbeatable location."
+        "alt": "Welcome to 4040 San Felipe Street, Unit 119. Framed by majestic, mature oak trees, this classic English-style brick condominium offers ground-level convenience in the heart of Houston's prestigious River Oaks area. This 1,380 square foot residence features 2 bedrooms and 2.5 baths within a secure, manned-gated community. Zoned to top-tier schools including River Oaks Elementary, Lanier Middle, and Lamar High, this property combines timeless curb appeal with an unbeatable location.",
+        "thumb": "listing-photos/cd60ef1ed443103a-640x480.jpg"
       },
       {
         "src": "listing-photos/4ff192bc992ae5f6-2048x1536.jpg",
-        "alt": "The spacious living room serves as the heart of the home, featuring rich wood flooring and a classic wood-burning fireplace. The open-concept design allows for plenty of natural light and provides a perfect flow into the formal dining area, ideal for both daily relaxation and hosting guests."
+        "alt": "The spacious living room serves as the heart of the home, featuring rich wood flooring and a classic wood-burning fireplace. The open-concept design allows for plenty of natural light and provides a perfect flow into the formal dining area, ideal for both daily relaxation and hosting guests.",
+        "thumb": "listing-photos/4ff192bc992ae5f6-640x480.jpg"
       },
       {
         "src": "listing-photos/a1419a99889d29bd-2048x1536.jpg",
-        "alt": "The secondary bedroom offers a private retreat with its own balcony access through sliding glass doors. This bright space features plush carpeting, a ceiling fan, and an en-suite bath, making it perfect for guests, a roommate, or a quiet home office."
+        "alt": "The secondary bedroom offers a private retreat with its own balcony access through sliding glass doors. This bright space features plush carpeting, a ceiling fan, and an en-suite bath, making it perfect for guests, a roommate, or a quiet home office.",
+        "thumb": "listing-photos/a1419a99889d29bd-640x480.jpg"
       },
       {
         "src": "listing-photos/3e32e901411d1bf2-2048x1536.jpg",
-        "alt": "The primary bedroom serves as a serene second-floor retreat, offering plush carpeting and large windows that frame views of the majestic oak trees. Complete with a ceiling fan and an en-suite bath, this bright and airy space provides the perfect escape at the end of the day."
+        "alt": "The primary bedroom serves as a serene second-floor retreat, offering plush carpeting and large windows that frame views of the majestic oak trees. Complete with a ceiling fan and an en-suite bath, this bright and airy space provides the perfect escape at the end of the day.",
+        "thumb": "listing-photos/3e32e901411d1bf2-640x480.jpg"
       },
       {
         "src": "listing-photos/c9bbdffee8f7ad25-2048x1536.jpg",
-        "alt": "This functional kitchen is equipped with stainless steel appliances, granite countertops, and crisp white cabinetry. The rich wood flooring flows seamlessly through the space, which also features an adjacent pantry for additional storage and easy access to the formal dining area."
+        "alt": "This functional kitchen is equipped with stainless steel appliances, granite countertops, and crisp white cabinetry. The rich wood flooring flows seamlessly through the space, which also features an adjacent pantry for additional storage and easy access to the formal dining area.",
+        "thumb": "listing-photos/c9bbdffee8f7ad25-640x480.jpg"
       },
       {
         "src": "listing-photos/2022ad42b79e3c6e-2048x1536.jpg",
-        "alt": "The classic brick exterior and architectural detailing of this English-style condominium create an inviting first impression. Surrounded by lush greenery and towering oaks, this ground-level unit offers a serene living experience within a secure, manned-gated community in the heart of River Oaks."
+        "alt": "The classic brick exterior and architectural detailing of this English-style condominium create an inviting first impression. Surrounded by lush greenery and towering oaks, this ground-level unit offers a serene living experience within a secure, manned-gated community in the heart of River Oaks.",
+        "thumb": "listing-photos/2022ad42b79e3c6e-640x480.jpg"
       },
       {
         "src": "listing-photos/aeeaaa82cab8de49-2048x1536.jpg",
-        "alt": "The formal entry features rich wood flooring and a neutral palette, offering an inviting welcome into the home. This space provides seamless access to the main living areas, a convenient storage closet, and stairs leading to the private bedrooms on the second level."
+        "alt": "The formal entry features rich wood flooring and a neutral palette, offering an inviting welcome into the home. This space provides seamless access to the main living areas, a convenient storage closet, and stairs leading to the private bedrooms on the second level.",
+        "thumb": "listing-photos/aeeaaa82cab8de49-640x480.jpg"
       },
       {
         "src": "listing-photos/8c7b00127fa5f3d6-2048x1536.jpg",
-        "alt": "This perspective captures the seamless connection between the living room and the formal dining area. Featuring warm wood flooring and a classic white brick fireplace, the open layout creates a spacious environment that is perfect for both quiet evenings and entertaining guests."
+        "alt": "This perspective captures the seamless connection between the living room and the formal dining area. Featuring warm wood flooring and a classic white brick fireplace, the open layout creates a spacious environment that is perfect for both quiet evenings and entertaining guests.",
+        "thumb": "listing-photos/8c7b00127fa5f3d6-640x480.jpg"
       },
       {
         "src": "listing-photos/d35f0b3b69dad516-2048x1536.jpg",
-        "alt": "Oversized windows act as a natural focal point, bathing the interior in soft light while offering a peaceful view of the mature trees outside. The smooth ceilings and updated neutral paint create a clean, modern aesthetic that makes this generous living area feel exceptionally open and inviting."
+        "alt": "Oversized windows act as a natural focal point, bathing the interior in soft light while offering a peaceful view of the mature trees outside. The smooth ceilings and updated neutral paint create a clean, modern aesthetic that makes this generous living area feel exceptionally open and inviting.",
+        "thumb": "listing-photos/d35f0b3b69dad516-640x480.jpg"
       }
     ],
     "photoCount": 22,
@@ -352,39 +397,48 @@
     "photos": [
       {
         "src": "listing-photos/b05b04b91f5814ee-2048x1536.jpg",
-        "alt": ""
+        "alt": "",
+        "thumb": "listing-photos/b05b04b91f5814ee-640x480.jpg"
       },
       {
         "src": "listing-photos/2562bcef0679615e-2048x1536.jpg",
-        "alt": "Virtually staged."
+        "alt": "Virtually staged.",
+        "thumb": "listing-photos/2562bcef0679615e-640x480.jpg"
       },
       {
         "src": "listing-photos/43a8ddd79c69e4b0-2048x1536.jpg",
-        "alt": ""
+        "alt": "",
+        "thumb": "listing-photos/43a8ddd79c69e4b0-640x480.jpg"
       },
       {
         "src": "listing-photos/8e606022013c4ffc-2048x1536.jpg",
-        "alt": ""
+        "alt": "",
+        "thumb": "listing-photos/8e606022013c4ffc-640x480.jpg"
       },
       {
         "src": "listing-photos/a0c7e0ca9595e29d-2048x1536.jpg",
-        "alt": "Virtually staged."
+        "alt": "Virtually staged.",
+        "thumb": "listing-photos/a0c7e0ca9595e29d-640x480.jpg"
       },
       {
         "src": "listing-photos/ea35cc654017f84f-2048x1536.jpg",
-        "alt": ""
+        "alt": "",
+        "thumb": "listing-photos/ea35cc654017f84f-640x480.jpg"
       },
       {
         "src": "listing-photos/a7f53b1079f13585-2048x1536.jpg",
-        "alt": "Virtually staged."
+        "alt": "Virtually staged.",
+        "thumb": "listing-photos/a7f53b1079f13585-640x480.jpg"
       },
       {
         "src": "listing-photos/dfe898a43e96d3c9-2048x1536.jpg",
-        "alt": ""
+        "alt": "",
+        "thumb": "listing-photos/dfe898a43e96d3c9-640x480.jpg"
       },
       {
         "src": "listing-photos/5e7cf2c2491a4901-2048x1536.jpg",
-        "alt": ""
+        "alt": "",
+        "thumb": "listing-photos/5e7cf2c2491a4901-640x480.jpg"
       }
     ],
     "photoCount": 21,

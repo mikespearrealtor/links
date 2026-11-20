@@ -397,7 +397,7 @@ def fetch_image(url: str, timeout: int) -> bytes:
 
 
 def mirror_photos(listings: list[dict], folder: pathlib.Path, size: str,
-                  timeout: int) -> None:
+                  timeout: int, thumb_size: str = "") -> None:
     """Copy each listing's gallery photos onto our own server.
 
     Files are named after Compass's content hash, so:
@@ -413,28 +413,45 @@ def mirror_photos(listings: list[dict], folder: pathlib.Path, size: str,
     keep: set[str] = set()
     fetched = failed = 0
 
+    def mirror(shot: dict, box: str, address: str) -> str | None:
+        """Local path of one photo at one size, downloading it if new;
+        None if the download failed (it is retried tomorrow)."""
+        nonlocal fetched, failed
+        name = f"{shot['hash'][:16]}-{box}.jpg"
+        path = folder / name
+        if not path.exists():
+            try:
+                data = fetch_image(f"{shot['source']}{box}.jpg", timeout)
+            except (urllib.error.URLError, TimeoutError, OSError, ValueError) as exc:
+                failed += 1
+                log(f"WARNING: {box} photo for {address} failed ({exc}).")
+                return None
+            temp = path.with_suffix(".tmp")
+            temp.write_bytes(data)
+            os.replace(temp, path)
+            fetched += 1
+            time.sleep(0.5)  # be gentle with Compass on a big first run
+        keep.add(name)
+        return f"{folder.name}/{name}"
+
     for listing in listings:
         resolved = []
+        address = listing.get("address") or "?"
         for shot in listing.get("photos") or []:
-            name = f"{shot['hash'][:16]}-{size}.jpg"
-            path = folder / name
-            remote = f"{shot['source']}{size}.jpg"
-            if not path.exists():
-                try:
-                    data = fetch_image(remote, timeout)
-                except (urllib.error.URLError, TimeoutError, OSError, ValueError) as exc:
-                    failed += 1
-                    log(f"WARNING: photo for {listing.get('address')} failed "
-                        f"({exc}); using the Compass URL until it downloads.")
-                    resolved.append({"src": remote, "alt": shot["alt"]})
-                    continue
-                temp = path.with_suffix(".tmp")
-                temp.write_bytes(data)
-                os.replace(temp, path)
-                fetched += 1
-                time.sleep(0.5)  # be gentle with Compass on a big first run
-            keep.add(name)
-            resolved.append({"src": f"{folder.name}/{name}", "alt": shot["alt"]})
+            src = mirror(shot, size, address)
+            if not src:
+                # Fall back to Compass for this run; no thumb, so the pages
+                # use the full photo.
+                resolved.append({"src": f"{shot['source']}{size}.jpg", "alt": shot["alt"]})
+                continue
+            record = {"src": src, "alt": shot["alt"]}
+            # A small copy for the photo strip and tiles. Browsers shrink a
+            # 2048px photo to ~100px badly (jagged edges), and it is 20x the
+            # bytes; a missing thumb just means the page uses the full one.
+            thumb = mirror(shot, thumb_size, address) if thumb_size else None
+            if thumb:
+                record["thumb"] = thumb
+            resolved.append(record)
         if resolved:
             listing["photos"] = resolved
 
@@ -494,6 +511,10 @@ def main() -> None:
                         help="WxH box for mirrored photos; Compass fits "
                              "within it without cropping (originals are "
                              "~2172 wide, so this is near full quality)")
+    parser.add_argument("--thumb-size", default="640x480",
+                        help="WxH box for the small copy of each mirrored "
+                             "photo, used by the photo strip and tiles "
+                             "('' to skip)")
     parser.add_argument("--timeout", type=int, default=45, help="HTTP timeout in seconds")
     parser.add_argument("--dry-run", action="store_true",
                         help="print the JSON instead of writing it")
@@ -520,7 +541,7 @@ def main() -> None:
             listing.pop("photos", None)
     elif args.photo_count > 0:
         mirror_photos(listings, REPO_ROOT / "listing-photos",
-                      args.gallery_size, args.timeout)
+                      args.gallery_size, args.timeout, args.thumb_size)
     save(listings, pathlib.Path(args.out), "listing", args)
 
     # Additive: a change to the Transactions section must never cost us the

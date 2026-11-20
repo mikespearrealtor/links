@@ -159,6 +159,12 @@ def photo_src(p: dict) -> str:
     return "/" + p["src"].lstrip("/")
 
 
+def thumb_src(p: dict) -> str:
+    """The scraper's small copy where there is one: a 2048px photo shown
+    at ~100px comes out jagged, and costs 20x the bytes."""
+    return "/" + (p.get("thumb") or p["src"]).lstrip("/")
+
+
 def short_alt(alt: str, address: str, i: int) -> str:
     alt = (alt or "").strip()
     return alt if alt else (f"{address}" if i == 0 else f"{address}, photo {i + 1}")
@@ -196,7 +202,7 @@ def render(l: dict, map_html: str | None, others: str = "") -> str:
     if extra:
         # Each opens the photo viewer at its own place; the Compass link is
         # the fallback when scripts are off.
-        cells = "".join(f'<a class="ph" href="{esc(url)}" target="_blank" rel="noopener" data-i="{i + 1}"><img src="{esc(photo_src(p))}" alt="{esc(short_alt(p.get("alt"), address, i + 1))}" loading="lazy"></a>' for i, p in enumerate(extra))
+        cells = "".join(f'<a class="ph" href="{esc(url)}" target="_blank" rel="noopener" data-i="{i + 1}"><img src="{esc(thumb_src(p))}" alt="{esc(short_alt(p.get("alt"), address, i + 1))}" loading="lazy"></a>' for i, p in enumerate(extra))
         grid = f'      <div class="g4{" one" if len(extra) == 1 else ""}">{cells}</div>'
 
     # On a computer the next eight photos run in a row under the hero instead.
@@ -217,7 +223,7 @@ def render(l: dict, map_html: str | None, others: str = "") -> str:
     strip = ""
     n = len(row) + (1 if end else 0)
     if n:
-        cells = "".join(f'<a class="ph" href="{esc(url)}" target="_blank" rel="noopener" data-i="{i + 1}"><img src="{esc(photo_src(p))}" alt="{esc(short_alt(p.get("alt"), address, i + 1))}" loading="lazy"></a>' for i, p in enumerate(row))
+        cells = "".join(f'<a class="ph" href="{esc(url)}" target="_blank" rel="noopener" data-i="{i + 1}"><img src="{esc(thumb_src(p))}" alt="{esc(short_alt(p.get("alt"), address, i + 1))}" loading="lazy"></a>' for i, p in enumerate(row))
         # Four or more fill the width; one to three would come out huge, so
         # they keep the size of a six-across row and sit centred.
         few = " few" if n < 4 else ""
@@ -300,7 +306,7 @@ def others_block(l: dict, listings: list[dict]) -> str:
             bits.append(f"{num(o['sqft'])} sq ft")
         sp = " &middot; ".join(f"<span>{esc(b)}</span>" for b in bits if b)
         shots = o.get("photos") or ([{"src": o["photo"]}] if o.get("photo") else [])
-        img = f'<img src="{esc(photo_src(shots[0]))}" alt="" loading="lazy">' if shots else ""
+        img = f'<img src="{esc(thumb_src(shots[0]))}" alt="" loading="lazy">' if shots else ""
         price = money(o["price"]) + ("/mo" if o.get("rental") else "")
         tiles.append(f'<a href="/homes/{slug_of(o["address"])}/">{img}<div class="tx"><div class="ad">{esc(o["address"])}</div>'
                      f'<div class="pr">{price}</div><div class="sp">{sp}</div></div></a>')
