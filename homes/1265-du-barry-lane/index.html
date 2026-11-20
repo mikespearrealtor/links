@@ -167,12 +167,24 @@
     .pv .pv-nav:disabled { opacity: 0; pointer-events: none; }
     .pv-nav svg { width: 22px; height: 22px; }
     .pv-prev { left: 16px; } .pv-next { right: 16px; }
-    .pv-card { position: relative; text-align: center; max-width: 640px; }
+    .pv-card { position: relative; text-align: center; max-width: 640px; isolation: isolate; }
+    /* Frosted halo: the page blurs out behind the text, feathered at the edges. */
+    .pv-card::before { content: ''; position: absolute; inset: -150px -230px; z-index: -1; pointer-events: none;
+      background: rgba(0,0,0,.35); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
+      -webkit-mask-image: radial-gradient(closest-side, #000 50%, transparent); mask-image: radial-gradient(closest-side, #000 50%, transparent); }
     .pv-card h2 { font-family: 'Fraunces', Georgia, serif; font-weight: 360; font-size: clamp(30px, 5vw, 42px); line-height: 1.08; letter-spacing: -.01em; }
     .pv-card p { margin-top: 12px; font-size: 15px; line-height: 1.55; color: #cfcfcf; }
-    .pv-card a { display: inline-flex; align-items: center; gap: 10px; margin-top: 26px; padding: 14px 22px; border: 1px solid rgba(255,255,255,.7); color: #fff; text-decoration: none; font-size: 15px; transition: background .15s, color .15s; }
-    .pv-card a:hover { background: #fff; color: #0b0b0b; }
-    .pv-card a svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 1.7; }
+    /* Behaves like the page's other buttons (a.tile): gold border, a 2px
+       lift and the arrow nudging out. The viewer is dark in both themes, so
+       it always uses the dark theme's tile colours and gold. */
+    .pv-card a { display: inline-flex; align-items: center; gap: 10px; margin-top: 26px; padding: 14px 20px; background: #141414; border: 1px solid #2b2b2b; color: #fff; text-decoration: none; font-size: 15px;
+      transition: border-color .35s cubic-bezier(.22,1,.36,1), transform .35s cubic-bezier(.22,1,.36,1); }
+    .pv-card a svg { width: 15px; height: 15px; stroke: #fff; fill: none; stroke-width: 1.7; transition: transform .35s cubic-bezier(.22,1,.36,1), stroke .35s ease; }
+    @media (hover: hover) {
+      .pv-card a:hover { border-color: #bd9a6b; transform: translateY(-2px); }
+      .pv-card a:hover svg { transform: translate(2px,-2px); stroke: #bd9a6b; }
+    }
+    .pv-card a:active { border-color: #bd9a6b; }
     .pv .pv-again { display: block; margin: 18px auto 0; font-size: 13.5px; color: #a8a8a8; text-decoration: underline; text-underline-offset: 3px; }
     @media (max-width: 760px), (hover: none) {
       .pv-slide { padding: 0 0 20px; }
