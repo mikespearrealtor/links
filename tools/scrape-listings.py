@@ -208,6 +208,10 @@ def convert(listing: dict, *, rental: bool, size: str, count: int = 0) -> dict:
     if shots:
         # Placeholder for mirror_photos(), which swaps in the local files.
         record["photos"] = shots
+        # How many Compass has in all, so the page can offer "All N photos".
+        record["photoCount"] = sum(
+            1 for m in listing.get("media") or []
+            if PHOTO_RE.match(m.get("originalUrl") or m.get("thumbnailUrl") or ""))
     showing = open_house(listing)
     if showing:
         record["openHouse"] = showing
