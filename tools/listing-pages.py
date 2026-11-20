@@ -23,7 +23,6 @@ Usage:
 
 import html
 import json
-import math
 import pathlib
 import re
 
@@ -281,19 +280,17 @@ def render(l: dict, map_html: str | None, others: str = "") -> str:
 
 
 def others_block(l: dict, listings: list[dict]) -> str:
-    """Up to three of Mike's other homes, closest in price to this one, as
-    small tiles to their own pages. Same deal only (sale with sale, lease with
-    lease) and nothing pending; no section at all when there's nothing to show."""
-    rental = bool(l.get("rental"))
-    pool = [o for o in listings if o is not l and bool(o.get("rental")) == rental
+    """All of Mike's other current listings, for sale and for lease together,
+    priciest first, as small tiles to their own pages. Nothing pending; no
+    section at all when there's nothing to show."""
+    pool = [o for o in listings if o is not l
             and (o.get("status") or "Active") in ("Active", "Coming Soon")
             and o.get("price") and o.get("address")]
     if not pool:
         return ""
-    here = l.get("price") or 0
-    pool.sort(key=lambda o: abs(math.log(o["price"] / here)) if here else 0)
+    pool.sort(key=lambda o: -o["price"])
     tiles = []
-    for o in pool[:3]:
+    for o in pool:
         bits = [o.get("area") or ""]
         if o.get("beds"):
             bits.append(f"{num(o['beds'])} bd")
@@ -304,12 +301,11 @@ def others_block(l: dict, listings: list[dict]) -> str:
         sp = " &middot; ".join(f"<span>{esc(b)}</span>" for b in bits if b)
         shots = o.get("photos") or ([{"src": o["photo"]}] if o.get("photo") else [])
         img = f'<img src="{esc(photo_src(shots[0]))}" alt="" loading="lazy">' if shots else ""
-        price = money(o["price"]) + ("/mo" if rental else "")
+        price = money(o["price"]) + ("/mo" if o.get("rental") else "")
         tiles.append(f'<a href="/homes/{slug_of(o["address"])}/">{img}<div class="tx"><div class="ad">{esc(o["address"])}</div>'
                      f'<div class="pr">{price}</div><div class="sp">{sp}</div></div></a>')
-    deal = "for lease" if rental else "for sale"
-    return (f'\n  <section class="others" aria-label="Mike Spear’s other homes {deal}">\n'
-            f'    <h2>Mike&rsquo;s other homes {deal}</h2>\n    <div class="ot">{"".join(tiles)}</div>\n  </section>\n')
+    return ('\n  <section class="others" aria-label="Mike Spear’s other listings">\n'
+            f'    <h2>Mike&rsquo;s other listings</h2>\n    <div class="ot">{"".join(tiles)}</div>\n  </section>\n')
 
 
 def update_sitemap(slugs: list[str]) -> None:
