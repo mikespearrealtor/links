@@ -304,6 +304,35 @@
         mask-image: linear-gradient(to bottom, transparent, #000 44px, #000 calc(100% - 44px), transparent);
       }
     }
+
+    /* ── Computers: title, price, facts and buttons on the left, the photo
+       fading in on the right (so tall homes aren't cropped), then a row of
+       photos. Phones and tablets keep the photo-on-top layout above. ── */
+    .hx, .strip { display: none; }
+    @media (min-width: 900px) {
+      .hero { height: auto; min-height: 90vh; min-height: min(90svh, 1100px); max-height: none; background: var(--bg); display: flex; }
+      .slides { left: 34%; }
+      .hero::after { background: linear-gradient(to right, var(--bg) 34%, rgba(255,255,255,0) 46%), linear-gradient(to bottom, rgba(0,0,0,.25), rgba(0,0,0,0) 18%); }
+      [data-theme="dark"] .hero::after { background: linear-gradient(to right, var(--bg) 34%, rgba(10,10,10,0) 46%), linear-gradient(to bottom, rgba(0,0,0,.25), rgba(0,0,0,0) 18%); }
+      .hero-text { position: relative; left: auto; right: auto; bottom: auto; width: 38%; max-width: none; margin: 0; padding: 84px 40px 48px 6vw; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; }
+      .address { font-size: clamp(40px, 4.2vw, 68px); color: var(--text); }
+      .status { color: var(--text); border-color: var(--muted); }
+      .area { color: var(--muted); }
+      .back { color: var(--text); filter: none; }
+      .hx { display: block; align-self: stretch; margin-top: 34px; }
+      .hx .price { font-size: 40px; }
+      .hx .fl { display: grid; grid-template-columns: auto; column-gap: 28px; justify-content: start; margin-top: 22px; line-height: 1.75; }
+      .hx .feat { margin-top: 12px; max-width: 500px; }
+      .hx .tiles { margin-top: 28px; max-width: 500px; }
+      .intro { display: none; }
+      .strip { display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: 6px; margin: 28px 0 72px; }
+      /* no photo row: keep the same breathing room before the map */
+      .hero + .intro + .hood { margin-top: 72px; }
+      .strip.few { grid-template-columns: repeat(var(--n), calc((100% - 30px) / 6)); justify-content: center; }
+    }
+    @media (min-width: 1300px) {
+      .hx .fl { grid-template-columns: auto auto; }
+    }
   </style>
 </head>
 <body>
@@ -321,10 +350,31 @@
       <span class="status">Single-family home for sale</span>
       <h1 class="address">1613 Prospect Street</h1>
       <p class="area">Southmore, Houston 77004</p>
+      <div class="hx">
+        <span class="price">$590,000</span><span class="specs"><b>3</b> bd<span class="dot">·</span><b>2.5</b> ba<span class="dot">·</span><b>2,525</b> sq ft<span class="dot">·</span><b>2</b> stories</span><span class="oh" data-oh="2026-11-22T14:00/16:00" hidden></span><span class="dom" data-listed="2026-11-16" hidden></span>
+        <ul class="fl">
+          <li><b>2,495 sq ft</b> lot, 0.06 acre</li>
+          <li><b>Built 2014</b></li>
+          <li><b>2-car garage</b></li>
+          <li><b>$234</b> per sq ft</li>
+        </ul>
+        <p class="feat"><b>Inside:</b> fireplace, hardwood floors, high ceilings, soaking tub.</p>
+
+        <div class="tiles"><a class="tile text-tile" href="sms:+17132047653">
+          <span class="tile-main"><svg class="tile-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Text Mike</span>
+          <span class="tile-sub">Schedule a showing</span>
+          <svg class="arr" viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+        </a><a class="tile" href="https://www.compass.com/homedetails/1613-Prospect-St-Houston-TX-77004/ALG9N_pid/" target="_blank" rel="noopener">
+          <img class="tile-logo" src="/compass-logo.png" alt="Compass">
+          <span class="tile-sub">All photos and details</span>
+          <svg class="arr" viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+        </a></div>
+      </div>
     </div>
   </header>
+  <div class="strip" style="--n:8"><a class="ph" href="https://www.compass.com/homedetails/1613-Prospect-St-Houston-TX-77004/ALG9N_pid/" target="_blank" rel="noopener" data-i="1"><img src="/listing-photos/26afc9cd577bbc03-2048x1536.jpg" alt="This roomy living room with warm hardwood floors, a brick fireplace, and abundant natural light offers plenty of room for gatherings, and direct access to back patio." loading="lazy"></a><a class="ph" href="https://www.compass.com/homedetails/1613-Prospect-St-Houston-TX-77004/ALG9N_pid/" target="_blank" rel="noopener" data-i="2"><img src="/listing-photos/a03448c4c94aab5b-2048x1536.jpg" alt="Spacious and open kitchen with warm wood cabinetry, exposed brick backsplash, and sleek stainless steel appliances, complemented by a modern range hood and an inviting breakfast bar with gas cooktop" loading="lazy"></a><a class="ph" href="https://www.compass.com/homedetails/1613-Prospect-St-Houston-TX-77004/ALG9N_pid/" target="_blank" rel="noopener" data-i="3"><img src="/listing-photos/739cd786465c8530-2048x1536.jpg" alt="The primary bedroom features elegant hardwood floors, abundant natural light through large windows, and a cozy ambiance enhanced by a tray ceiling with fan." loading="lazy"></a><a class="ph" href="https://www.compass.com/homedetails/1613-Prospect-St-Houston-TX-77004/ALG9N_pid/" target="_blank" rel="noopener" data-i="4"><img src="/listing-photos/9e8821b4b8f1dd15-2048x1536.jpg" alt="The large primary bathroom features a rustic brick accent wall, elegant wooden cabinetry, and modern light fixtures, offering ample counter space and storage." loading="lazy"></a><a class="ph" href="https://www.compass.com/homedetails/1613-Prospect-St-Houston-TX-77004/ALG9N_pid/" target="_blank" rel="noopener" data-i="5"><img src="/listing-photos/4e5d231709b3cf2b-2048x1536.jpg" alt="The large pavered patio offers room for cozy seating, perfect for outdoor relaxation and entertaining, extending the usable living space of the home." loading="lazy"></a><a class="ph" href="https://www.compass.com/homedetails/1613-Prospect-St-Houston-TX-77004/ALG9N_pid/" target="_blank" rel="noopener" data-i="6"><img src="/listing-photos/f63f5ff07905c731-2048x1536.jpg" alt="The main entrance with a brick facade shows the artificial turf along the side of the home, perfect for pets or direct access to the backyard." loading="lazy"></a><a class="ph" href="https://www.compass.com/homedetails/1613-Prospect-St-Houston-TX-77004/ALG9N_pid/" target="_blank" rel="noopener" data-i="7"><img src="/listing-photos/8f278fdae6ddedca-2048x1536.jpg" alt="Inviting entryway with a stylish dark wood door and hardwood flooring offer a welcoming ambiance." loading="lazy"></a><a class="ph" href="https://www.compass.com/homedetails/1613-Prospect-St-Houston-TX-77004/ALG9N_pid/" target="_blank" rel="noopener" data-i="8"><img src="/listing-photos/2cafd288ce15f21e-2048x1536.jpg" alt="Just inside both the front door and the garage door is this mudroom with built-in storage and coat hooks, leading to a charming bathroom featuring an exposed brick wall and modern fixtures." loading="lazy"></a></div>
 
-  <main class="content">
+  <main class="content intro">
     <div class="gl">
       <div>
         <span class="price">$590,000</span><span class="specs"><b>3</b> bd<span class="dot">·</span><b>2.5</b> ba<span class="dot">·</span><b>2,525</b> sq ft<span class="dot">·</span><b>2</b> stories</span><span class="oh" data-oh="2026-11-22T14:00/16:00" hidden></span><span class="dom" data-listed="2026-11-16" hidden></span>
@@ -336,7 +386,7 @@
         </ul>
         <p class="feat"><b>Inside:</b> fireplace, hardwood floors, high ceilings, soaking tub.</p>
 
-        <div class="tiles"><a class="tile" id="textBtn" href="sms:+17132047653">
+        <div class="tiles"><a class="tile text-tile" href="sms:+17132047653">
           <span class="tile-main"><svg class="tile-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Text Mike</span>
           <span class="tile-sub">Schedule a showing</span>
           <svg class="arr" viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
@@ -391,7 +441,7 @@
     <button class="pv-nav pv-prev" type="button" aria-label="Previous photo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></button>
     <button class="pv-nav pv-next" type="button" aria-label="Next photo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
   </div>
-  <script type="application/json" id="pv-photos">[{"src": "/listing-photos/85fc936affa7fedf-2048x1536.jpg", "alt": "Charming brick home with a modern design features a spacious driveway, lush landscaping, and distinctive garage doors, offering both curb appeal and convenience. With first floor living and all bedrooms up, this is a rare find!"}, {"src": "/listing-photos/26afc9cd577bbc03-2048x1536.jpg", "alt": "This roomy living room with warm hardwood floors, a brick fireplace, and abundant natural light offers plenty of room for gatherings, and direct access to back patio."}, {"src": "/listing-photos/a03448c4c94aab5b-2048x1536.jpg", "alt": "Spacious and open kitchen with warm wood cabinetry, exposed brick backsplash, and sleek stainless steel appliances, complemented by a modern range hood and an inviting breakfast bar with gas cooktop"}, {"src": "/listing-photos/739cd786465c8530-2048x1536.jpg", "alt": "The primary bedroom features elegant hardwood floors, abundant natural light through large windows, and a cozy ambiance enhanced by a tray ceiling with fan."}, {"src": "/listing-photos/9e8821b4b8f1dd15-2048x1536.jpg", "alt": "The large primary bathroom features a rustic brick accent wall, elegant wooden cabinetry, and modern light fixtures, offering ample counter space and storage."}]</script>
+  <script type="application/json" id="pv-photos">[{"src": "/listing-photos/85fc936affa7fedf-2048x1536.jpg", "alt": "Charming brick home with a modern design features a spacious driveway, lush landscaping, and distinctive garage doors, offering both curb appeal and convenience. With first floor living and all bedrooms up, this is a rare find!"}, {"src": "/listing-photos/26afc9cd577bbc03-2048x1536.jpg", "alt": "This roomy living room with warm hardwood floors, a brick fireplace, and abundant natural light offers plenty of room for gatherings, and direct access to back patio."}, {"src": "/listing-photos/a03448c4c94aab5b-2048x1536.jpg", "alt": "Spacious and open kitchen with warm wood cabinetry, exposed brick backsplash, and sleek stainless steel appliances, complemented by a modern range hood and an inviting breakfast bar with gas cooktop"}, {"src": "/listing-photos/739cd786465c8530-2048x1536.jpg", "alt": "The primary bedroom features elegant hardwood floors, abundant natural light through large windows, and a cozy ambiance enhanced by a tray ceiling with fan."}, {"src": "/listing-photos/9e8821b4b8f1dd15-2048x1536.jpg", "alt": "The large primary bathroom features a rustic brick accent wall, elegant wooden cabinetry, and modern light fixtures, offering ample counter space and storage."}, {"src": "/listing-photos/4e5d231709b3cf2b-2048x1536.jpg", "alt": "The large pavered patio offers room for cozy seating, perfect for outdoor relaxation and entertaining, extending the usable living space of the home."}, {"src": "/listing-photos/f63f5ff07905c731-2048x1536.jpg", "alt": "The main entrance with a brick facade shows the artificial turf along the side of the home, perfect for pets or direct access to the backyard."}, {"src": "/listing-photos/8f278fdae6ddedca-2048x1536.jpg", "alt": "Inviting entryway with a stylish dark wood door and hardwood flooring offer a welcoming ambiance."}, {"src": "/listing-photos/2cafd288ce15f21e-2048x1536.jpg", "alt": "Just inside both the front door and the garage door is this mudroom with built-in storage and coat hooks, leading to a charming bathroom featuring an exposed brick wall and modern fixtures."}]</script>
 
   <script>
     // Light/dark button: flips the theme and remembers it, shared with the
@@ -407,19 +457,20 @@
     // Text Mike on a computer: show the QR to scan with a phone (as on the
     // home page). Phones and tablets follow the sms: link as normal.
     (function () {
-      var btn = document.getElementById('textBtn');
+      var btn = null;
       var overlay = document.getElementById('qrOverlay');
       var copy = document.getElementById('qrCopy');
       var desktop = matchMedia('(hover: hover) and (pointer: fine)');
       var timer;
-      function close() { overlay.classList.remove('open'); btn.focus({ preventScroll: true }); }
-      btn.addEventListener('click', function (e) {
+      function close() { overlay.classList.remove('open'); if (btn) btn.focus({ preventScroll: true }); }
+      document.querySelectorAll('.text-tile').forEach(function (b) { b.addEventListener('click', function (e) {
         if (!desktop.matches) return;
+        btn = b;
         e.preventDefault();
         copy.textContent = 'or copy the number';
         overlay.classList.add('open');
         document.getElementById('qrClose').focus();
-      });
+      }); });
       document.getElementById('qrClose').addEventListener('click', close);
       overlay.addEventListener('click', function (e) { if (e.target === overlay) close(); });
       document.addEventListener('keydown', function (e) {
@@ -569,7 +620,9 @@
         });
       });
       document.querySelector('.hero').addEventListener('click', function (e) {
-        if (e.target.closest('.back, .theme-toggle')) return;
+        if (e.target.closest('.back, .theme-toggle, .hx')) return;
+        // On a computer the left side is text, not photo.
+        if (e.target.closest('.hero-text') && matchMedia('(min-width: 900px)').matches) return;
         open(0);
       });
     })();

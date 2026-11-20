@@ -9,7 +9,7 @@ page and writes two files:
 Closed rentals are deliberately skipped, as are all other pages. Sold entries
 carry no photo: only the active listings are shown with imagery.
 
-Each listing's first few gallery photos (--photo-count, default 5) are also
+Each listing's first few gallery photos (--photo-count, default 9) are also
 copied into listing-photos/ and listed under "photos" with their Compass
 captions as alt text - see mirror_photos() for how new listings and replaced
 photos are picked up.
@@ -428,7 +428,7 @@ def main() -> None:
                         help="skip the Transactions section entirely")
     parser.add_argument("--photo-size", default="1024x768",
                         help="WxH for listing photos (Compass resizes on demand)")
-    parser.add_argument("--photo-count", type=int, default=5,
+    parser.add_argument("--photo-count", type=int, default=9,
                         help="gallery photos per listing to mirror into "
                              "listing-photos/ (0 to skip)")
     parser.add_argument("--gallery-size", default="2048x1536",

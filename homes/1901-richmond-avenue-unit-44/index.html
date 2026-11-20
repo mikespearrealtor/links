@@ -304,6 +304,35 @@
         mask-image: linear-gradient(to bottom, transparent, #000 44px, #000 calc(100% - 44px), transparent);
       }
     }
+
+    /* ── Computers: title, price, facts and buttons on the left, the photo
+       fading in on the right (so tall homes aren't cropped), then a row of
+       photos. Phones and tablets keep the photo-on-top layout above. ── */
+    .hx, .strip { display: none; }
+    @media (min-width: 900px) {
+      .hero { height: auto; min-height: 90vh; min-height: min(90svh, 1100px); max-height: none; background: var(--bg); display: flex; }
+      .slides { left: 34%; }
+      .hero::after { background: linear-gradient(to right, var(--bg) 34%, rgba(255,255,255,0) 46%), linear-gradient(to bottom, rgba(0,0,0,.25), rgba(0,0,0,0) 18%); }
+      [data-theme="dark"] .hero::after { background: linear-gradient(to right, var(--bg) 34%, rgba(10,10,10,0) 46%), linear-gradient(to bottom, rgba(0,0,0,.25), rgba(0,0,0,0) 18%); }
+      .hero-text { position: relative; left: auto; right: auto; bottom: auto; width: 38%; max-width: none; margin: 0; padding: 84px 40px 48px 6vw; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; }
+      .address { font-size: clamp(40px, 4.2vw, 68px); color: var(--text); }
+      .status { color: var(--text); border-color: var(--muted); }
+      .area { color: var(--muted); }
+      .back { color: var(--text); filter: none; }
+      .hx { display: block; align-self: stretch; margin-top: 34px; }
+      .hx .price { font-size: 40px; }
+      .hx .fl { display: grid; grid-template-columns: auto; column-gap: 28px; justify-content: start; margin-top: 22px; line-height: 1.75; }
+      .hx .feat { margin-top: 12px; max-width: 500px; }
+      .hx .tiles { margin-top: 28px; max-width: 500px; }
+      .intro { display: none; }
+      .strip { display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: 6px; margin: 28px 0 72px; }
+      /* no photo row: keep the same breathing room before the map */
+      .hero + .intro + .hood { margin-top: 72px; }
+      .strip.few { grid-template-columns: repeat(var(--n), calc((100% - 30px) / 6)); justify-content: center; }
+    }
+    @media (min-width: 1300px) {
+      .hx .fl { grid-template-columns: auto auto; }
+    }
   </style>
 </head>
 <body>
@@ -321,10 +350,27 @@
       <span class="status">Apartment for lease</span>
       <h1 class="address">1901 Richmond Avenue, Unit 44</h1>
       <p class="area">Richmond Place, Houston 77098</p>
+      <div class="hx">
+        <span class="price">$1,400<span class="per">/mo</span></span><span class="specs"><b>1</b> ba<span class="dot">·</span><b>400</b> sq ft</span><span class="dom" data-listed="2026-10-23" hidden></span>
+        <ul class="fl">
+          <li><b>Built 1960</b></li>
+        </ul>
+
+        <div class="tiles"><a class="tile text-tile" href="sms:+17132047653">
+          <span class="tile-main"><svg class="tile-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Text Mike</span>
+          <span class="tile-sub">Schedule a showing</span>
+          <svg class="arr" viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+        </a><a class="tile" href="https://www.compass.com/homedetails/1901-Richmond-Ave-Unit-44-Houston-TX-77098/2K403E_pid/" target="_blank" rel="noopener">
+          <img class="tile-logo" src="/compass-logo.png" alt="Compass">
+          <span class="tile-sub">All photos and details</span>
+          <svg class="arr" viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+        </a></div>
+      </div>
     </div>
   </header>
+  <div class="strip" style="--n:8"><a class="ph" href="https://www.compass.com/homedetails/1901-Richmond-Ave-Unit-44-Houston-TX-77098/2K403E_pid/" target="_blank" rel="noopener" data-i="1"><img src="/listing-photos/2562bcef0679615e-2048x1536.jpg" alt="Virtually staged." loading="lazy"></a><a class="ph" href="https://www.compass.com/homedetails/1901-Richmond-Ave-Unit-44-Houston-TX-77098/2K403E_pid/" target="_blank" rel="noopener" data-i="2"><img src="/listing-photos/43a8ddd79c69e4b0-2048x1536.jpg" alt="1901 Richmond Avenue, Unit 44, photo 3" loading="lazy"></a><a class="ph" href="https://www.compass.com/homedetails/1901-Richmond-Ave-Unit-44-Houston-TX-77098/2K403E_pid/" target="_blank" rel="noopener" data-i="3"><img src="/listing-photos/8e606022013c4ffc-2048x1536.jpg" alt="1901 Richmond Avenue, Unit 44, photo 4" loading="lazy"></a><a class="ph" href="https://www.compass.com/homedetails/1901-Richmond-Ave-Unit-44-Houston-TX-77098/2K403E_pid/" target="_blank" rel="noopener" data-i="4"><img src="/listing-photos/a0c7e0ca9595e29d-2048x1536.jpg" alt="Virtually staged." loading="lazy"></a><a class="ph" href="https://www.compass.com/homedetails/1901-Richmond-Ave-Unit-44-Houston-TX-77098/2K403E_pid/" target="_blank" rel="noopener" data-i="5"><img src="/listing-photos/ea35cc654017f84f-2048x1536.jpg" alt="1901 Richmond Avenue, Unit 44, photo 6" loading="lazy"></a><a class="ph" href="https://www.compass.com/homedetails/1901-Richmond-Ave-Unit-44-Houston-TX-77098/2K403E_pid/" target="_blank" rel="noopener" data-i="6"><img src="/listing-photos/a7f53b1079f13585-2048x1536.jpg" alt="Virtually staged." loading="lazy"></a><a class="ph" href="https://www.compass.com/homedetails/1901-Richmond-Ave-Unit-44-Houston-TX-77098/2K403E_pid/" target="_blank" rel="noopener" data-i="7"><img src="/listing-photos/dfe898a43e96d3c9-2048x1536.jpg" alt="1901 Richmond Avenue, Unit 44, photo 8" loading="lazy"></a><a class="ph" href="https://www.compass.com/homedetails/1901-Richmond-Ave-Unit-44-Houston-TX-77098/2K403E_pid/" target="_blank" rel="noopener" data-i="8"><img src="/listing-photos/5e7cf2c2491a4901-2048x1536.jpg" alt="1901 Richmond Avenue, Unit 44, photo 9" loading="lazy"></a></div>
 
-  <main class="content">
+  <main class="content intro">
     <div class="gl">
       <div>
         <span class="price">$1,400<span class="per">/mo</span></span><span class="specs"><b>1</b> ba<span class="dot">·</span><b>400</b> sq ft</span><span class="dom" data-listed="2026-10-23" hidden></span>
@@ -332,7 +378,7 @@
           <li><b>Built 1960</b></li>
         </ul>
 
-        <div class="tiles"><a class="tile" id="textBtn" href="sms:+17132047653">
+        <div class="tiles"><a class="tile text-tile" href="sms:+17132047653">
           <span class="tile-main"><svg class="tile-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Text Mike</span>
           <span class="tile-sub">Schedule a showing</span>
           <svg class="arr" viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
@@ -387,7 +433,7 @@
     <button class="pv-nav pv-prev" type="button" aria-label="Previous photo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></button>
     <button class="pv-nav pv-next" type="button" aria-label="Next photo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
   </div>
-  <script type="application/json" id="pv-photos">[{"src": "/listing-photos/b05b04b91f5814ee-2048x1536.jpg", "alt": "1901 Richmond Avenue, Unit 44"}, {"src": "/listing-photos/2562bcef0679615e-2048x1536.jpg", "alt": "Virtually staged."}, {"src": "/listing-photos/43a8ddd79c69e4b0-2048x1536.jpg", "alt": "1901 Richmond Avenue, Unit 44, photo 3"}, {"src": "/listing-photos/8e606022013c4ffc-2048x1536.jpg", "alt": "1901 Richmond Avenue, Unit 44, photo 4"}, {"src": "/listing-photos/a0c7e0ca9595e29d-2048x1536.jpg", "alt": "Virtually staged."}]</script>
+  <script type="application/json" id="pv-photos">[{"src": "/listing-photos/b05b04b91f5814ee-2048x1536.jpg", "alt": "1901 Richmond Avenue, Unit 44"}, {"src": "/listing-photos/2562bcef0679615e-2048x1536.jpg", "alt": "Virtually staged."}, {"src": "/listing-photos/43a8ddd79c69e4b0-2048x1536.jpg", "alt": "1901 Richmond Avenue, Unit 44, photo 3"}, {"src": "/listing-photos/8e606022013c4ffc-2048x1536.jpg", "alt": "1901 Richmond Avenue, Unit 44, photo 4"}, {"src": "/listing-photos/a0c7e0ca9595e29d-2048x1536.jpg", "alt": "Virtually staged."}, {"src": "/listing-photos/ea35cc654017f84f-2048x1536.jpg", "alt": "1901 Richmond Avenue, Unit 44, photo 6"}, {"src": "/listing-photos/a7f53b1079f13585-2048x1536.jpg", "alt": "Virtually staged."}, {"src": "/listing-photos/dfe898a43e96d3c9-2048x1536.jpg", "alt": "1901 Richmond Avenue, Unit 44, photo 8"}, {"src": "/listing-photos/5e7cf2c2491a4901-2048x1536.jpg", "alt": "1901 Richmond Avenue, Unit 44, photo 9"}]</script>
 
   <script>
     // Light/dark button: flips the theme and remembers it, shared with the
@@ -403,19 +449,20 @@
     // Text Mike on a computer: show the QR to scan with a phone (as on the
     // home page). Phones and tablets follow the sms: link as normal.
     (function () {
-      var btn = document.getElementById('textBtn');
+      var btn = null;
       var overlay = document.getElementById('qrOverlay');
       var copy = document.getElementById('qrCopy');
       var desktop = matchMedia('(hover: hover) and (pointer: fine)');
       var timer;
-      function close() { overlay.classList.remove('open'); btn.focus({ preventScroll: true }); }
-      btn.addEventListener('click', function (e) {
+      function close() { overlay.classList.remove('open'); if (btn) btn.focus({ preventScroll: true }); }
+      document.querySelectorAll('.text-tile').forEach(function (b) { b.addEventListener('click', function (e) {
         if (!desktop.matches) return;
+        btn = b;
         e.preventDefault();
         copy.textContent = 'or copy the number';
         overlay.classList.add('open');
         document.getElementById('qrClose').focus();
-      });
+      }); });
       document.getElementById('qrClose').addEventListener('click', close);
       overlay.addEventListener('click', function (e) { if (e.target === overlay) close(); });
       document.addEventListener('keydown', function (e) {
@@ -565,7 +612,9 @@
         });
       });
       document.querySelector('.hero').addEventListener('click', function (e) {
-        if (e.target.closest('.back, .theme-toggle')) return;
+        if (e.target.closest('.back, .theme-toggle, .hx')) return;
+        // On a computer the left side is text, not photo.
+        if (e.target.closest('.hero-text') && matchMedia('(min-width: 900px)').matches) return;
         open(0);
       });
     })();

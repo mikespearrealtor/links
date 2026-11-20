@@ -304,6 +304,35 @@
         mask-image: linear-gradient(to bottom, transparent, #000 44px, #000 calc(100% - 44px), transparent);
       }
     }
+
+    /* ── Computers: title, price, facts and buttons on the left, the photo
+       fading in on the right (so tall homes aren't cropped), then a row of
+       photos. Phones and tablets keep the photo-on-top layout above. ── */
+    .hx, .strip { display: none; }
+    @media (min-width: 900px) {
+      .hero { height: auto; min-height: 90vh; min-height: min(90svh, 1100px); max-height: none; background: var(--bg); display: flex; }
+      .slides { left: 34%; }
+      .hero::after { background: linear-gradient(to right, var(--bg) 34%, rgba(255,255,255,0) 46%), linear-gradient(to bottom, rgba(0,0,0,.25), rgba(0,0,0,0) 18%); }
+      [data-theme="dark"] .hero::after { background: linear-gradient(to right, var(--bg) 34%, rgba(10,10,10,0) 46%), linear-gradient(to bottom, rgba(0,0,0,.25), rgba(0,0,0,0) 18%); }
+      .hero-text { position: relative; left: auto; right: auto; bottom: auto; width: 38%; max-width: none; margin: 0; padding: 84px 40px 48px 6vw; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; }
+      .address { font-size: clamp(40px, 4.2vw, 68px); color: var(--text); }
+      .status { color: var(--text); border-color: var(--muted); }
+      .area { color: var(--muted); }
+      .back { color: var(--text); filter: none; }
+      .hx { display: block; align-self: stretch; margin-top: 34px; }
+      .hx .price { font-size: 40px; }
+      .hx .fl { display: grid; grid-template-columns: auto; column-gap: 28px; justify-content: start; margin-top: 22px; line-height: 1.75; }
+      .hx .feat { margin-top: 12px; max-width: 500px; }
+      .hx .tiles { margin-top: 28px; max-width: 500px; }
+      .intro { display: none; }
+      .strip { display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: 6px; margin: 28px 0 72px; }
+      /* no photo row: keep the same breathing room before the map */
+      .hero + .intro + .hood { margin-top: 72px; }
+      .strip.few { grid-template-columns: repeat(var(--n), calc((100% - 30px) / 6)); justify-content: center; }
+    }
+    @media (min-width: 1300px) {
+      .hx .fl { grid-template-columns: auto auto; }
+    }
   </style>
 </head>
 <body>
@@ -321,10 +350,29 @@
       <span class="status">Condo for sale</span>
       <h1 class="address">4040 San Felipe Street, Unit 119</h1>
       <p class="area">River Oaks, Houston 77027</p>
+      <div class="hx">
+        <span class="price">$229,900</span><span class="specs"><b>2</b> bd<span class="dot">·</span><b>2.5</b> ba<span class="dot">·</span><b>1,380</b> sq ft<span class="dot">·</span><b>2</b> stories</span><span class="dom" data-listed="2026-04-03" hidden></span>
+        <ul class="fl">
+          <li><b>Built 1956</b></li>
+          <li><b>$167</b> per sq ft</li>
+        </ul>
+        <p class="feat"><b>Inside:</b> fireplace, hardwood floors. <b>Outside:</b> balcony, deck, patio.</p>
+
+        <div class="tiles"><a class="tile text-tile" href="sms:+17132047653">
+          <span class="tile-main"><svg class="tile-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Text Mike</span>
+          <span class="tile-sub">Schedule a showing</span>
+          <svg class="arr" viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+        </a><a class="tile" href="https://www.compass.com/homedetails/4040-San-Felipe-St-Unit-119-Houston-TX-77027/AFVKX_pid/" target="_blank" rel="noopener">
+          <img class="tile-logo" src="/compass-logo.png" alt="Compass">
+          <span class="tile-sub">All photos and details</span>
+          <svg class="arr" viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+        </a></div>
+      </div>
     </div>
   </header>
+  <div class="strip" style="--n:8"><a class="ph" href="https://www.compass.com/homedetails/4040-San-Felipe-St-Unit-119-Houston-TX-77027/AFVKX_pid/" target="_blank" rel="noopener" data-i="1"><img src="/listing-photos/4ff192bc992ae5f6-2048x1536.jpg" alt="The spacious living room serves as the heart of the home, featuring rich wood flooring and a classic wood-burning fireplace. The open-concept design allows for plenty of natural light and provides a perfect flow into the formal dining area, ideal for both daily relaxation and hosting guests." loading="lazy"></a><a class="ph" href="https://www.compass.com/homedetails/4040-San-Felipe-St-Unit-119-Houston-TX-77027/AFVKX_pid/" target="_blank" rel="noopener" data-i="2"><img src="/listing-photos/a1419a99889d29bd-2048x1536.jpg" alt="The secondary bedroom offers a private retreat with its own balcony access through sliding glass doors. This bright space features plush carpeting, a ceiling fan, and an en-suite bath, making it perfect for guests, a roommate, or a quiet home office." loading="lazy"></a><a class="ph" href="https://www.compass.com/homedetails/4040-San-Felipe-St-Unit-119-Houston-TX-77027/AFVKX_pid/" target="_blank" rel="noopener" data-i="3"><img src="/listing-photos/3e32e901411d1bf2-2048x1536.jpg" alt="The primary bedroom serves as a serene second-floor retreat, offering plush carpeting and large windows that frame views of the majestic oak trees. Complete with a ceiling fan and an en-suite bath, this bright and airy space provides the perfect escape at the end of the day." loading="lazy"></a><a class="ph" href="https://www.compass.com/homedetails/4040-San-Felipe-St-Unit-119-Houston-TX-77027/AFVKX_pid/" target="_blank" rel="noopener" data-i="4"><img src="/listing-photos/c9bbdffee8f7ad25-2048x1536.jpg" alt="This functional kitchen is equipped with stainless steel appliances, granite countertops, and crisp white cabinetry. The rich wood flooring flows seamlessly through the space, which also features an adjacent pantry for additional storage and easy access to the formal dining area." loading="lazy"></a><a class="ph" href="https://www.compass.com/homedetails/4040-San-Felipe-St-Unit-119-Houston-TX-77027/AFVKX_pid/" target="_blank" rel="noopener" data-i="5"><img src="/listing-photos/2022ad42b79e3c6e-2048x1536.jpg" alt="The classic brick exterior and architectural detailing of this English-style condominium create an inviting first impression. Surrounded by lush greenery and towering oaks, this ground-level unit offers a serene living experience within a secure, manned-gated community in the heart of River Oaks." loading="lazy"></a><a class="ph" href="https://www.compass.com/homedetails/4040-San-Felipe-St-Unit-119-Houston-TX-77027/AFVKX_pid/" target="_blank" rel="noopener" data-i="6"><img src="/listing-photos/aeeaaa82cab8de49-2048x1536.jpg" alt="The formal entry features rich wood flooring and a neutral palette, offering an inviting welcome into the home. This space provides seamless access to the main living areas, a convenient storage closet, and stairs leading to the private bedrooms on the second level." loading="lazy"></a><a class="ph" href="https://www.compass.com/homedetails/4040-San-Felipe-St-Unit-119-Houston-TX-77027/AFVKX_pid/" target="_blank" rel="noopener" data-i="7"><img src="/listing-photos/8c7b00127fa5f3d6-2048x1536.jpg" alt="This perspective captures the seamless connection between the living room and the formal dining area. Featuring warm wood flooring and a classic white brick fireplace, the open layout creates a spacious environment that is perfect for both quiet evenings and entertaining guests." loading="lazy"></a><a class="ph" href="https://www.compass.com/homedetails/4040-San-Felipe-St-Unit-119-Houston-TX-77027/AFVKX_pid/" target="_blank" rel="noopener" data-i="8"><img src="/listing-photos/d35f0b3b69dad516-2048x1536.jpg" alt="Oversized windows act as a natural focal point, bathing the interior in soft light while offering a peaceful view of the mature trees outside. The smooth ceilings and updated neutral paint create a clean, modern aesthetic that makes this generous living area feel exceptionally open and inviting." loading="lazy"></a></div>
 
-  <main class="content">
+  <main class="content intro">
     <div class="gl">
       <div>
         <span class="price">$229,900</span><span class="specs"><b>2</b> bd<span class="dot">·</span><b>2.5</b> ba<span class="dot">·</span><b>1,380</b> sq ft<span class="dot">·</span><b>2</b> stories</span><span class="dom" data-listed="2026-04-03" hidden></span>
@@ -334,7 +382,7 @@
         </ul>
         <p class="feat"><b>Inside:</b> fireplace, hardwood floors. <b>Outside:</b> balcony, deck, patio.</p>
 
-        <div class="tiles"><a class="tile" id="textBtn" href="sms:+17132047653">
+        <div class="tiles"><a class="tile text-tile" href="sms:+17132047653">
           <span class="tile-main"><svg class="tile-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Text Mike</span>
           <span class="tile-sub">Schedule a showing</span>
           <svg class="arr" viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
@@ -389,7 +437,7 @@
     <button class="pv-nav pv-prev" type="button" aria-label="Previous photo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></button>
     <button class="pv-nav pv-next" type="button" aria-label="Next photo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
   </div>
-  <script type="application/json" id="pv-photos">[{"src": "/listing-photos/cd60ef1ed443103a-2048x1536.jpg", "alt": "Welcome to 4040 San Felipe Street, Unit 119. Framed by majestic, mature oak trees, this classic English-style brick condominium offers ground-level convenience in the heart of Houston's prestigious River Oaks area. This 1,380 square foot residence features 2 bedrooms and 2.5 baths within a secure, manned-gated community. Zoned to top-tier schools including River Oaks Elementary, Lanier Middle, and Lamar High, this property combines timeless curb appeal with an unbeatable location."}, {"src": "/listing-photos/4ff192bc992ae5f6-2048x1536.jpg", "alt": "The spacious living room serves as the heart of the home, featuring rich wood flooring and a classic wood-burning fireplace. The open-concept design allows for plenty of natural light and provides a perfect flow into the formal dining area, ideal for both daily relaxation and hosting guests."}, {"src": "/listing-photos/a1419a99889d29bd-2048x1536.jpg", "alt": "The secondary bedroom offers a private retreat with its own balcony access through sliding glass doors. This bright space features plush carpeting, a ceiling fan, and an en-suite bath, making it perfect for guests, a roommate, or a quiet home office."}, {"src": "/listing-photos/3e32e901411d1bf2-2048x1536.jpg", "alt": "The primary bedroom serves as a serene second-floor retreat, offering plush carpeting and large windows that frame views of the majestic oak trees. Complete with a ceiling fan and an en-suite bath, this bright and airy space provides the perfect escape at the end of the day."}, {"src": "/listing-photos/c9bbdffee8f7ad25-2048x1536.jpg", "alt": "This functional kitchen is equipped with stainless steel appliances, granite countertops, and crisp white cabinetry. The rich wood flooring flows seamlessly through the space, which also features an adjacent pantry for additional storage and easy access to the formal dining area."}]</script>
+  <script type="application/json" id="pv-photos">[{"src": "/listing-photos/cd60ef1ed443103a-2048x1536.jpg", "alt": "Welcome to 4040 San Felipe Street, Unit 119. Framed by majestic, mature oak trees, this classic English-style brick condominium offers ground-level convenience in the heart of Houston's prestigious River Oaks area. This 1,380 square foot residence features 2 bedrooms and 2.5 baths within a secure, manned-gated community. Zoned to top-tier schools including River Oaks Elementary, Lanier Middle, and Lamar High, this property combines timeless curb appeal with an unbeatable location."}, {"src": "/listing-photos/4ff192bc992ae5f6-2048x1536.jpg", "alt": "The spacious living room serves as the heart of the home, featuring rich wood flooring and a classic wood-burning fireplace. The open-concept design allows for plenty of natural light and provides a perfect flow into the formal dining area, ideal for both daily relaxation and hosting guests."}, {"src": "/listing-photos/a1419a99889d29bd-2048x1536.jpg", "alt": "The secondary bedroom offers a private retreat with its own balcony access through sliding glass doors. This bright space features plush carpeting, a ceiling fan, and an en-suite bath, making it perfect for guests, a roommate, or a quiet home office."}, {"src": "/listing-photos/3e32e901411d1bf2-2048x1536.jpg", "alt": "The primary bedroom serves as a serene second-floor retreat, offering plush carpeting and large windows that frame views of the majestic oak trees. Complete with a ceiling fan and an en-suite bath, this bright and airy space provides the perfect escape at the end of the day."}, {"src": "/listing-photos/c9bbdffee8f7ad25-2048x1536.jpg", "alt": "This functional kitchen is equipped with stainless steel appliances, granite countertops, and crisp white cabinetry. The rich wood flooring flows seamlessly through the space, which also features an adjacent pantry for additional storage and easy access to the formal dining area."}, {"src": "/listing-photos/2022ad42b79e3c6e-2048x1536.jpg", "alt": "The classic brick exterior and architectural detailing of this English-style condominium create an inviting first impression. Surrounded by lush greenery and towering oaks, this ground-level unit offers a serene living experience within a secure, manned-gated community in the heart of River Oaks."}, {"src": "/listing-photos/aeeaaa82cab8de49-2048x1536.jpg", "alt": "The formal entry features rich wood flooring and a neutral palette, offering an inviting welcome into the home. This space provides seamless access to the main living areas, a convenient storage closet, and stairs leading to the private bedrooms on the second level."}, {"src": "/listing-photos/8c7b00127fa5f3d6-2048x1536.jpg", "alt": "This perspective captures the seamless connection between the living room and the formal dining area. Featuring warm wood flooring and a classic white brick fireplace, the open layout creates a spacious environment that is perfect for both quiet evenings and entertaining guests."}, {"src": "/listing-photos/d35f0b3b69dad516-2048x1536.jpg", "alt": "Oversized windows act as a natural focal point, bathing the interior in soft light while offering a peaceful view of the mature trees outside. The smooth ceilings and updated neutral paint create a clean, modern aesthetic that makes this generous living area feel exceptionally open and inviting."}]</script>
 
   <script>
     // Light/dark button: flips the theme and remembers it, shared with the
@@ -405,19 +453,20 @@
     // Text Mike on a computer: show the QR to scan with a phone (as on the
     // home page). Phones and tablets follow the sms: link as normal.
     (function () {
-      var btn = document.getElementById('textBtn');
+      var btn = null;
       var overlay = document.getElementById('qrOverlay');
       var copy = document.getElementById('qrCopy');
       var desktop = matchMedia('(hover: hover) and (pointer: fine)');
       var timer;
-      function close() { overlay.classList.remove('open'); btn.focus({ preventScroll: true }); }
-      btn.addEventListener('click', function (e) {
+      function close() { overlay.classList.remove('open'); if (btn) btn.focus({ preventScroll: true }); }
+      document.querySelectorAll('.text-tile').forEach(function (b) { b.addEventListener('click', function (e) {
         if (!desktop.matches) return;
+        btn = b;
         e.preventDefault();
         copy.textContent = 'or copy the number';
         overlay.classList.add('open');
         document.getElementById('qrClose').focus();
-      });
+      }); });
       document.getElementById('qrClose').addEventListener('click', close);
       overlay.addEventListener('click', function (e) { if (e.target === overlay) close(); });
       document.addEventListener('keydown', function (e) {
@@ -567,7 +616,9 @@
         });
       });
       document.querySelector('.hero').addEventListener('click', function (e) {
-        if (e.target.closest('.back, .theme-toggle')) return;
+        if (e.target.closest('.back, .theme-toggle, .hx')) return;
+        // On a computer the left side is text, not photo.
+        if (e.target.closest('.hero-text') && matchMedia('(min-width: 900px)').matches) return;
         open(0);
       });
     })();

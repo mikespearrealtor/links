@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>126 Sidney Street · Brady Place · Mike Spear</title>
-  <meta name="description" content="3 bd · 3.5 ba · 2,248 sq ft · 3 stories in Brady Place, Houston. Single-family home for sale, listed by Mike Spear, Compass.">
+  <title>126 Sidney Street · Greater East End · Mike Spear</title>
+  <meta name="description" content="3 bd · 3.5 ba · 2,248 sq ft · 3 stories in Greater East End, Houston. Single-family home for sale, listed by Mike Spear, Compass.">
   <link rel="canonical" href="https://links.mikespear.com/homes/126-sidney-street/">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://links.mikespear.com/homes/126-sidney-street/">
-  <meta property="og:title" content="126 Sidney Street · $509,900">
-  <meta property="og:description" content="3 bd · 3.5 ba · 2,248 sq ft · 3 stories · Brady Place">
+  <meta property="og:title" content="126 Sidney Street · $499,000">
+  <meta property="og:description" content="3 bd · 3.5 ba · 2,248 sq ft · 3 stories · Greater East End">
   <meta property="og:image" content="https://links.mikespear.com/listing-photos/b2d544763e989255-2048x1536.jpg">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)">
@@ -304,6 +304,35 @@
         mask-image: linear-gradient(to bottom, transparent, #000 44px, #000 calc(100% - 44px), transparent);
       }
     }
+
+    /* ── Computers: title, price, facts and buttons on the left, the photo
+       fading in on the right (so tall homes aren't cropped), then a row of
+       photos. Phones and tablets keep the photo-on-top layout above. ── */
+    .hx, .strip { display: none; }
+    @media (min-width: 900px) {
+      .hero { height: auto; min-height: 90vh; min-height: min(90svh, 1100px); max-height: none; background: var(--bg); display: flex; }
+      .slides { left: 34%; }
+      .hero::after { background: linear-gradient(to right, var(--bg) 34%, rgba(255,255,255,0) 46%), linear-gradient(to bottom, rgba(0,0,0,.25), rgba(0,0,0,0) 18%); }
+      [data-theme="dark"] .hero::after { background: linear-gradient(to right, var(--bg) 34%, rgba(10,10,10,0) 46%), linear-gradient(to bottom, rgba(0,0,0,.25), rgba(0,0,0,0) 18%); }
+      .hero-text { position: relative; left: auto; right: auto; bottom: auto; width: 38%; max-width: none; margin: 0; padding: 84px 40px 48px 6vw; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; }
+      .address { font-size: clamp(40px, 4.2vw, 68px); color: var(--text); }
+      .status { color: var(--text); border-color: var(--muted); }
+      .area { color: var(--muted); }
+      .back { color: var(--text); filter: none; }
+      .hx { display: block; align-self: stretch; margin-top: 34px; }
+      .hx .price { font-size: 40px; }
+      .hx .fl { display: grid; grid-template-columns: auto; column-gap: 28px; justify-content: start; margin-top: 22px; line-height: 1.75; }
+      .hx .feat { margin-top: 12px; max-width: 500px; }
+      .hx .tiles { margin-top: 28px; max-width: 500px; }
+      .intro { display: none; }
+      .strip { display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: 6px; margin: 28px 0 72px; }
+      /* no photo row: keep the same breathing room before the map */
+      .hero + .intro + .hood { margin-top: 72px; }
+      .strip.few { grid-template-columns: repeat(var(--n), calc((100% - 30px) / 6)); justify-content: center; }
+    }
+    @media (min-width: 1300px) {
+      .hx .fl { grid-template-columns: auto auto; }
+    }
   </style>
 </head>
 <body>
@@ -320,33 +349,54 @@
     <div class="hero-text">
       <span class="status">Single-family home for sale</span>
       <h1 class="address">126 Sidney Street</h1>
-      <p class="area">Brady Place, Houston 77003</p>
-    </div>
-  </header>
-
-  <main class="content">
-    <div class="gl">
-      <div>
-        <span class="price">$509,900</span><span class="specs"><b>3</b> bd<span class="dot">·</span><b>3.5</b> ba<span class="dot">·</span><b>2,248</b> sq ft<span class="dot">·</span><b>3</b> stories</span><span class="oh" data-oh="2026-11-22T14:00/16:00" hidden></span><span class="dom" data-listed="2026-09-18" hidden></span>
+      <p class="area">Greater East End, Houston 77003</p>
+      <div class="hx">
+        <span class="price">$499,000</span><span class="specs"><b>3</b> bd<span class="dot">·</span><b>3.5</b> ba<span class="dot">·</span><b>2,248</b> sq ft<span class="dot">·</span><b>3</b> stories</span><span class="oh" data-oh="2026-11-22T14:00/16:00" hidden></span><span class="dom" data-listed="2026-11-20" hidden></span>
         <ul class="fl">
           <li><b>2,069 sq ft</b> corner lot, 0.05 acre</li>
           <li><b>Built 2026</b></li>
           <li><b>2-car garage</b></li>
-          <li><b>$227</b> per sq ft</li>
+          <li><b>$222</b> per sq ft</li>
         </ul>
         <p class="feat"><b>Inside:</b> fireplace, hardwood floors, high ceilings. <b>Outside:</b> private yard.</p>
 
-        <div class="tiles"><a class="tile" id="textBtn" href="sms:+17132047653">
+        <div class="tiles"><a class="tile text-tile" href="sms:+17132047653">
           <span class="tile-main"><svg class="tile-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Text Mike</span>
           <span class="tile-sub">Schedule a showing</span>
           <svg class="arr" viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
-        </a><a class="tile" href="https://www.compass.com/homedetails/126-Sidney-St-Houston-TX-77003/BVI0D_pid/" target="_blank" rel="noopener">
+        </a><a class="tile" href="https://www.compass.com/homedetails/126-N-Sidney-St-Houston-TX-77003/BVI0D_pid/" target="_blank" rel="noopener">
           <img class="tile-logo" src="/compass-logo.png" alt="Compass">
           <span class="tile-sub">All photos and details</span>
           <svg class="arr" viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
         </a></div>
       </div>
-      <div class="g4"><a class="ph" href="https://www.compass.com/homedetails/126-Sidney-St-Houston-TX-77003/BVI0D_pid/" target="_blank" rel="noopener" data-i="1"><img src="/listing-photos/8e7532fd1ca80623-2048x1536.jpg" alt="The open-plan second floor is the heart of the home. Soaring exposed trusses tie the living and kitchen areas together, while a 42&quot; gas fireplace anchors the living room and the kitchen&#x27;s dark flat-front cabinetry draws the eye. Wood floors and recessed lighting run throughout." loading="lazy"></a><a class="ph" href="https://www.compass.com/homedetails/126-Sidney-St-Houston-TX-77003/BVI0D_pid/" target="_blank" rel="noopener" data-i="2"><img src="/listing-photos/46061aeb56804d86-2048x1536.jpg" alt="Dramatic exposed structural trusses define the second-floor dining space, adding an industrial-chic character rarely found in new construction. A large picture window frames the treeline, and a modern pendant light fixture centers the room, an inviting backdrop for everyday meals and entertaining alike." loading="lazy"></a><a class="ph" href="https://www.compass.com/homedetails/126-Sidney-St-Houston-TX-77003/BVI0D_pid/" target="_blank" rel="noopener" data-i="3"><img src="/listing-photos/18375b0952137b87-2048x1536.jpg" alt="The chef&#x27;s kitchen is a standout feature of this home. Dark flat-front cabinetry runs floor to ceiling, complemented by stone countertops, a tile backsplash, stainless steel gas range, and a large island with seating for four. Hardwood floors and pendant lighting complete the look." loading="lazy"></a><a class="ph" href="https://www.compass.com/homedetails/126-Sidney-St-Houston-TX-77003/BVI0D_pid/" target="_blank" rel="noopener" data-i="4"><img src="/listing-photos/f543159f4e0f1870-2048x1536.jpg" alt="The primary suite occupies the top floor and impresses immediately with its vaulted ceiling featuring exposed decorative wood beams, large windows on two elevations, and plush carpet. A ceiling fan and generous square footage make this a true owner&#x27;s retreat." loading="lazy"></a></div>
+    </div>
+  </header>
+  <div class="strip" style="--n:8"><a class="ph" href="https://www.compass.com/homedetails/126-N-Sidney-St-Houston-TX-77003/BVI0D_pid/" target="_blank" rel="noopener" data-i="1"><img src="/listing-photos/8e7532fd1ca80623-2048x1536.jpg" alt="The open-plan second floor is the heart of the home. Soaring exposed trusses tie the living and kitchen areas together, while a 42&quot; gas fireplace anchors the living room and the kitchen&#x27;s dark flat-front cabinetry draws the eye. Wood floors and recessed lighting run throughout." loading="lazy"></a><a class="ph" href="https://www.compass.com/homedetails/126-N-Sidney-St-Houston-TX-77003/BVI0D_pid/" target="_blank" rel="noopener" data-i="2"><img src="/listing-photos/46061aeb56804d86-2048x1536.jpg" alt="Dramatic exposed structural trusses define the second-floor dining space, adding an industrial-chic character rarely found in new construction. A large picture window frames the treeline, and a modern pendant light fixture centers the room, an inviting backdrop for everyday meals and entertaining alike." loading="lazy"></a><a class="ph" href="https://www.compass.com/homedetails/126-N-Sidney-St-Houston-TX-77003/BVI0D_pid/" target="_blank" rel="noopener" data-i="3"><img src="/listing-photos/18375b0952137b87-2048x1536.jpg" alt="The chef&#x27;s kitchen is a standout feature of this home. Dark flat-front cabinetry runs floor to ceiling, complemented by stone countertops, a tile backsplash, stainless steel gas range, and a large island with seating for four. Hardwood floors and pendant lighting complete the look." loading="lazy"></a><a class="ph" href="https://www.compass.com/homedetails/126-N-Sidney-St-Houston-TX-77003/BVI0D_pid/" target="_blank" rel="noopener" data-i="4"><img src="/listing-photos/f543159f4e0f1870-2048x1536.jpg" alt="The primary suite occupies the top floor and impresses immediately with its vaulted ceiling featuring exposed decorative wood beams, large windows on two elevations, and plush carpet. A ceiling fan and generous square footage make this a true owner&#x27;s retreat." loading="lazy"></a><a class="ph" href="https://www.compass.com/homedetails/126-N-Sidney-St-Houston-TX-77003/BVI0D_pid/" target="_blank" rel="noopener" data-i="5"><img src="/listing-photos/b02618e055962ab0-2048x1536.jpg" alt="The primary bath delivers a spa-like experience: a freestanding soaking tub, an oversized walk-in shower finished in large-format tile with a glass panel and rain showerhead, and a skylight above that floods the space with natural light. The custom walk-in closet is visible through the doorway beyond." loading="lazy"></a><a class="ph" href="https://www.compass.com/homedetails/126-N-Sidney-St-Houston-TX-77003/BVI0D_pid/" target="_blank" rel="noopener" data-i="6"><img src="/listing-photos/6d8d52ea39490c49-2048x1536.jpg" alt="Sherman Landing: three architecturally cohesive new-construction homes on Sidney Street in Houston&#x27;s EaDo. Each unit offers 3 stories of modern living with private 2-car garages and individual entries, a rare opportunity to own new construction in one of Houston&#x27;s most walkable and fast-growing urban neighborhoods." loading="lazy"></a><a class="ph" href="https://www.compass.com/homedetails/126-N-Sidney-St-Houston-TX-77003/BVI0D_pid/" target="_blank" rel="noopener" data-i="7"><img src="/listing-photos/5bc01b3a2f10c8ca-2048x1536.jpg" alt="A bold set of glass-panel French doors in a standout color sets the tone for this contemporary home. The covered entry provides a welcoming transition into the open foyer, a small detail that speaks to the care taken throughout this new construction." loading="lazy"></a><a class="ph" href="https://www.compass.com/homedetails/126-N-Sidney-St-Houston-TX-77003/BVI0D_pid/" target="_blank" rel="noopener" data-i="8"><img src="/listing-photos/84f88d107d9f162a-2048x1536.jpg" alt="The entry foyer announces the home&#x27;s design ambitions immediately. A dramatic open-riser floating staircase with a black steel frame and wood treads anchors the space, while polished concrete floors and a built-in storage cabinet balance form with function. High ceilings amplify the sense of arrival." loading="lazy"></a></div>
+
+  <main class="content intro">
+    <div class="gl">
+      <div>
+        <span class="price">$499,000</span><span class="specs"><b>3</b> bd<span class="dot">·</span><b>3.5</b> ba<span class="dot">·</span><b>2,248</b> sq ft<span class="dot">·</span><b>3</b> stories</span><span class="oh" data-oh="2026-11-22T14:00/16:00" hidden></span><span class="dom" data-listed="2026-11-20" hidden></span>
+        <ul class="fl">
+          <li><b>2,069 sq ft</b> corner lot, 0.05 acre</li>
+          <li><b>Built 2026</b></li>
+          <li><b>2-car garage</b></li>
+          <li><b>$222</b> per sq ft</li>
+        </ul>
+        <p class="feat"><b>Inside:</b> fireplace, hardwood floors, high ceilings. <b>Outside:</b> private yard.</p>
+
+        <div class="tiles"><a class="tile text-tile" href="sms:+17132047653">
+          <span class="tile-main"><svg class="tile-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Text Mike</span>
+          <span class="tile-sub">Schedule a showing</span>
+          <svg class="arr" viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+        </a><a class="tile" href="https://www.compass.com/homedetails/126-N-Sidney-St-Houston-TX-77003/BVI0D_pid/" target="_blank" rel="noopener">
+          <img class="tile-logo" src="/compass-logo.png" alt="Compass">
+          <span class="tile-sub">All photos and details</span>
+          <svg class="arr" viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+        </a></div>
+      </div>
+      <div class="g4"><a class="ph" href="https://www.compass.com/homedetails/126-N-Sidney-St-Houston-TX-77003/BVI0D_pid/" target="_blank" rel="noopener" data-i="1"><img src="/listing-photos/8e7532fd1ca80623-2048x1536.jpg" alt="The open-plan second floor is the heart of the home. Soaring exposed trusses tie the living and kitchen areas together, while a 42&quot; gas fireplace anchors the living room and the kitchen&#x27;s dark flat-front cabinetry draws the eye. Wood floors and recessed lighting run throughout." loading="lazy"></a><a class="ph" href="https://www.compass.com/homedetails/126-N-Sidney-St-Houston-TX-77003/BVI0D_pid/" target="_blank" rel="noopener" data-i="2"><img src="/listing-photos/46061aeb56804d86-2048x1536.jpg" alt="Dramatic exposed structural trusses define the second-floor dining space, adding an industrial-chic character rarely found in new construction. A large picture window frames the treeline, and a modern pendant light fixture centers the room, an inviting backdrop for everyday meals and entertaining alike." loading="lazy"></a><a class="ph" href="https://www.compass.com/homedetails/126-N-Sidney-St-Houston-TX-77003/BVI0D_pid/" target="_blank" rel="noopener" data-i="3"><img src="/listing-photos/18375b0952137b87-2048x1536.jpg" alt="The chef&#x27;s kitchen is a standout feature of this home. Dark flat-front cabinetry runs floor to ceiling, complemented by stone countertops, a tile backsplash, stainless steel gas range, and a large island with seating for four. Hardwood floors and pendant lighting complete the look." loading="lazy"></a><a class="ph" href="https://www.compass.com/homedetails/126-N-Sidney-St-Houston-TX-77003/BVI0D_pid/" target="_blank" rel="noopener" data-i="4"><img src="/listing-photos/f543159f4e0f1870-2048x1536.jpg" alt="The primary suite occupies the top floor and impresses immediately with its vaulted ceiling featuring exposed decorative wood beams, large windows on two elevations, and plush carpet. A ceiling fan and generous square footage make this a true owner&#x27;s retreat." loading="lazy"></a></div>
     </div>
   </main>
 
@@ -391,7 +441,7 @@
     <button class="pv-nav pv-prev" type="button" aria-label="Previous photo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></button>
     <button class="pv-nav pv-next" type="button" aria-label="Next photo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
   </div>
-  <script type="application/json" id="pv-photos">[{"src": "/listing-photos/b2d544763e989255-2048x1536.jpg", "alt": "126 Sidney Street at Sherman Landing, bold new construction in the heart of EaDo. This 3-story home makes a striking first impression with contemporary horizontal siding, large windows, a 2-car garage, and fresh landscaping. One of three newly built homes in this boutique development, just minutes from Downtown Houston."}, {"src": "/listing-photos/8e7532fd1ca80623-2048x1536.jpg", "alt": "The open-plan second floor is the heart of the home. Soaring exposed trusses tie the living and kitchen areas together, while a 42\" gas fireplace anchors the living room and the kitchen's dark flat-front cabinetry draws the eye. Wood floors and recessed lighting run throughout."}, {"src": "/listing-photos/46061aeb56804d86-2048x1536.jpg", "alt": "Dramatic exposed structural trusses define the second-floor dining space, adding an industrial-chic character rarely found in new construction. A large picture window frames the treeline, and a modern pendant light fixture centers the room, an inviting backdrop for everyday meals and entertaining alike."}, {"src": "/listing-photos/18375b0952137b87-2048x1536.jpg", "alt": "The chef's kitchen is a standout feature of this home. Dark flat-front cabinetry runs floor to ceiling, complemented by stone countertops, a tile backsplash, stainless steel gas range, and a large island with seating for four. Hardwood floors and pendant lighting complete the look."}, {"src": "/listing-photos/f543159f4e0f1870-2048x1536.jpg", "alt": "The primary suite occupies the top floor and impresses immediately with its vaulted ceiling featuring exposed decorative wood beams, large windows on two elevations, and plush carpet. A ceiling fan and generous square footage make this a true owner's retreat."}]</script>
+  <script type="application/json" id="pv-photos">[{"src": "/listing-photos/b2d544763e989255-2048x1536.jpg", "alt": "126 Sidney Street at Sherman Landing, bold new construction in the heart of EaDo. This 3-story home makes a striking first impression with contemporary horizontal siding, large windows, a 2-car garage, and fresh landscaping. One of three newly built homes in this boutique development, just minutes from Downtown Houston."}, {"src": "/listing-photos/8e7532fd1ca80623-2048x1536.jpg", "alt": "The open-plan second floor is the heart of the home. Soaring exposed trusses tie the living and kitchen areas together, while a 42\" gas fireplace anchors the living room and the kitchen's dark flat-front cabinetry draws the eye. Wood floors and recessed lighting run throughout."}, {"src": "/listing-photos/46061aeb56804d86-2048x1536.jpg", "alt": "Dramatic exposed structural trusses define the second-floor dining space, adding an industrial-chic character rarely found in new construction. A large picture window frames the treeline, and a modern pendant light fixture centers the room, an inviting backdrop for everyday meals and entertaining alike."}, {"src": "/listing-photos/18375b0952137b87-2048x1536.jpg", "alt": "The chef's kitchen is a standout feature of this home. Dark flat-front cabinetry runs floor to ceiling, complemented by stone countertops, a tile backsplash, stainless steel gas range, and a large island with seating for four. Hardwood floors and pendant lighting complete the look."}, {"src": "/listing-photos/f543159f4e0f1870-2048x1536.jpg", "alt": "The primary suite occupies the top floor and impresses immediately with its vaulted ceiling featuring exposed decorative wood beams, large windows on two elevations, and plush carpet. A ceiling fan and generous square footage make this a true owner's retreat."}, {"src": "/listing-photos/b02618e055962ab0-2048x1536.jpg", "alt": "The primary bath delivers a spa-like experience: a freestanding soaking tub, an oversized walk-in shower finished in large-format tile with a glass panel and rain showerhead, and a skylight above that floods the space with natural light. The custom walk-in closet is visible through the doorway beyond."}, {"src": "/listing-photos/6d8d52ea39490c49-2048x1536.jpg", "alt": "Sherman Landing: three architecturally cohesive new-construction homes on Sidney Street in Houston's EaDo. Each unit offers 3 stories of modern living with private 2-car garages and individual entries, a rare opportunity to own new construction in one of Houston's most walkable and fast-growing urban neighborhoods."}, {"src": "/listing-photos/5bc01b3a2f10c8ca-2048x1536.jpg", "alt": "A bold set of glass-panel French doors in a standout color sets the tone for this contemporary home. The covered entry provides a welcoming transition into the open foyer, a small detail that speaks to the care taken throughout this new construction."}, {"src": "/listing-photos/84f88d107d9f162a-2048x1536.jpg", "alt": "The entry foyer announces the home's design ambitions immediately. A dramatic open-riser floating staircase with a black steel frame and wood treads anchors the space, while polished concrete floors and a built-in storage cabinet balance form with function. High ceilings amplify the sense of arrival."}]</script>
 
   <script>
     // Light/dark button: flips the theme and remembers it, shared with the
@@ -407,19 +457,20 @@
     // Text Mike on a computer: show the QR to scan with a phone (as on the
     // home page). Phones and tablets follow the sms: link as normal.
     (function () {
-      var btn = document.getElementById('textBtn');
+      var btn = null;
       var overlay = document.getElementById('qrOverlay');
       var copy = document.getElementById('qrCopy');
       var desktop = matchMedia('(hover: hover) and (pointer: fine)');
       var timer;
-      function close() { overlay.classList.remove('open'); btn.focus({ preventScroll: true }); }
-      btn.addEventListener('click', function (e) {
+      function close() { overlay.classList.remove('open'); if (btn) btn.focus({ preventScroll: true }); }
+      document.querySelectorAll('.text-tile').forEach(function (b) { b.addEventListener('click', function (e) {
         if (!desktop.matches) return;
+        btn = b;
         e.preventDefault();
         copy.textContent = 'or copy the number';
         overlay.classList.add('open');
         document.getElementById('qrClose').focus();
-      });
+      }); });
       document.getElementById('qrClose').addEventListener('click', close);
       overlay.addEventListener('click', function (e) { if (e.target === overlay) close(); });
       document.addEventListener('keydown', function (e) {
@@ -569,7 +620,9 @@
         });
       });
       document.querySelector('.hero').addEventListener('click', function (e) {
-        if (e.target.closest('.back, .theme-toggle')) return;
+        if (e.target.closest('.back, .theme-toggle, .hx')) return;
+        // On a computer the left side is text, not photo.
+        if (e.target.closest('.hero-text') && matchMedia('(min-width: 900px)').matches) return;
         open(0);
       });
     })();
