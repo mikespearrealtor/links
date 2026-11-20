@@ -25,6 +25,12 @@
       document.documentElement.setAttribute('data-theme', t);
       var metas = document.querySelectorAll('meta[name="theme-color"]');
       for (var i = 0; i < metas.length; i++) metas[i].setAttribute('content', t === 'light' ? '#ffffff' : '#0a0a0a');
+      // Entrance animation, like the home page: once per page per browsing
+      // session, so coming back to a listing renders instantly.
+      var k = 'introSeen:' + location.pathname;
+      try {
+        if (!sessionStorage.getItem(k)) { sessionStorage.setItem(k, '1'); document.documentElement.setAttribute('data-anim', ''); }
+      } catch (e) { document.documentElement.setAttribute('data-anim', ''); }
     })();
   </script>
   <style>
@@ -91,14 +97,14 @@
       background: linear-gradient(to bottom, rgba(0,0,0,.35) 0%, rgba(0,0,0,0) 22%, rgba(0,0,0,0) 48%, var(--hero-fade) 100%);
     }
     .back {
-      position: absolute; top: 18px; left: 20px; z-index: 2;
+      position: absolute; top: 18px; left: 20px; z-index: 3;
       color: #fff; text-decoration: none; font-size: 13px;
       display: flex; align-items: center; gap: 7px;
       filter: drop-shadow(0 1px 6px rgba(0,0,0,.5));
     }
     .back svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 1.7; }
     /* Same light/dark button as the home page, top right of the photo. */
-    .theme-toggle { position: absolute; top: 9px; right: 12px; z-index: 2; width: 40px; height: 40px; background: none; border: none; color: #fff; filter: drop-shadow(0 1px 6px rgba(0,0,0,.45)); display: flex; align-items: center; justify-content: center; }
+    .theme-toggle { position: absolute; top: 9px; right: 12px; z-index: 3; width: 40px; height: 40px; background: none; border: none; color: #fff; filter: drop-shadow(0 1px 6px rgba(0,0,0,.45)); display: flex; align-items: center; justify-content: center; }
     .theme-toggle svg { width: 19px; height: 19px; stroke: currentColor; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
     .theme-toggle:focus-visible { outline: 1px solid #fff; outline-offset: 3px; }
     .theme-toggle .moon { display: none; }
@@ -207,6 +213,30 @@
     @media (prefers-reduced-motion: no-preference) {
       .qr-overlay.open .qr-card { animation: qr-pop .18s ease; }
       @keyframes qr-pop { from { opacity: 0; transform: scale(.97); } to { opacity: 1; transform: scale(1); } }
+    }
+
+    /* ── Entrance (only with <html data-anim>: first view of this page per
+       session). The home page's curve and timings: the photo fades in and
+       settles, then the text rises in a short stagger. CSS only. ── */
+    @media (prefers-reduced-motion: no-preference) {
+      [data-anim] .hero { animation: hero-in 1s cubic-bezier(.22,1,.36,1) backwards; }
+      [data-anim] .slides { animation: hero-settle 1.3s cubic-bezier(.22,1,.36,1) backwards; }
+      [data-anim] .hero-text > *, [data-anim] .hx > *, [data-anim] .strip, [data-anim] .intro .gl > * {
+        animation: rise .7s cubic-bezier(.22,1,.36,1) backwards;
+      }
+      [data-anim] .hero-text > .status { animation-delay: .18s; }
+      [data-anim] .hero-text > .address { animation-delay: .26s; }
+      [data-anim] .hero-text > .area { animation-delay: .34s; }
+      [data-anim] .hero-text > .hx { animation: none; }
+      [data-anim] .hx > :nth-child(1), [data-anim] .hx > :nth-child(2), [data-anim] .hx > :nth-child(3) { animation-delay: .42s; }
+      [data-anim] .hx > :nth-child(n+4) { animation-delay: .5s; }
+      [data-anim] .hx > .tiles { animation-delay: .58s; }
+      [data-anim] .strip { animation-delay: .66s; }
+      [data-anim] .intro .gl > :nth-child(1) { animation-delay: .44s; }
+      [data-anim] .intro .gl > :nth-child(2) { animation-delay: .52s; }
+      @keyframes hero-in { from { opacity: 0; } to { opacity: 1; } }
+      @keyframes hero-settle { from { transform: scale(1.045); } to { transform: scale(1); } }
+      @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     }
 
     /* ── Buttons ── */
