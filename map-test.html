@@ -2020,7 +2020,7 @@
           <span class="row-price">$719,000</span>
         </a>
         <a class="row row-more" href="https://www.har.com/realestatepro/sold-by-agent/spear" target="_blank" rel="noopener">
-          <span class="row-text"><span class="row-main">and 8 more recently sold</span><span class="row-sub">on HAR.com</span></span>
+          <span class="row-text"><span class="row-main">Browse past sales</span><span class="row-sub">on HAR.com</span></span>
           <svg class="arr" viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
         </a>
         <p class="mls-note">Recent closed sales from Compass. Texas is a non-disclosure state; amounts shown are the last list price, not the sale price. Mike Spear, Compass RE Texas, LLC.</p>
@@ -2559,7 +2559,7 @@
             map.classList.toggle('is-zoomed', level > 0);
           }
           sync();
-          map.parentNode.appendChild(controls);
+          if (!map.querySelector('.map-history')) map.parentNode.appendChild(controls);
 
           // Drag to pan, once zoomed. The pointer is only captured once the
           // move is clearly a drag: capturing on press would retarget the
