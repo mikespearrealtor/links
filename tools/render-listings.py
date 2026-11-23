@@ -996,8 +996,12 @@ def main() -> None:
     # its opening (tools/sold_history.py; the motion is in index.html).
     if sold_section and sold_map:
         import sold_history
-        sold_section = sold_history.decorate(
-            sold_section, sold_history.load(pathlib.Path(args.history)), Frame(basemap))
+        history_path = pathlib.Path(args.history)
+        history = sold_history.load(history_path)
+        if not args.dry_run:
+            history = sold_history.absorb(history_path, history, all_sales, geo,
+                                          geo_key, datetime.date.today().year)
+        sold_section = sold_history.decorate(sold_section, history, Frame(basemap))
 
     hidden = [name for name, rows in (("Current listings", listings),
                                       ("Recently sold", sales)) if not rows]

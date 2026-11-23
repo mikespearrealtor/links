@@ -158,7 +158,7 @@ jobs:
         run: |
           # --porcelain also reports a file as untracked, which a plain
           # `git diff` would miss on the very first run.
-          if [ -z "$(git status --porcelain -- listings.json sold.json geo.json index.html sitemap.xml listing-photos listing-maps homes)" ]; then
+          if [ -z "$(git status --porcelain -- listings.json sold.json sold-history.json geo.json index.html sitemap.xml listing-photos listing-maps homes)" ]; then
             echo "No listing changes today."
             echo "changed=no" >> "$GITHUB_ENV"
             exit 0
@@ -166,7 +166,7 @@ jobs:
           echo "changed=yes" >> "$GITHUB_ENV"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A listings.json sold.json geo.json index.html sitemap.xml listing-photos listing-maps homes
+          git add -A listings.json sold.json sold-history.json geo.json index.html sitemap.xml listing-photos listing-maps homes
           git commit -m "Update listings from Compass profile"
           # A push to main made while this job ran would otherwise reject the
           # push and cost the day's update. Replay on top of it instead.

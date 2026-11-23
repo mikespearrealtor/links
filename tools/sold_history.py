@@ -39,6 +39,37 @@ def load(path: pathlib.Path) -> list:
         return []
 
 
+def absorb(path: pathlib.Path, history: list, sales: list, geo: dict,
+           geo_key, year: int) -> list:
+    """Add any scraped sale the history doesn't have yet, and save the file.
+
+    sold.json only ever holds Compass's newest sales, so a sale drops out of it
+    once enough newer ones close. Folding each one into the history the first
+    time it is seen keeps its dot for good. The scrape carries no closing date,
+    so the year is the year it was first seen - normally the year it closed.
+    A point within ~30 m of one already there is the same home (the two lists
+    were geocoded separately and differ by a few metres), and is skipped.
+    """
+    added = []
+    for sale in sales:
+        point = geo.get(geo_key(sale.get("url", "")) or "")
+        if not (isinstance(point, list) and len(point) == 2):
+            continue
+        lon, lat = round(float(point[0]), 5), round(float(point[1]), 5)
+        if any(abs(lon - h[0]) < 3e-4 and abs(lat - h[1]) < 3e-4 for h in history + added):
+            continue
+        added.append((lon, lat, year))
+    if not added or not history:
+        return history
+    history = history + added
+    text = path.read_text(encoding="utf-8")
+    head = text[:text.index('"points": [')]
+    body = ",\n".join(f"    [{lon}, {lat}, {yr}]" for lon, lat, yr in history)
+    path.write_text(f'{head}"points": [\n{body}\n  ]\n}}\n', encoding="utf-8", newline="\n")
+    print(f"sold-history.json: added {len(added)} new sale(s).")
+    return history
+
+
 def decorate(sec: str, history: list, frame) -> str:
     """The sold section with the history layered in. Returns it unchanged if
     there is no history or no map to add it to."""
