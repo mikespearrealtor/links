@@ -1703,7 +1703,7 @@
     .map-history .f { stroke: #fff; stroke-width: 5.4px; }
     .map.is-linking .map-history { opacity: 0.3; }
     /* The recent-sale circles stay for hover and tap, but only show when lit. */
-    .map-sold { fill: var(--hint); fill-opacity: 0; }
+    .map-sold { fill: var(--hint); fill-opacity: 0; pointer-events: none; }
     .map.is-linking .map-sold:not(.is-lit) { fill-opacity: 0; }
     .map-dot.is-sold { background: #fff; border: 1.5px solid #0a0a0a; opacity: 1; box-sizing: border-box; }
 
@@ -1976,22 +1976,6 @@
             <circle class="map-sold is-off" data-home="12406-Whittington-Dr-Houston-TX-77077" data-offmap cx="-58.2" cy="129.7" r="4.4"/>
             <circle class="map-sold is-off" data-home="7522-Deep-Forest-Dr-Houston-TX-77088" data-offmap cx="71.6" cy="-19.4" r="4.4"/>
             <circle class="map-sold is-off" data-home="5702-Capello-Dr-Houston-TX-77035" data-offmap cx="59.8" cy="241.7" r="4.4"/>
-            <circle class="map-hit" data-home="1210-W-Drew-St-Houston-TX-77006" cx="155.6" cy="126.0" r="9"/>
-            <circle class="map-hit" data-home="2217-W-Main-St-Houston-TX-77098" cx="135.7" cy="142.3" r="9"/>
-            <circle class="map-hit" data-home="10810-Burdine-St-Houston-TX-77096" cx="65.8" cy="228.7" r="9"/>
-            <circle class="map-hit" data-home="1306-Crocker-St-Houston-TX-77019" cx="159.9" cy="119.3" r="9"/>
-            <circle class="map-hit" data-home="1208-Welch-St-Houston-TX-77006" cx="155.8" cy="125.2" r="9"/>
-            <circle class="map-hit" data-home="9128-Lakes-At-610-Dr-Houston-TX-77054" cx="128.8" cy="220.9" r="9"/>
-            <circle class="map-hit" data-home="10-S-Briar-Hollow-Ln-Unit-55-Houston-TX-77027" cx="98.9" cy="124.3" r="9"/>
-            <circle class="map-hit" data-home="1209-Bomar-St-Houston-TX-77006" cx="155.7" cy="123.7" r="9"/>
-            <circle class="map-hit" data-home="2030-Southgate-Blvd-Houston-TX-77030" cx="142.9" cy="173.9" r="9"/>
-            <circle class="map-hit" data-home="1215-W-Pierce-St-Houston-TX-77019" cx="155.0" cy="121.1" r="9"/>
-            <circle class="map-hit" data-home="77-Chelsea-Blvd-Houston-TX-77006" cx="160.4" cy="148.7" r="9"/>
-            <circle class="map-hit" data-home="1515-Hyde-Park-Blvd-Unit-5-Houston-TX-77006" cx="152.8" cy="130.3" r="9"/>
-            <circle class="map-hit" data-home="13818-Mill-Garden-Ct-Houston-TX-77059" data-offmap cx="418.4" cy="304.9" r="9"/>
-            <circle class="map-hit" data-home="12406-Whittington-Dr-Houston-TX-77077" data-offmap cx="-58.2" cy="129.7" r="9"/>
-            <circle class="map-hit" data-home="7522-Deep-Forest-Dr-Houston-TX-77088" data-offmap cx="71.6" cy="-19.4" r="9"/>
-            <circle class="map-hit" data-home="5702-Capello-Dr-Houston-TX-77035" data-offmap cx="59.8" cy="241.7" r="9"/>
           </svg>
         </div>
         <p class="map-legend"><span class="map-key"><i class="map-dot is-sold"></i>350 sales since 2006</span><span class="map-off">6 outside this view</span></p>
