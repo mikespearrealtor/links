@@ -1728,7 +1728,7 @@
     @keyframes tagIn  { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
     @keyframes tagOut { from { opacity: 1; transform: none; } to { opacity: 0; transform: scale(.12); visibility: hidden; } }
     .map .map-label.is-cut { opacity: 0; }
-    /* The count waits for the opening to finish. */
+    /* The count is the last thing in: it comes up as the opening ends. */
     .map-legend.is-held { opacity: 0; }
     .map-legend { transition: opacity 0.5s ease; }
     @keyframes dotIn  { from { opacity: 0; transform: translateY(1px); } to { opacity: 1; transform: none; } }
@@ -2695,9 +2695,6 @@
                   iraf = k < 1 ? requestAnimationFrame(tick) : null;
                 })(t0);
               }, zoomAt));
-              timers.push(setTimeout(function () {
-                if (legend) legend.classList.remove('is-held');
-              }, zoomAt + ZOOM_DUR));
               timers.push(setTimeout(stop, endAt));
             }
             io = new IntersectionObserver(function (es) {
