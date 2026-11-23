@@ -1727,6 +1727,10 @@
     }
     @keyframes tagIn  { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
     @keyframes tagOut { from { opacity: 1; transform: none; } to { opacity: 0; transform: scale(.12); visibility: hidden; } }
+    .map .map-label.is-cut { opacity: 0; }
+    /* The count waits for the opening to finish. */
+    .map-legend.is-held { opacity: 0; }
+    .map-legend { transition: opacity 0.5s ease; }
     @keyframes dotIn  { from { opacity: 0; transform: translateY(1px); } to { opacity: 1; transform: none; } }
   </style>
   <script>
@@ -2450,6 +2454,9 @@
 
           var roads = Array.prototype.slice.call(map.querySelectorAll('path[class^="map-"]'));
           var labels = Array.prototype.slice.call(map.querySelectorAll('text.map-label'));
+          labels.forEach(function (l) {
+            l._x = +l.getAttribute('x'); l._y = +l.getAttribute('y'); l._n = l.textContent.length;
+          });
           var mapW = 0;
           window.addEventListener('resize', function () { mapW = 0; setBox(cur); });
           var intro = null;
@@ -2476,8 +2483,15 @@
             if (!mapW) mapW = map.getBoundingClientRect().width;
             var perUnit = mapW / b[2];
             if (perUnit) {
-              var ls = (10 / perUnit).toFixed(2) + 'px';
-              labels.forEach(function (l) { l.style.setProperty('--label-size', ls); });
+              var lu = 10 / perUnit, ls = lu.toFixed(2) + 'px';
+              labels.forEach(function (l) {
+                l.style.setProperty('--label-size', ls);
+                // A name the frame would slice ("MORIAL PARK") stays hidden.
+                var hw = l._n * lu * 0.42, hh = lu * 0.6;
+                var cut = l._x - hw < b[0] || l._x + hw > b[0] + b[2] ||
+                          l._y - hh < b[1] || l._y + hh > b[1] + b[3];
+                if (cut !== l._cut) { l._cut = cut; l.classList.toggle('is-cut', cut); }
+              });
             }
           }
           function step(now) {
@@ -2659,8 +2673,11 @@
               if (io) io.disconnect();
               intro = null;
               map.classList.remove('intro-wait', 'intro-on');
+              if (legend) legend.classList.remove('is-held');
             }
             intro = stop;
+            var legend = map.closest('.group').querySelector('.map-legend');
+            if (legend) legend.classList.add('is-held');
             map.classList.add('intro-wait');
             cur = box0.slice();
             setBox(cur);
@@ -2678,6 +2695,9 @@
                   iraf = k < 1 ? requestAnimationFrame(tick) : null;
                 })(t0);
               }, zoomAt));
+              timers.push(setTimeout(function () {
+                if (legend) legend.classList.remove('is-held');
+              }, zoomAt + ZOOM_DUR));
               timers.push(setTimeout(stop, endAt));
             }
             io = new IntersectionObserver(function (es) {
