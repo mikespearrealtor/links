@@ -1155,7 +1155,10 @@
     @media (min-width: 900px) {
       .page {
         display: grid;
-        grid-template-columns: minmax(0, 44%) minmax(0, 1fr);
+        /* The photo stops growing at its laptop size (44% of ~1600px), so
+           on big monitors the name stays as close to it as on a laptop
+           instead of drifting off across a widening gap. */
+        grid-template-columns: minmax(0, min(44%, 700px)) minmax(0, 1fr);
       }
 
       .hero {
