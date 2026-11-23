@@ -42,6 +42,7 @@ import argparse
 import datetime
 import html
 import json
+import math
 import os
 import pathlib
 import re
@@ -609,6 +610,43 @@ def home_attr(record: dict, off_map: set = frozenset()) -> str:
     return f' data-home="{esc(key)}"' + (" data-offmap" if key in off_map else "")
 
 
+def spread(points: list, gap: float) -> list:
+    """Nudge dots apart until no two centres are closer than `gap`.
+
+    Listings for sale are few and each one is a row, so every dot has to be
+    findable on its own: two units in one building, or two houses side by side,
+    would otherwise sit almost exactly on top of each other and read as one.
+    Overlapping pairs are pushed apart along the line between them, half each,
+    until they just touch, so a pair lands side by side and a trio fans out
+    around where they really are. Coincident dots have no line between them,
+    so they split along a fixed angle per pair, which keeps the result the same
+    from one render to the next.
+
+    Only the drawing moves. The page's zoom counter-scales the dots, so dots
+    that touch at the default view separate further as a reader zooms in.
+    """
+    pts = [[x, y, key] for x, y, key in points]
+    for _ in range(200):
+        moved = False
+        for i in range(len(pts)):
+            for j in range(i + 1, len(pts)):
+                dx, dy = pts[j][0] - pts[i][0], pts[j][1] - pts[i][1]
+                dist = math.hypot(dx, dy)
+                if dist >= gap - 1e-6:
+                    continue
+                if dist < 1e-6:
+                    angle = (i * 7 + j * 3) * 0.9
+                    dx, dy, dist = math.cos(angle), math.sin(angle), 1.0
+                push = (gap - dist) / 2 + 0.01
+                ux, uy = dx / dist, dy / dist
+                pts[i][0] -= ux * push; pts[i][1] -= uy * push
+                pts[j][0] += ux * push; pts[j][1] += uy * push
+                moved = True
+        if not moved:
+            break
+    return [tuple(p) for p in pts]
+
+
 def dense(points: list) -> list:
     """The points with enough close neighbours to be worth glowing."""
     return [(x, y) for x, y, _ in points
@@ -656,6 +694,9 @@ def render_map(listings: list[dict], sales: list[dict], geo: dict,
         return "", set()
 
     live_points, live_off = plot(listings, geo, LIVE_DOT, frame)
+    # No two listing dots overlap: neighbours sit side by side instead.
+    if not sales:
+        live_points = spread(live_points, 2 * LIVE_DOT)
     # Listings that are no longer simply for sale get their own dot color, so
     # the map agrees with the row. Keyed by slug, the same as the pairing.
     pending = {geo_key(listing.get("url", "")) for listing in listings
