@@ -142,7 +142,6 @@
       }
     ],
     "photoCount": 38,
-    "openHouse": "2026-11-22T14:00/16:00",
     "details": {
       "propertyType": "Single Family",
       "stories": 2,
@@ -217,13 +216,13 @@
       }
     ],
     "photoCount": 31,
-    "openHouse": "2026-11-22T14:00/16:00",
     "details": {
       "propertyType": "Single Family",
       "stories": 3,
       "lotSqft": 2069,
       "yearBuilt": 2026,
       "garage": 2,
+      "newConstruction": true,
       "pricePerSqft": 222,
       "features": [
         "Corner Lot",
@@ -293,13 +292,13 @@
       }
     ],
     "photoCount": 35,
-    "openHouse": "2026-11-22T14:00/16:00",
     "details": {
       "propertyType": "Townhouse",
       "stories": 3,
       "lotSqft": 1532,
       "yearBuilt": 2026,
       "garage": 2,
+      "newConstruction": true,
       "pricePerSqft": 234,
       "features": [
         "Fireplace",
