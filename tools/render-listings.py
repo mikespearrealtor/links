@@ -55,9 +55,9 @@ SOLD_START = "<!-- sold:start"
 SOLD_END = "<!-- sold:end -->"
 INDENT = " " * 6
 
-# Ten is enough to show momentum without doubling the length of the page.
+# Six: the map now carries every sale since 2006, so the list only needs the latest few.
 # The map still plots every sale, and render_more_row() links to the rest.
-SOLD_LIMIT = 10
+SOLD_LIMIT = 6
 
 # Where "and N more recently sold" sends a reader: HAR's sold-by-agent page,
 # which lists every closed sale rather than the ten the section shows.
