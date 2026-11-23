@@ -194,16 +194,24 @@ def render(l: dict, map_html: str | None, others: str = "") -> str:
     elif l.get("photo"):
         slides.append(f'      <img class="slide" src="{esc(l["photo"])}" alt="{esc(address)}">')
 
-    extra = photos[1:5]
-    if len(extra) in (2, 3):
-        extra = extra[:2]
+    # Tablets show the next four (or two) in a grid beside the facts; phones
+    # swipe through all eight, ending on the Compass link when it has more.
+    # The cells past the grid's size are marked x and only shown on phones.
+    rest = photos[1:9]
+    shown = len(rest[:4])
+    if shown in (2, 3):
+        shown = 2
     url = l.get("url", "")
     grid = ""
-    if extra:
+    if rest:
         # Each opens the photo viewer at its own place; the Compass link is
         # the fallback when scripts are off.
-        cells = "".join(f'<a class="ph" href="{esc(url)}" target="_blank" rel="noopener" data-i="{i + 1}"><img src="{esc(thumb_src(p))}" alt="{esc(short_alt(p.get("alt"), address, i + 1))}" loading="lazy"></a>' for i, p in enumerate(extra))
-        grid = f'      <div class="g4{" one" if len(extra) == 1 else ""}">{cells}</div>'
+        cells = "".join(f'<a class="ph{" x" if i >= shown else ""}" href="{esc(url)}" target="_blank" rel="noopener" data-i="{i + 1}"><img src="{esc(thumb_src(p))}" alt="{esc(short_alt(p.get("alt"), address, i + 1))}" loading="lazy"></a>' for i, p in enumerate(rest))
+        total_all = l.get("photoCount") or len(photos)
+        if total_all > 1 + len(rest):
+            cells += (f'<a class="more x" href="{esc(url)}" target="_blank" rel="noopener"><span class="big">All {total_all} photos</span>'
+                      f'<span class="sub">on Compass <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></span></a>')
+        grid = f'      <div class="g4{" one" if shown == 1 else ""}">{cells}</div>'
 
     # On a computer the next eight photos run in a row under the hero instead.
     # When Compass has more than that, the last spot links to all of them;
