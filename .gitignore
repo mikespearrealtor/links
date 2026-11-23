@@ -17,3 +17,6 @@ listings.json.bak
 listings.json.tmp
 sold.json.bak
 sold.json.tmp
+
+# Design mockups and screenshots live in Documents/Claude Misc/links-mockups, not here.
+mockup-*
