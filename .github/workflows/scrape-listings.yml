@@ -50,14 +50,20 @@ jobs:
             exit 0
           fi
 
-          today=$(date -u +%Y-%m-%d)
+          # "Today" is Houston's day, not UTC's. GitHub often starts these runs
+          # hours late, and UTC's day ends at 6-7pm Houston time, so a late
+          # evening run used to count as the next day and that whole day's
+          # runs were skipped. Run times are UTC, so compare against the UTC
+          # moment Houston's day began (ISO strings sort as times).
+          since=$(date -u -d "@$(TZ=America/Chicago date -d "$(TZ=America/Chicago date +%F) 00:00" +%s)" +%Y-%m-%dT%H:%M:%SZ)
+          echo "Houston's day began at $since UTC."
           # Fail open. If this lookup breaks, scrape a second time rather than
           # silently skip a day: one extra fetch beats a stale site.
           count=$(gh api \
             "repos/$GITHUB_REPOSITORY/actions/workflows/scrape-listings.yml/runs?per_page=50" \
             --jq "[.workflow_runs[]
                    | select(.conclusion == \"success\")
-                   | select(.created_at | startswith(\"$today\"))] | length"
+                   | select(.created_at >= \"$since\")] | length"
           ) || count=0
 
           if [ "${count:-0}" -gt 0 ]; then
