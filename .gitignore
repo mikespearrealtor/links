@@ -6,6 +6,7 @@ tools/*
 !tools/geocode.py
 !tools/basemap.py
 !tools/render-listings.py
+!tools/sold_history.py
 !tools/listing-map.py
 !tools/listing-pages.py
 !tools/listing-page.html

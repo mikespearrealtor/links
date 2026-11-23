@@ -944,6 +944,7 @@ def main() -> None:
     parser.add_argument("--page", default=str(REPO_ROOT / "index.html"))
     parser.add_argument("--geo", default=str(REPO_ROOT / "geo.json"))
     parser.add_argument("--basemap", default=str(REPO_ROOT / "basemap.json"))
+    parser.add_argument("--history", default=str(REPO_ROOT / "sold-history.json"))
     parser.add_argument("--corrections", default=str(REPO_ROOT / "corrections.json"))
     parser.add_argument("--sold-limit", type=int, default=SOLD_LIMIT,
                         help=f"how many closed sales to show (default {SOLD_LIMIT})")
@@ -991,6 +992,12 @@ def main() -> None:
     beyond_cap = len(all_sales) - len(sales)
     sold_section = (render_sold(sales, sold_map, sold_off_map, beyond_cap)
                     if sales else "")
+    # Every sale since 2006 goes onto the sold map as a dot, with the tags for
+    # its opening (tools/sold_history.py; the motion is in index.html).
+    if sold_section and sold_map:
+        import sold_history
+        sold_section = sold_history.decorate(
+            sold_section, sold_history.load(pathlib.Path(args.history)), Frame(basemap))
 
     hidden = [name for name, rows in (("Current listings", listings),
                                       ("Recently sold", sales)) if not rows]
