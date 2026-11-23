@@ -622,8 +622,10 @@ def spread(points: list, gap: float) -> list:
     so they split along a fixed angle per pair, which keeps the result the same
     from one render to the next.
 
-    Only the drawing moves. The page's zoom counter-scales the dots, so dots
-    that touch at the default view separate further as a reader zooms in.
+    Only the drawing moves. Zoomed in, the dots grow more slowly than the map,
+    so the page re-runs the same nudge at each zoom (spreadAt in index.html)
+    and the dots slide back toward their true spots while still never
+    overlapping. The two must push the same way or a zoom would jump.
     """
     pts = [[x, y, key] for x, y, key in points]
     for _ in range(200):
@@ -694,9 +696,16 @@ def render_map(listings: list[dict], sales: list[dict], geo: dict,
         return "", set()
 
     live_points, live_off = plot(listings, geo, LIVE_DOT, frame)
-    # No two listing dots overlap: neighbours sit side by side instead.
+    # No two listing dots overlap: neighbours sit side by side instead. A
+    # moved dot carries its true spot (data-tx/ty) so the page can slide it
+    # back as a zoom makes room.
+    true_spot = {}
     if not sales:
-        live_points = spread(live_points, 2 * LIVE_DOT)
+        spread_points = spread(live_points, 2 * LIVE_DOT)
+        true_spot = {i: (x, y) for i, ((x, y, _), (sx, sy, _))
+                     in enumerate(zip(live_points, spread_points))
+                     if math.hypot(sx - x, sy - y) > 0.05}
+        live_points = spread_points
     # Listings that are no longer simply for sale get their own dot color, so
     # the map agrees with the row. Keyed by slug, the same as the pairing.
     pending = {geo_key(listing.get("url", "")) for listing in listings
@@ -827,8 +836,11 @@ def render_map(listings: list[dict], sales: list[dict], geo: dict,
         svg.append(f'  <circle class="{pulse}" cx="{x:.1f}" cy="{y:.1f}" '
                    f'r="{LIVE_DOT}" style="animation-delay:'
                    f'-{index * PULSE_STAGGER:.1f}s"/>')
-    for x, y, key in live_points:
-        svg.append(f'  <circle class="{live_class(key)}" data-home="{esc(key)}" '
+    for index, (x, y, key) in enumerate(live_points):
+        spot = true_spot.get(index)
+        moved = (f' data-tx="{spot[0]:.1f}" data-ty="{spot[1]:.1f}" data-si="{index}"'
+                 if spot else "")
+        svg.append(f'  <circle class="{live_class(key)}" data-home="{esc(key)}"{moved} '
                    f'cx="{x:.1f}" cy="{y:.1f}" r="{LIVE_DOT}"/>')
 
     # The homes the frame left out but could still reach are drawn too, at their
