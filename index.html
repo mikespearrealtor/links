@@ -1589,10 +1589,12 @@
       fill-opacity: 0.62;
       stroke: none;
     }
+    /* Built like the sold dots: a near-black ring around the colour, so the
+       two maps read as one family and the amber still carries the meaning. */
     .map-live {
       fill: var(--hint);
-      stroke: var(--bg);
-      stroke-width: 1.5;
+      stroke: #0a0a0a;
+      stroke-width: 0.9;
     }
     .map-live.is-pending { fill: var(--pending); }
     /* A ring easing outward from each live listing and fading as it goes.
@@ -1601,14 +1603,17 @@
        transform-box makes the circle its own reference, so scaling grows it
        about its centre instead of the viewBox origin. */
     @keyframes mapPulse {
-      0%   { transform: scale(1);   opacity: 0.5; }
-      70%  { transform: scale(3.1); opacity: 0; }
-      100% { transform: scale(3.1); opacity: 0; }
+      0%   { transform: scale(1);   opacity: 0.9; }
+      70%  { transform: scale(2.6); opacity: 0; }
+      100% { transform: scale(2.6); opacity: 0; }
     }
+    /* A hairline at any size: non-scaling-stroke keeps it 1px as it grows,
+       rather than swelling into a wide beige band. */
     .map-pulse {
       fill: none;
       stroke: var(--hint);
-      stroke-width: 1.3;
+      stroke-width: 1px;
+      vector-effect: non-scaling-stroke;
       transform-box: fill-box;
       transform-origin: center;
       animation: mapPulse 3.6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
@@ -1640,7 +1645,7 @@
       border-radius: 50%;
       flex: none;
     }
-    .map-dot.is-live { background: var(--hint); }
+    .map-dot.is-live { background: var(--hint); border: 1.5px solid #0a0a0a; box-sizing: border-box; }
     .map-dot.is-pending { background: var(--pending); }
     .map-dot.is-sold {
       background: var(--muted);
