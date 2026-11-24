@@ -159,11 +159,6 @@ MAP_LABELS = [
     ("Bellaire", -95.4590, 29.7050, False),
 ]
 
-# Seconds between one listing's pulse and the next. Long enough that the ring
-# from one dot has cleared before its neighbour starts, so a cluster reads as
-# several separate listings rather than one throb.
-PULSE_STAGGER = 0.9
-
 # How far the map may pull back to reveal an off-frame home before we give up
 # and point at the note instead. A home a mile past the edge swims into view
 # against roads it is genuinely near; one out in Katy would shrink the city to
@@ -826,16 +821,12 @@ def render_map(listings: list[dict], sales: list[dict], geo: dict,
             svg.append(f'  <circle class="map-halo" cx="{x:.1f}" cy="{y:.1f}" '
                        f'r="{LIVE_RING}"/>')
 
-    # A slow ring easing outward from each listing that is currently for sale.
-    # The delays are staggered and negative, so the dots are already spread
-    # through the cycle on the first frame rather than all firing together -
-    # in unison it reads as a machine, offset it reads as activity. The CSS
-    # stops the animation outright under prefers-reduced-motion.
-    for index, (x, y, key) in enumerate(live_points):
+    # A ring easing outward from each listing that is currently for sale. A
+    # script in index.html fires them one at a time, in this order; the CSS
+    # leaves them hidden under prefers-reduced-motion.
+    for x, y, key in live_points:
         pulse = "map-pulse is-pending" if key in pending else "map-pulse"
-        svg.append(f'  <circle class="{pulse}" cx="{x:.1f}" cy="{y:.1f}" '
-                   f'r="{LIVE_DOT}" style="animation-delay:'
-                   f'-{index * PULSE_STAGGER:.1f}s"/>')
+        svg.append(f'  <circle class="{pulse}" cx="{x:.1f}" cy="{y:.1f}" r="{LIVE_DOT}"/>')
     for index, (x, y, key) in enumerate(live_points):
         spot = true_spot.get(index)
         moved = (f' data-tx="{spot[0]:.1f}" data-ty="{spot[1]:.1f}" data-si="{index}"'
