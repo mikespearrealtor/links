@@ -315,7 +315,7 @@
     "beds": 2,
     "baths": 2.5,
     "sqft": 1380,
-    "price": 229900,
+    "price": 219000,
     "status": "Active",
     "listedDate": "2026-04-03",
     "url": "https://www.compass.com/homedetails/4040-San-Felipe-St-Unit-119-Houston-TX-77027/AFVKX_pid/",
@@ -372,8 +372,84 @@
       "propertyType": "Condo",
       "stories": 2,
       "yearBuilt": 1956,
-      "pricePerSqft": 167,
+      "pricePerSqft": 159,
       "features": [
+        "Fireplace",
+        "Hardwood Floors",
+        "Balcony",
+        "Deck",
+        "Patio"
+      ]
+    }
+  },
+  {
+    "address": "4040 San Felipe Street, Unit 119",
+    "area": "River Oaks",
+    "beds": 2,
+    "baths": 2.5,
+    "sqft": 1380,
+    "price": 2100,
+    "status": "Active",
+    "listedDate": "2026-11-25",
+    "url": "https://www.compass.com/homedetails/4040-San-Felipe-St-Unit-119-Houston-TX-77027/2246668182779531121_lid/",
+    "rental": true,
+    "photo": "https://www.compass.com/m/cd60ef1ed443103a5259c0e0a5868f014decf4483b7b844e5f266ec6f2ca40fa/1024x768.jpg",
+    "photos": [
+      {
+        "src": "listing-photos/cd60ef1ed443103a-2048x1536.jpg",
+        "alt": "Welcome to 4040 San Felipe Street, Unit 119. Framed by majestic, mature oak trees, this classic English-style brick condominium offers ground-level convenience in the heart of Houston's prestigious River Oaks area. This 1,380 square foot residence features 2 bedrooms and 2.5 baths within a secure, manned-gated community. Zoned to top-tier schools including River Oaks Elementary, Lanier Middle, and Lamar High, this property combines timeless curb appeal with an unbeatable location.",
+        "thumb": "listing-photos/cd60ef1ed443103a-640x480.jpg"
+      },
+      {
+        "src": "listing-photos/4ff192bc992ae5f6-2048x1536.jpg",
+        "alt": "The spacious living room serves as the heart of the home, featuring rich wood flooring and a classic wood-burning fireplace. The open-concept design allows for plenty of natural light and provides a perfect flow into the formal dining area, ideal for both daily relaxation and hosting guests.",
+        "thumb": "listing-photos/4ff192bc992ae5f6-640x480.jpg"
+      },
+      {
+        "src": "listing-photos/a1419a99889d29bd-2048x1536.jpg",
+        "alt": "The secondary bedroom offers a private retreat with its own balcony access through sliding glass doors. This bright space features plush carpeting, a ceiling fan, and an en-suite bath, making it perfect for guests, a roommate, or a quiet home office.",
+        "thumb": "listing-photos/a1419a99889d29bd-640x480.jpg"
+      },
+      {
+        "src": "listing-photos/3e32e901411d1bf2-2048x1536.jpg",
+        "alt": "The primary bedroom serves as a serene second-floor retreat, offering plush carpeting and large windows that frame views of the majestic oak trees. Complete with a ceiling fan and an en-suite bath, this bright and airy space provides the perfect escape at the end of the day.",
+        "thumb": "listing-photos/3e32e901411d1bf2-640x480.jpg"
+      },
+      {
+        "src": "listing-photos/c9bbdffee8f7ad25-2048x1536.jpg",
+        "alt": "This functional kitchen is equipped with stainless steel appliances, granite countertops, and crisp white cabinetry. The rich wood flooring flows seamlessly through the space, which also features an adjacent pantry for additional storage and easy access to the formal dining area.",
+        "thumb": "listing-photos/c9bbdffee8f7ad25-640x480.jpg"
+      },
+      {
+        "src": "listing-photos/2022ad42b79e3c6e-2048x1536.jpg",
+        "alt": "The classic brick exterior and architectural detailing of this English-style condominium create an inviting first impression. Surrounded by lush greenery and towering oaks, this ground-level unit offers a serene living experience within a secure, manned-gated community in the heart of River Oaks.",
+        "thumb": "listing-photos/2022ad42b79e3c6e-640x480.jpg"
+      },
+      {
+        "src": "listing-photos/aeeaaa82cab8de49-2048x1536.jpg",
+        "alt": "The formal entry features rich wood flooring and a neutral palette, offering an inviting welcome into the home. This space provides seamless access to the main living areas, a convenient storage closet, and stairs leading to the private bedrooms on the second level.",
+        "thumb": "listing-photos/aeeaaa82cab8de49-640x480.jpg"
+      },
+      {
+        "src": "listing-photos/8c7b00127fa5f3d6-2048x1536.jpg",
+        "alt": "This perspective captures the seamless connection between the living room and the formal dining area. Featuring warm wood flooring and a classic white brick fireplace, the open layout creates a spacious environment that is perfect for both quiet evenings and entertaining guests.",
+        "thumb": "listing-photos/8c7b00127fa5f3d6-640x480.jpg"
+      },
+      {
+        "src": "listing-photos/d35f0b3b69dad516-2048x1536.jpg",
+        "alt": "Oversized windows act as a natural focal point, bathing the interior in soft light while offering a peaceful view of the mature trees outside. The smooth ceilings and updated neutral paint create a clean, modern aesthetic that makes this generous living area feel exceptionally open and inviting.",
+        "thumb": "listing-photos/d35f0b3b69dad516-640x480.jpg"
+      }
+    ],
+    "photoCount": 22,
+    "details": {
+      "propertyType": "Condo",
+      "stories": 2,
+      "yearBuilt": 1956,
+      "garage": 0,
+      "pricePerSqft": 2,
+      "features": [
+        "Pool",
         "Fireplace",
         "Hardwood Floors",
         "Balcony",
